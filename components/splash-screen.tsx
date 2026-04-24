@@ -3,8 +3,8 @@ import { checkAuth } from '@/store/slices/authSlice';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
 import { splashStyles } from '../styles/splash.styles';
+import { RView } from './ui/rview';
 
 export default function SplashScreen() {
   const dispatch = useAppDispatch();
@@ -31,14 +31,14 @@ export default function SplashScreen() {
   }, [dispatch, router, isAuthenticated]);
 
   return (
-    <View style={splashStyles.container}>
-      <View style={splashStyles.content}>
+    <RView style={splashStyles.container}>
+      <RView style={splashStyles.content}>
         <Image 
           source={require('@/assets/images/Logo.png')} 
           style={splashStyles.logo}
           contentFit="contain"
         />
-      </View>
-    </View>
+      </RView>
+    </RView>
   );
 }

@@ -2,6 +2,7 @@ import { AuthFooter } from '@/components/auth/auth-footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
+import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearError, login } from '@/store/slices/authSlice';
@@ -10,7 +11,7 @@ import { validateEmail, validatePassword } from '@/utils/validation';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -36,11 +37,9 @@ export default function Login() {
   }, [error]);
 
   const handleLogin = async () => {
-    // Clear previous errors
     setEmailError(null);
     setPasswordError(null);
 
-    // Validate inputs
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
 
@@ -50,7 +49,6 @@ export default function Login() {
       return;
     }
 
-    // Dispatch login action
     dispatch(login({ email, password }));
   };
 
@@ -65,12 +63,12 @@ export default function Login() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={authStyles.header}>
+        <RView style={authStyles.header}>
           <Text variant="title">Log In</Text>
           <Text variant="subtitle">Please sign in to your existing account</Text>
-        </View>
+        </RView>
 
-        <View style={authStyles.form}>
+        <RView style={authStyles.form}>
           <Image 
             source={require('@/assets/images/Logo.png')} 
             style={authStyles.logo}
@@ -113,7 +111,7 @@ export default function Login() {
             linkText="SIGN UP"
             href="/(auth)/signup"
           />
-        </View>
+        </RView>
       </ScrollView>
     </KeyboardAvoidingView>
   );

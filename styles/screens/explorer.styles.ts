@@ -3,13 +3,20 @@ import { StyleSheet } from 'react-native';
 export const explorerStyles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     backgroundColor: '#fff',
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  listContent: {
+    padding: 20,
   },
 });

@@ -3,7 +3,7 @@ import { Text } from '@/components/ui/text';
 import { authStyles } from '@/styles/auth.styles';
 import { Link } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
+import { RView } from '../ui/rview';
 
 export interface AuthFooterProps {
   text: string;
@@ -13,7 +13,7 @@ export interface AuthFooterProps {
 
 export function AuthFooter({ text, linkText, href }: AuthFooterProps) {
   return (
-    <View style={authStyles.footerContainer}>
+    <RView style={authStyles.footerContainer}>
       <Text variant="body">{text} </Text>
       <Link href={href} asChild>
         <Button 
@@ -23,6 +23,6 @@ export function AuthFooter({ text, linkText, href }: AuthFooterProps) {
           style={authStyles.secondaryButton}
         />
       </Link>
-    </View>
+    </RView>
   );
 }

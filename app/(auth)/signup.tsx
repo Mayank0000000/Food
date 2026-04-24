@@ -2,6 +2,7 @@ import { AuthFooter } from '@/components/auth/auth-footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
+import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearError, signup } from '@/store/slices/authSlice';
@@ -10,7 +11,7 @@ import { validateEmail, validateName, validatePassword } from '@/utils/validatio
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -43,7 +44,6 @@ export default function Signup() {
     setEmailError(null);
     setPasswordError(null);
 
-    // Validate inputs
     const nameErr = validateName(name);
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
@@ -55,7 +55,6 @@ export default function Signup() {
       return;
     }
 
-    // Dispatch signup action
     dispatch(signup({ name, email, password }));
   };
 
@@ -70,12 +69,12 @@ export default function Signup() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={authStyles.header}>
+        <RView style={authStyles.header}>
           <Text variant="title">Sign Up</Text>
           <Text variant="subtitle">Please create a new account</Text>
-        </View>
+        </RView>
 
-        <View style={authStyles.form}>
+        <RView style={authStyles.form}>
           <Image 
             source={require('@/assets/images/Logo.png')} 
             style={authStyles.logo}
@@ -129,7 +128,7 @@ export default function Signup() {
             linkText="LOG IN"
             href="/(auth)/login"
           />
-        </View>
+        </RView>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
@@ -6,7 +7,7 @@ import { accountStyles } from '@/styles/screens/account.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
   const router = useRouter();
@@ -71,18 +72,18 @@ export default function Account() {
 
   return (
     <ScrollView style={accountStyles.container} showsVerticalScrollIndicator={false}>
-      <View style={accountStyles.header}>
-        <View style={accountStyles.profileImage}>
+      <RView style={accountStyles.header}>
+        <RView style={accountStyles.profileImage}>
           <Text variant="title" style={accountStyles.profileInitial}>
             {getInitial(user?.name || '')}
           </Text>
-        </View>
+        </RView>
         <Text variant="title" style={accountStyles.userName}>{user?.name || 'User'}</Text>
         <Text variant="body" style={accountStyles.userEmail}>{user?.email || 'user@example.com'}</Text>
-      </View>
+      </RView>
 
-      <View style={accountStyles.content}>
-        <View style={accountStyles.section}>
+      <RView style={accountStyles.content}>
+        <RView style={accountStyles.section}>
           <Text variant="subtitle" style={accountStyles.sectionTitle}>Account</Text>
           {menuItems.map((item, index) => (
             <TouchableOpacity
@@ -107,10 +108,10 @@ export default function Account() {
               />
             </TouchableOpacity>
           ))}
-        </View>
+        </RView>
 
         <Text variant="caption" style={accountStyles.version}>Version 1.0.0</Text>
-      </View>
+      </RView>
 
       <Button
         title="Logout"
