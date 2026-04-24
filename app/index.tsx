@@ -1,5 +1,5 @@
-import { Redirect } from 'expo-router';
+import SplashScreen from '@/components/splash-screen';
 
 export default function Index() {
-  return <Redirect href="/(auth)/login" />;
+  return <SplashScreen />;
 }

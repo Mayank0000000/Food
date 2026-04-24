@@ -5,11 +5,21 @@ export const authStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a1d2e',
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   header: {
     paddingTop: 80,
     paddingBottom: 40,
     paddingHorizontal: 30,
     alignItems: 'center',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 40,
+    marginTop: 20,
   },
   title: {
     fontSize: 32,
