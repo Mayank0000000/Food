@@ -5,6 +5,7 @@ export const buttonStyles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   primary: {
     backgroundColor: '#ff6b35',
@@ -38,5 +39,8 @@ export const buttonStyles = StyleSheet.create({
   },
   outlineText: {
     color: '#ff6b35',
+  },
+  iconContainer: {
+    marginHorizontal: 6,
   },
 });

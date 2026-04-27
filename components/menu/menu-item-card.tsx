@@ -1,5 +1,6 @@
 import { VegIndicator } from '@/components/menu/veg-indicator';
 import { Card } from '@/components/ui/card';
+import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { menuItemCardStyles } from '@/styles/components/menu-item-card.styles';
@@ -7,7 +8,6 @@ import { MenuItemCardProps } from '@/types/components/menu-item-card.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => {
   const averageRating = item.rating.length > 0 
@@ -15,7 +15,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => 
     : '0.0';
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <PressableView onPress={onPress}>
       <Card style={menuItemCardStyles.container}>
         <Image 
           source={{ uri: item.image }}
@@ -56,6 +56,6 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => 
           </RView>
         </RView>
       </Card>
-    </TouchableOpacity>
+    </PressableView>
   );
 };

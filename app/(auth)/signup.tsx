@@ -39,7 +39,6 @@ export default function Signup() {
   }, [error]);
 
   const handleSignup = async () => {
-    // Clear previous errors
     setNameError(null);
     setEmailError(null);
     setPasswordError(null);

@@ -131,13 +131,9 @@ export const menuItemDetailModalStyles = StyleSheet.create({
     marginRight: 12,
   },
   quantityButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1.5,
-    borderColor: '#FF6B35',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 40,
+    height: 40,
+    padding: 8,
   },
   quantity: {
     fontSize: 16,

@@ -1,13 +1,17 @@
 import { VegIndicator } from '@/components/menu/veg-indicator';
 import { Button } from '@/components/ui/button';
+import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useToast } from '@/contexts/toast-context';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { addToCart } from '@/store/slices/cartSlice';
 import { menuItemDetailModalStyles } from '@/styles/components/menu-item-detail-modal.styles';
 import { MenuItem } from '@/types/menu.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React from 'react';
-import { Modal, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Modal, ScrollView } from 'react-native';
 
 interface MenuItemDetailModalProps {
   visible: boolean;
@@ -20,11 +24,44 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
   item,
   onClose,
 }) => {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  const { isLoading, cart } = useAppSelector((state) => state.cart);
+  const { showToast } = useToast();
+  const [quantity, setQuantity] = useState(1);
+
   if (!item) return null;
 
   const averageRating = item.rating.length > 0 
     ? (item.rating.reduce((a, b) => a + b, 0) / item.rating.length).toFixed(1)
     : '0.0';
+
+  const handleAddToCart = async () => {
+ 
+    try {
+      const result = await dispatch(addToCart({
+        userId: user.id.toString(),
+        userName: user.name,
+        menuItem: item,
+        quantity,
+      })).unwrap();
+      
+      
+      const cartItems = result.items.map(cartItem => cartItem.menuItem);
+      showToast(cartItems, result.totalItems);
+      
+      onClose();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to add item to cart: ' + error);
+    }
+  };
+
+  const handleQuantityChange = (change: number) => {
+    const newQuantity = quantity + change;
+    if (newQuantity >= 1) {
+      setQuantity(newQuantity);
+    }
+  };
 
   return (
     <Modal
@@ -34,22 +71,20 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <TouchableOpacity 
+      <PressableView 
         style={menuItemDetailModalStyles.overlay}
-        activeOpacity={1}
         onPress={onClose}
       >
-        <TouchableOpacity 
+        <PressableView 
           style={menuItemDetailModalStyles.modalContainer}
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
+          onPress={(e) => e?.stopPropagation?.()}
         >
-          <TouchableOpacity 
+          <PressableView 
             style={menuItemDetailModalStyles.closeButton}
             onPress={onClose}
           >
             <Ionicons name="close-circle" size={32} color="#333" />
-          </TouchableOpacity>
+          </PressableView>
 
           <ScrollView 
             style={menuItemDetailModalStyles.scrollView}
@@ -78,12 +113,12 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
                   {item.name}
                 </Text>
                 <RView style={menuItemDetailModalStyles.actions}>
-                  <TouchableOpacity style={menuItemDetailModalStyles.iconButton}>
+                  <PressableView style={menuItemDetailModalStyles.iconButton} onPress={() => {}}>
                     <Ionicons name="bookmark-outline" size={24} color="#333" />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={menuItemDetailModalStyles.iconButton}>
+                  </PressableView>
+                  <PressableView style={menuItemDetailModalStyles.iconButton} onPress={() => {}}>
                     <Ionicons name="share-social-outline" size={24} color="#333" />
-                  </TouchableOpacity>
+                  </PressableView>
                 </RView>
               </RView>
 
@@ -120,32 +155,35 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
 
           <RView style={menuItemDetailModalStyles.footer}>
             <RView style={menuItemDetailModalStyles.quantityContainer}>
-              <TouchableOpacity 
+              <Button
+                variant="outline"
+                size="small"
+                onPress={() => handleQuantityChange(-1)}
                 style={menuItemDetailModalStyles.quantityButton}
-                onPress={() => {}}
               >
                 <Ionicons name="remove" size={20} color="#FF6B35" />
-              </TouchableOpacity>
+              </Button>
               <Text variant="body" style={menuItemDetailModalStyles.quantity}>
-                1
+                {quantity}
               </Text>
-              <TouchableOpacity 
+              <Button
+                variant="outline"
+                size="small"
+                onPress={() => handleQuantityChange(1)}
                 style={menuItemDetailModalStyles.quantityButton}
-                onPress={() => {}}
               >
                 <Ionicons name="add" size={20} color="#FF6B35" />
-              </TouchableOpacity>
+              </Button>
             </RView>
             <Button
-              title={`Add item ₹${item.price}`}
-              onPress={() => {
-                onClose();
-              }}
+              title={`Add item ₹${item.price * quantity}`}
+              onPress={handleAddToCart}
               style={menuItemDetailModalStyles.addButton}
+              disabled={isLoading}
             />
           </RView>
-        </TouchableOpacity>
-      </TouchableOpacity>
+        </PressableView>
+      </PressableView>
     </Modal>
   );
 };

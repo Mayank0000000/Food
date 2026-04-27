@@ -23,10 +23,10 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   const [activeSection, setActiveSection] = useState<FilterSection>('sortBy');
   const scrollViewRef = useRef<ScrollView>(null);
   
-  const sortByRef = useRef<RView>(null);
-  const ratingRef = useRef<RView>(null);
-  const offersRef = useRef<RView>(null);
-  const foodTypeRef = useRef<RView>(null);
+  const sortByRef = useRef<View>(null);
+  const ratingRef = useRef<View>(null);
+  const offersRef = useRef<View>(null);
+  const foodTypeRef = useRef<View>(null);
 
   const handleApply = () => {
     onApplyFilters(tempFilters);

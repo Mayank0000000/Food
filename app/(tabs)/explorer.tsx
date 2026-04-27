@@ -5,6 +5,7 @@ import { MenuItemCard } from '@/components/menu/menu-item-card';
 import { MenuItemDetailModal } from '@/components/menu/menu-item-detail-modal';
 import { RView } from '@/components/ui/rview';
 import { SearchInput } from '@/components/ui/search-input';
+import { MenuListSkeleton } from '@/components/ui/skeleton';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchMenu } from '@/store/slices/menuSlice';
 import { explorerStyles } from '@/styles/screens/explorer.styles';
@@ -12,7 +13,7 @@ import { FilterState } from '@/types/components/filter-chips.types';
 import { GroupedMenu, MenuItem } from '@/types/menu.types';
 import { applyMenuFilters, groupMenuByCategory } from '@/utils/menuFilters';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Explorer() {
@@ -47,12 +48,6 @@ export default function Explorer() {
     }
   }, [menuItems]);
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert('Error', error);
-    }
-  }, [error]);
-
   const getFilteredItems = (): MenuItem[] => {
     let items: MenuItem[] = [];
     
@@ -83,9 +78,14 @@ export default function Explorer() {
   if (isLoading) {
     return (
       <SafeAreaView style={explorerStyles.container}>
-        <RView style={explorerStyles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B35" />
+        <RView style={explorerStyles.searchContainer}>
+          <SearchInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search dishes..."
+          />
         </RView>
+        <MenuListSkeleton count={6} />
       </SafeAreaView>
     );
   }

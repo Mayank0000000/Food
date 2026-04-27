@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { githubService } from './github.service';
 
 interface User {
@@ -19,7 +20,7 @@ interface AuthResponse {
 class AuthService {
   async login(credentials: { email: string; password: string }): Promise<AuthResponse> {
     try {
-      const { content } = await githubService.getFile();
+      const content = await githubService.getFile(API_ENDPOINTS.FILES.USERS);
       const users: User[] = content.users || [];
       
       const user = users.find(u => u.email === credentials.email);
@@ -47,7 +48,7 @@ class AuthService {
 
   async signup(data: { name: string; email: string; password: string }): Promise<AuthResponse> {
     try {
-      const { content, sha } = await githubService.getFile();
+      const content = await githubService.getFile(API_ENDPOINTS.FILES.USERS);
       const users: User[] = content.users || [];
       
       const existingUser = users.find(u => u.email === data.email);
@@ -66,8 +67,8 @@ class AuthService {
       users.push(newUser);
       
       await githubService.updateFile(
+        API_ENDPOINTS.FILES.USERS,
         { users },
-        sha,
         `Add new user: ${data.email}`
       );
       

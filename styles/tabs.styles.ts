@@ -19,6 +19,7 @@ export const tabStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
+    marginTop: -20,
   },
   tabBarLabel: {
     fontSize: 12,
