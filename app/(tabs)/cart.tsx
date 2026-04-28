@@ -1,6 +1,7 @@
 import { CartItemComponent } from '@/components/cart/cart-item';
 import { CouponBanner } from '@/components/coupons/coupon-banner';
 import { CouponModal } from '@/components/coupons/coupon-modal';
+import { PaymentMethodModal } from '@/components/order/payment-method-modal';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { RView } from '@/components/ui/rview';
@@ -11,16 +12,22 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart, fetchCart, updateCartItemQuantity } from '@/store/slices/cartSlice';
 import { cartStyles } from '@/styles/screens/cart.styles';
 import { Coupon } from '@/types/coupon.types';
+import { PaymentMethod } from '@/types/order.types';
 import { getCartSummary, validateCoupon } from '@/utils/cartCalculations';
+import { requestLocationPermission } from '@/utils/locationUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Cart() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { cart, isLoading } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
   const [isCouponModalVisible, setIsCouponModalVisible] = useState(false);
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
   useEffect(() => {
@@ -66,8 +73,54 @@ export default function Cart() {
     Alert.alert('Dine In', 'Dine In functionality coming soon!');
   };
 
-  const handleOrder = () => {
-    Alert.alert('Order', 'Order functionality coming soon!');
+  const handleOrder = async () => {
+    if (!cart || cart.items.length === 0) {
+      Alert.alert('Empty Cart', 'Please add items to your cart first.');
+      return;
+    }
+
+    // Request location permission
+    const locationResult = await requestLocationPermission();
+
+    if (!locationResult.granted) {
+      Alert.alert(
+        'Location Required',
+        'We need your location to deliver your order. Please enable location access in settings.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Try Again', onPress: handleOrder },
+        ]
+      );
+      return;
+    }
+
+    // Show payment method modal
+    setIsPaymentModalVisible(true);
+  };
+
+  const handlePaymentConfirm = async (paymentMethod: PaymentMethod) => {
+    setIsPaymentModalVisible(false);
+
+    // Get user's current location
+    const locationResult = await requestLocationPermission();
+    
+    if (locationResult.granted && locationResult.location) {
+      const userLocation = {
+        latitude: locationResult.location.coords.latitude,
+        longitude: locationResult.location.coords.longitude,
+      };
+      
+      // Store location in AsyncStorage for order tracking
+      await AsyncStorage.setItem('deliveryLocation', JSON.stringify(userLocation));
+    }
+
+    // Clear cart and navigate to tracking
+    if (user?.id) {
+      dispatch(clearCart(user.id.toString()));
+    }
+    
+    // Navigate to order tracking
+    router.push('/order-tracking');
   };
 
   const handleApplyCoupon = (coupon: Coupon) => {
@@ -149,6 +202,12 @@ export default function Cart() {
         coupons={AVAILABLE_COUPONS}
         onApply={handleApplyCoupon}
         appliedCouponId={appliedCoupon?.id}
+      />
+
+      <PaymentMethodModal
+        visible={isPaymentModalVisible}
+        onClose={() => setIsPaymentModalVisible(false)}
+        onConfirm={handlePaymentConfirm}
       />
 
      <RView style={cartStyles.billContainer}>
