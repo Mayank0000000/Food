@@ -1,15 +1,18 @@
 import { CouponBanner } from '@/components/coupons/coupon-banner';
 import { CouponModal } from '@/components/coupons/coupon-modal';
 import { PerfectPairings } from '@/components/home/perfect-pairings';
+import { OrderProgressBanner } from '@/components/order/order-progress-banner';
 import { Carousel } from '@/components/ui/carousel';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { AVAILABLE_COUPONS } from '@/data/coupons';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchMenu } from '@/store/slices/menuSlice';
+import { fetchActiveOrders } from '@/store/slices/orderSlice';
 import { homeStyles } from '@/styles/screens/home.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,13 +27,25 @@ const CAROUSEL_IMAGES = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
+  const { activeOrders } = useAppSelector((state) => state.order);
+  const { user } = useAppSelector((state) => state.auth);
   const [isCouponModalVisible, setIsCouponModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(fetchMenu());
-  }, [dispatch]);
+    
+    // Check for active orders
+    if (user?.id) {
+      dispatch(fetchActiveOrders(user.id.toString()));
+    }
+  }, [dispatch, user?.id]);
+
+  const handleTrackOrder = (orderId: string) => {
+    router.push(`/order-tracking?orderId=${orderId}`);
+  };
 
   const perfectPairings = menuItems.slice(0, 3);
 
@@ -38,6 +53,15 @@ export default function Home() {
     <SafeAreaView style={homeStyles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Carousel images={CAROUSEL_IMAGES} height={250} autoPlay={true} />
+
+        {/* Show progress banner for each active order */}
+        {activeOrders && activeOrders.length > 0 && activeOrders.map((order) => (
+          <OrderProgressBanner 
+            key={order.id}
+            order={order} 
+            onTrackOrder={() => handleTrackOrder(order.id)} 
+          />
+        ))}
 
         <RView style={homeStyles.infoCard}>
           <RView style={homeStyles.header}>

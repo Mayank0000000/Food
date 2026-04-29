@@ -1,3 +1,4 @@
+import { DeliveryAlertProvider } from '@/contexts/delivery-alert-context';
 import { ToastProvider } from '@/contexts/toast-context';
 import { store } from '@/store';
 import { Stack } from 'expo-router';
@@ -8,11 +9,13 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <DeliveryAlertProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </DeliveryAlertProvider>
       </ToastProvider>
     </Provider>
   );

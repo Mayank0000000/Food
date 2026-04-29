@@ -8,4 +8,6 @@ export interface ButtonProps extends TouchableOpacityProps {
   icon?: ReactNode;
   iconPosition?: 'left' | 'right';
   children?: ReactNode;
+  loading?: boolean;
+  textStyle?: object;
 }

@@ -10,4 +10,5 @@ export interface AlertProps {
   message?: string;
   buttons?: AlertButton[];
   onDismiss?: () => void;
+  textStyle?: any
 }

@@ -18,6 +18,14 @@ export const API_ENDPOINTS = {
     BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
   },
 
+  // Direct endpoints
+  USERS: ENV.USERS_FILE_PATH || 'data/users.json',
+  MENU: ENV.MENU_FILE_PATH || 'data/menu.json',
+  CART: ENV.CART_FILE_PATH || 'data/cart.json',
+  ORDERS: ENV.ORDERS_FILE_PATH || 'data/orders.json',
+  BANNERS: ENV.BANNERS_FILE_PATH || 'data/banners.json',
+  BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
+
   // GitHub file operations
   getFileUrl: (filePath: string) => 
     `/repos/${ENV.GITHUB_REPO_OWNER}/${ENV.GITHUB_REPO_NAME}/contents/${filePath}`,

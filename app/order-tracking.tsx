@@ -1,42 +1,36 @@
 import { DeliveryMap } from '@/components/order/delivery-map';
-import { Alert } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { OrderStatusSection } from '@/components/order/order-status-section';
+import { OrderTrackingAlerts } from '@/components/order/order-tracking-alerts';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { DEMO_LOCATIONS, RESTAURANT_ADDRESS, RESTAURANT_NAME } from '@/data/locations';
 import { getDirections } from '@/services/directions.service';
+import { cancelOrder, getOrderById } from '@/services/order.service';
+import { useAppSelector } from '@/store/hooks';
 import { orderTrackingStyles } from '@/styles/screens/order-tracking.styles';
 import { Location } from '@/types/order.types';
 import { calculateDistance } from '@/utils/locationUtils';
-import {
-  clearTrackingData,
-  formatTime,
-  getRemainingTime,
-  getTrackingData,
-  OrderTrackingData,
-  startDeliverySimulation,
-  updateDeliveryPosition,
-} from '@/utils/orderSimulation';
-import {
-  getStatusText,
-  getStatusTimeText,
-  isStatusActive,
-} from '@/utils/orderTrackingHelpers';
+import { clearTrackingData, formatTime, OrderTrackingData } from '@/utils/orderSimulation';
+import { getStatusText } from '@/utils/orderTrackingHelpers';
+import { calculateRemainingTime, calculateTrackingData } from '@/utils/orderTrackingLogic';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function OrderTracking() {
   const router = useRouter();
+  const { orderId: urlOrderId } = useLocalSearchParams<{ orderId?: string }>();
+  const { activeOrders } = useAppSelector((state) => state.order);
   const [trackingData, setTrackingData] = useState<OrderTrackingData | null>(null);
   const [remainingTime, setRemainingTime] = useState(120);
   const [routePath, setRoutePath] = useState<Location[]>([]);
-  const [showDeliveredAlert, setShowDeliveredAlert] = useState(false);
   const [showLeaveAlert, setShowLeaveAlert] = useState(false);
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
   const [deliveryLocation, setDeliveryLocation] = useState<Location | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
   const { restaurant } = DEMO_LOCATIONS;
   const delivery = deliveryLocation || DEMO_LOCATIONS.delivery;
@@ -49,70 +43,118 @@ export default function OrderTracking() {
   );
 
   useEffect(() => {
-    // Load user's delivery location from AsyncStorage
-    const loadDeliveryLocation = async () => {
+    // Load order data from URL param or AsyncStorage or Redux
+    const loadOrderData = async () => {
       try {
-        const storedLocation = await AsyncStorage.getItem('deliveryLocation');
-        if (storedLocation) {
-          setDeliveryLocation(JSON.parse(storedLocation));
+        let targetOrderId: string | null = null;
+        let targetLocation: Location | null = null;
+
+        // Priority 1: URL parameter (from home page "Track" button)
+        if (urlOrderId) {
+          targetOrderId = urlOrderId;
+          const order = activeOrders?.find(o => o.id === urlOrderId);
+          if (order) {
+            targetLocation = order.deliveryLocation;
+          }
+        }
+        // Priority 2: AsyncStorage (fresh order from cart)
+        else {
+          const storedLocation = await AsyncStorage.getItem('deliveryLocation');
+          const storedOrderId = await AsyncStorage.getItem('currentOrderId');
+          
+          if (storedLocation && storedOrderId) {
+            targetOrderId = storedOrderId;
+            targetLocation = JSON.parse(storedLocation);
+          }
+          // Priority 3: First active order from Redux
+          else if (activeOrders && activeOrders.length > 0) {
+            const firstOrder = activeOrders[0];
+            targetOrderId = firstOrder.id;
+            targetLocation = firstOrder.deliveryLocation;
+          }
+        }
+
+        if (targetOrderId && targetLocation) {
+          setOrderId(targetOrderId);
+          setDeliveryLocation(targetLocation);
+        } else {
+          // No active orders, go back to home
+          router.replace('/(tabs)/home');
         }
       } catch (error) {
-        console.error('Failed to load delivery location:', error);
+        console.error('Failed to load order data:', error);
       }
     };
 
-    loadDeliveryLocation();
-  }, []);
+    loadOrderData();
+  }, [urlOrderId, activeOrders]);
 
   useEffect(() => {
-    if (!deliveryLocation) return; // Wait for location to load
+    if (!deliveryLocation || !orderId) return;
 
-    // Start simulation when component mounts
-    const initSimulation = async () => {
-      const orderId = `ORDER_${Date.now()}`;
-      
-      // Fetch directions from OpenRouteService
-      const directions = await getDirections(restaurant, delivery);
-      const path = directions?.path || [restaurant, delivery];
-      
-      console.log('🛣️ Route path has', path.length, 'points');
-      setRoutePath(path); // Store path for visualization
-      
-      await startDeliverySimulation(orderId, restaurant, delivery, path);
-      const data = await getTrackingData();
-      if (data) {
-        setTrackingData(data);
-        setRemainingTime(getRemainingTime(data));
+    let interval: ReturnType<typeof setInterval>;
+
+    const initTracking = async () => {
+      try {
+        const order = await getOrderById(orderId);
+        
+        if (!order) {
+          console.error('Order not found');
+          return;
+        }
+
+        // Fetch route path
+        const directions = await getDirections(restaurant, delivery);
+        const path = directions?.path || [restaurant, delivery];
+        setRoutePath(path);
+
+        // Update position based on order creation time
+        const updatePosition = () => {
+          const createdTime = new Date(order.createdAt).getTime();
+          const elapsedSeconds = (Date.now() - createdTime) / 1000;
+
+          // Calculate tracking data using util function
+          const data = calculateTrackingData(
+            order.id,
+            order.createdAt,
+            path,
+            restaurant,
+            delivery
+          );
+
+          if (!data) return;
+
+          setTrackingData(data);
+          setRemainingTime(calculateRemainingTime(elapsedSeconds));
+
+          // Auto-navigate home when delivered
+          if (data.status === 'delivered') {
+            if (interval) clearInterval(interval);
+            setTimeout(async () => {
+              await handleOrderComplete();
+            }, 1000);
+          }
+        };
+
+        updatePosition();
+        interval = setInterval(updatePosition, 500);
+      } catch (error) {
+        console.error('Failed to initialize tracking:', error);
       }
     };
 
-    initSimulation();
-
-    // Update position every 500ms for smooth animation
-    const interval = setInterval(async () => {
-      const updated = await updateDeliveryPosition(restaurant, delivery);
-      if (updated) {
-        setTrackingData(updated);
-        setRemainingTime(getRemainingTime(updated));
-
-        // Check if delivered
-        if (updated.status === 'delivered') {
-          clearInterval(interval);
-          setTimeout(() => {
-            setShowDeliveredAlert(true);
-          }, 500);
-        }
-      }
-    }, 500); // Update every 500ms for smooth movement
+    initTracking();
 
     return () => {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
-  }, [deliveryLocation]); // Re-run when delivery location is loaded
+  }, [deliveryLocation, orderId, restaurant, delivery]);
 
   const handleOrderComplete = async () => {
-    // Clear stored location
+    // Don't update order status here - it's already delivered based on time
+    // Just clean up local storage and navigate
     await AsyncStorage.removeItem('deliveryLocation');
+    await AsyncStorage.removeItem('currentOrderId');
     await clearTrackingData();
     router.replace('/(tabs)/home');
   };
@@ -122,10 +164,36 @@ export default function OrderTracking() {
   };
 
   const handleLeaveConfirm = async () => {
-    // Clear stored location
+    // Clear stored location and order ID
     await AsyncStorage.removeItem('deliveryLocation');
+    await AsyncStorage.removeItem('currentOrderId');
     await clearTrackingData();
     router.replace('/(tabs)/home');
+  };
+
+  const handleCancelOrder = () => {
+    // Can only cancel if not out for delivery or delivered
+    if (trackingData && (trackingData.status === 'out_for_delivery' || trackingData.status === 'delivered')) {
+      return;
+    }
+    setShowCancelAlert(true);
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!orderId) return;
+
+    try {
+      await cancelOrder(orderId);
+      console.log('✅ Order cancelled');
+
+      // Clear stored data and go home
+      await AsyncStorage.removeItem('deliveryLocation');
+      await AsyncStorage.removeItem('currentOrderId');
+      await clearTrackingData();
+      router.replace('/(tabs)/home');
+    } catch (error) {
+      console.error('Failed to cancel order:', error);
+    }
   };
 
   return (
@@ -159,123 +227,23 @@ export default function OrderTracking() {
         restaurantAddress={RESTAURANT_ADDRESS}
       />
 
-      <ScrollView style={orderTrackingStyles.infoContainer}>
-        <RView style={orderTrackingStyles.statusCard}>
-          <Text style={orderTrackingStyles.statusTitle}>Order Status</Text>
-          
-          <RView style={orderTrackingStyles.statusItem}>
-            <RView style={trackingData && isStatusActive(trackingData.status, 'confirmed') ? orderTrackingStyles.statusIconActive : orderTrackingStyles.statusIcon}>
-              <Ionicons name="checkmark" size={16} color={trackingData && isStatusActive(trackingData.status, 'confirmed') ? '#fff' : '#999'} />
-            </RView>
-            <RView style={orderTrackingStyles.statusContent}>
-              <Text style={orderTrackingStyles.statusLabel}>Order Confirmed</Text>
-              <Text style={orderTrackingStyles.statusTime}>
-                {trackingData ? getStatusTimeText(trackingData.status, 'confirmed') : 'Pending'}
-              </Text>
-            </RView>
-          </RView>
-
-          <RView style={orderTrackingStyles.statusLine} />
-
-          <RView style={orderTrackingStyles.statusItem}>
-            <RView style={trackingData && isStatusActive(trackingData.status, 'preparing') ? orderTrackingStyles.statusIconActive : orderTrackingStyles.statusIcon}>
-              <Ionicons name="restaurant" size={16} color={trackingData && isStatusActive(trackingData.status, 'preparing') ? '#fff' : '#999'} />
-            </RView>
-            <RView style={orderTrackingStyles.statusContent}>
-              <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'preparing') && { color: '#999' }]}>
-                Preparing Your Order
-              </Text>
-              <Text style={orderTrackingStyles.statusTime}>
-                {trackingData ? getStatusTimeText(trackingData.status, 'preparing') : 'Pending'}
-              </Text>
-            </RView>
-          </RView>
-
-          <RView style={orderTrackingStyles.statusLine} />
-
-          <RView style={orderTrackingStyles.statusItem}>
-            <RView style={trackingData && isStatusActive(trackingData.status, 'out_for_delivery') ? orderTrackingStyles.statusIconActive : orderTrackingStyles.statusIcon}>
-              <Ionicons name="bicycle" size={16} color={trackingData && isStatusActive(trackingData.status, 'out_for_delivery') ? '#fff' : '#999'} />
-            </RView>
-            <RView style={orderTrackingStyles.statusContent}>
-              <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'out_for_delivery') && { color: '#999' }]}>
-                Out for Delivery
-              </Text>
-              <Text style={orderTrackingStyles.statusTime}>
-                {trackingData ? getStatusTimeText(trackingData.status, 'out_for_delivery') : 'Pending'}
-              </Text>
-            </RView>
-          </RView>
-
-          <RView style={orderTrackingStyles.statusLine} />
-
-          <RView style={orderTrackingStyles.statusItem}>
-            <RView style={trackingData && isStatusActive(trackingData.status, 'delivered') ? orderTrackingStyles.statusIconActive : orderTrackingStyles.statusIcon}>
-              <Ionicons name="home" size={16} color={trackingData && isStatusActive(trackingData.status, 'delivered') ? '#fff' : '#999'} />
-            </RView>
-            <RView style={orderTrackingStyles.statusContent}>
-              <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'delivered') && { color: '#999' }]}>
-                Delivered
-              </Text>
-              <Text style={orderTrackingStyles.statusTime}>
-                {trackingData ? getStatusTimeText(trackingData.status, 'delivered') : 'Pending'}
-              </Text>
-            </RView>
-          </RView>
-        </RView>
-
-        <RView style={orderTrackingStyles.infoCard}>
-          <RView style={orderTrackingStyles.infoRow}>
-            <Ionicons name="location-outline" size={20} color="#666" />
-            <Text style={orderTrackingStyles.infoText}>
-              Distance: {distance} km
-            </Text>
-          </RView>
-          <RView style={orderTrackingStyles.infoRow}>
-            <Ionicons name="cash-outline" size={20} color="#666" />
-            <Text style={orderTrackingStyles.infoText}>
-              Payment: Cash on Delivery
-            </Text>
-          </RView>
-        </RView>
-
-        <Button
-          title="Back to Home"
-          onPress={handleBackToHome}
-          variant="outline"
-          style={orderTrackingStyles.backButton}
-        />
-      </ScrollView>
-
-      <Alert
-        visible={showDeliveredAlert}
-        title="Order Delivered! 🎉"
-        message="Your order has been delivered successfully. Enjoy your meal!"
-        buttons={[
-          {
-            text: 'OK',
-            onPress: handleOrderComplete,
-          },
-        ]}
-        onDismiss={() => setShowDeliveredAlert(false)}
+      <OrderStatusSection
+        trackingData={trackingData}
+        distance={distance}
+        onCancelOrder={handleCancelOrder}
+        onBackToHome={handleBackToHome}
       />
 
-      <Alert
-        visible={showLeaveAlert}
-        title="Leave Tracking?"
-        message="Your order is still being delivered. Are you sure you want to leave?"
-        buttons={[
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Leave',
-            style: 'destructive',
-            onPress: handleLeaveConfirm,
-          },
-        ]}
-        onDismiss={() => setShowLeaveAlert(false)}
+      <OrderTrackingAlerts
+        showDeliveredAlert={false}
+        showLeaveAlert={showLeaveAlert}
+        showCancelAlert={showCancelAlert}
+        onDeliveredConfirm={handleOrderComplete}
+        onLeaveConfirm={handleLeaveConfirm}
+        onCancelConfirm={handleCancelConfirm}
+        onDismissDelivered={() => {}}
+        onDismissLeave={() => setShowLeaveAlert(false)}
+        onDismissCancel={() => setShowCancelAlert(false)}
       />
     </SafeAreaView>
   );

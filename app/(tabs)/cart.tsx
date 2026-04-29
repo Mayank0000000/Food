@@ -29,6 +29,7 @@ export default function Cart() {
   const [isCouponModalVisible, setIsCouponModalVisible] = useState(false);
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [isOrderLoading, setIsOrderLoading] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -100,27 +101,80 @@ export default function Cart() {
 
   const handlePaymentConfirm = async (paymentMethod: PaymentMethod) => {
     setIsPaymentModalVisible(false);
+    setIsOrderLoading(true);
 
-    // Get user's current location
-    const locationResult = await requestLocationPermission();
-    
-    if (locationResult.granted && locationResult.location) {
+    if (!cart || !user) {
+      setIsOrderLoading(false);
+      return;
+    }
+
+    try {
+      // Get user's current location
+      const locationResult = await requestLocationPermission();
+      
+      if (!locationResult.granted || !locationResult.location) {
+        Alert.alert('Error', 'Unable to get your location. Please try again.');
+        setIsOrderLoading(false);
+        return;
+      }
+
       const userLocation = {
         latitude: locationResult.location.coords.latitude,
         longitude: locationResult.location.coords.longitude,
       };
-      
+
       // Store location in AsyncStorage for order tracking
       await AsyncStorage.setItem('deliveryLocation', JSON.stringify(userLocation));
-    }
 
-    // Clear cart and navigate to tracking
-    if (user?.id) {
+      // Get cart summary
+      const summary = getCartSummary(cart.totalAmount, appliedCoupon);
+      if (!summary) {
+        setIsOrderLoading(false);
+        return;
+      }
+
+      // Create order
+      const { createOrder } = await import('@/services/order.service');
+      const { DEMO_LOCATIONS } = await import('@/data/locations');
+
+      const orderData = {
+        userId: user.id.toString(),
+        items: cart.items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          category: item.category,
+        })),
+        totalAmount: summary.itemTotal,
+        deliveryFee: summary.deliveryFee,
+        taxes: summary.taxes,
+        discount: summary.discount,
+        finalAmount: summary.finalTotal,
+        couponCode: appliedCoupon?.code,
+        paymentMethod,
+        status: 'ordered' as const,
+        deliveryLocation: userLocation,
+        restaurantLocation: DEMO_LOCATIONS.restaurant,
+        estimatedDeliveryTime: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
+      };
+
+      const order = await createOrder(orderData);
+
+      // Add to active orders in Redux (central store)
+      const { addActiveOrder } = await import('@/store/slices/orderSlice');
+      dispatch(addActiveOrder(order));
+
+      // Clear cart and navigate to tracking
       dispatch(clearCart(user.id.toString()));
+      router.push('/order-tracking');
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      Alert.alert('Error', 'Failed to place order. Please try again.');
+    } finally {
+      setIsOrderLoading(false);
     }
-    
-    // Navigate to order tracking
-    router.push('/order-tracking');
   };
 
   const handleApplyCoupon = (coupon: Coupon) => {
@@ -268,11 +322,13 @@ export default function Cart() {
             onPress={handleDineIn}
             variant="outline"
             style={cartStyles.ctaButton}
+            disabled={isOrderLoading}
           />
           <Button
             title="Order"
             onPress={handleOrder}
             style={cartStyles.ctaButton}
+            loading={isOrderLoading}
           />
         </RView>
       </RView>

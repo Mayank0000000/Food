@@ -1,9 +1,9 @@
-import { OrderStatus } from '@/types/order.types';
+import { TrackingStatus } from '@/types/order.types';
 
 /**
  * Get human-readable status text
  */
-export const getStatusText = (status: OrderStatus): string => {
+export const getStatusText = (status: TrackingStatus): string => {
   switch (status) {
     case 'confirmed':
       return 'Order Confirmed';
@@ -13,8 +13,6 @@ export const getStatusText = (status: OrderStatus): string => {
       return 'Out for Delivery';
     case 'delivered':
       return 'Delivered';
-    case 'cancelled':
-      return 'Cancelled';
     default:
       return 'Processing';
   }
@@ -24,10 +22,10 @@ export const getStatusText = (status: OrderStatus): string => {
  * Check if a status is active based on current order status
  */
 export const isStatusActive = (
-  currentStatus: OrderStatus,
-  checkStatus: OrderStatus
+  currentStatus: TrackingStatus,
+  checkStatus: TrackingStatus
 ): boolean => {
-  const statusOrder: OrderStatus[] = ['confirmed', 'preparing', 'out_for_delivery', 'delivered'];
+  const statusOrder: TrackingStatus[] = ['confirmed', 'preparing', 'out_for_delivery', 'delivered'];
   const currentIndex = statusOrder.indexOf(currentStatus);
   const checkIndex = statusOrder.indexOf(checkStatus);
   return checkIndex <= currentIndex;
@@ -37,8 +35,8 @@ export const isStatusActive = (
  * Get status time text
  */
 export const getStatusTimeText = (
-  currentStatus: OrderStatus,
-  checkStatus: OrderStatus
+  currentStatus: TrackingStatus,
+  checkStatus: TrackingStatus
 ): string => {
   if (currentStatus === checkStatus) {
     return 'In progress';

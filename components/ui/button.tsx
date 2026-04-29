@@ -1,7 +1,7 @@
 import { buttonStyles } from '@/styles/components/button.styles';
 import { ButtonProps } from '@/types/components/button.types';
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Text } from './text';
 
 export function Button({ 
@@ -11,9 +11,14 @@ export function Button({
   icon,
   iconPosition = 'left',
   children,
+  loading = false,
+  disabled,
+  textStyle,
   style, 
   ...props 
 }: ButtonProps) {
+  const isDisabled = disabled || loading;
+
   // If children are provided, render them directly
   if (children) {
     return (
@@ -22,11 +27,20 @@ export function Button({
           buttonStyles.button,
           buttonStyles[variant],
           buttonStyles[size],
+          isDisabled && buttonStyles.disabled,
           style,
         ]}
+        disabled={isDisabled}
         {...props}
       >
-        {children}
+        {loading ? (
+          <ActivityIndicator 
+            color={variant === 'outline' ? '#EF4444' : '#fff'} 
+            size="small" 
+          />
+        ) : (
+          children
+        )}
       </TouchableOpacity>
     );
   }
@@ -37,18 +51,29 @@ export function Button({
         buttonStyles.button,
         buttonStyles[variant],
         buttonStyles[size],
+        isDisabled && buttonStyles.disabled,
         style,
       ]}
+      disabled={isDisabled}
       {...props}
     >
-      {icon && iconPosition === 'left' && (
-        <View style={buttonStyles.iconContainer}>{icon}</View>
-      )}
-      {title && (
-        <Text style={[buttonStyles.text, buttonStyles[`${variant}Text`]]}>{title}</Text>
-      )}
-      {icon && iconPosition === 'right' && (
-        <View style={buttonStyles.iconContainer}>{icon}</View>
+      {loading ? (
+        <ActivityIndicator 
+          color={variant === 'outline' ? '#EF4444' : '#fff'} 
+          size="small" 
+        />
+      ) : (
+        <>
+          {icon && iconPosition === 'left' && (
+            <View style={buttonStyles.iconContainer}>{icon}</View>
+          )}
+          {title && (
+            <Text style={[buttonStyles.text, buttonStyles[`${variant}Text`], textStyle]}>{title}</Text>
+          )}
+          {icon && iconPosition === 'right' && (
+            <View style={buttonStyles.iconContainer}>{icon}</View>
+          )}
+        </>
       )}
     </TouchableOpacity>
   );

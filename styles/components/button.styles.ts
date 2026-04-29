@@ -43,4 +43,7 @@ export const buttonStyles = StyleSheet.create({
   iconContainer: {
     marginHorizontal: 6,
   },
+  disabled: {
+    opacity: 0.5,
+  },
 });

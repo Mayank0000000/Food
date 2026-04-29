@@ -1,4 +1,4 @@
-import { Location, OrderStatus } from '@/types/order.types';
+import { Location, TrackingStatus } from '@/types/order.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@order_tracking';
@@ -9,7 +9,7 @@ const UPDATE_INTERVAL = 500; // Update every 500ms for smoother animation
 export interface OrderTrackingData {
   orderId: string;
   currentLocation: Location;
-  status: OrderStatus;
+  status: TrackingStatus;
   progress: number; // 0 to 1
   startTime: number;
   estimatedDeliveryTime: number;
@@ -48,7 +48,7 @@ const getLocationAlongPath = (
 };
 
 
-const getStatusFromTime = (elapsedSeconds: number): OrderStatus => {
+const getStatusFromTime = (elapsedSeconds: number): TrackingStatus => {
   if (elapsedSeconds < 10) return 'confirmed'; // 0-10s: Order confirmed
   if (elapsedSeconds < 30) return 'preparing'; // 10-30s: Preparing
   if (elapsedSeconds < 120) return 'out_for_delivery'; // 30s-2:00: Out for delivery
@@ -65,13 +65,17 @@ const getDeliveryProgress = (elapsedSeconds: number): number => {
   return deliveryTime / totalDeliveryTime;
 };
 
+/**
+ * Start simulated delivery tracking
+ */
 export const startDeliverySimulation = async (
   orderId: string,
   restaurantLocation: Location,
   deliveryLocation: Location,
-  path?: Location[]
+  path?: Location[],
+  customStartTime?: number
 ): Promise<void> => {
-  const startTime = Date.now();
+  const startTime = customStartTime || Date.now();
   const estimatedDeliveryTime = startTime + DELIVERY_DURATION;
 
   // Store the path if provided
