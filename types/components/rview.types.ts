@@ -1,7 +1,7 @@
-import { ViewProps as RNViewProps, ViewStyle } from 'react-native';
+import { ViewProps as RNViewProps, StyleProp, ViewStyle } from 'react-native';
 
 export interface ViewProps extends RNViewProps {
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
   onPress?: () => void;
 }

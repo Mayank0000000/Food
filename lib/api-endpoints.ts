@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
     ORDERS: ENV.ORDERS_FILE_PATH || 'data/orders.json',
     BANNERS: ENV.BANNERS_FILE_PATH || 'data/banners.json',
     BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
+    DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
   },
 
   // Direct endpoints
@@ -25,6 +26,7 @@ export const API_ENDPOINTS = {
   ORDERS: ENV.ORDERS_FILE_PATH || 'data/orders.json',
   BANNERS: ENV.BANNERS_FILE_PATH || 'data/banners.json',
   BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
+  DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
 
   // GitHub file operations
   getFileUrl: (filePath: string) => 

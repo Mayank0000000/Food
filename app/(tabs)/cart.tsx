@@ -71,7 +71,11 @@ export default function Cart() {
   };
 
   const handleDineIn = () => {
-    Alert.alert('Dine In', 'Dine In functionality coming soon!');
+    if (!cart || cart.items.length === 0) {
+      Alert.alert('Empty Cart', 'Please add items to your cart first.');
+      return;
+    }
+    router.push('/dine-in');
   };
 
   const handleOrder = async () => {

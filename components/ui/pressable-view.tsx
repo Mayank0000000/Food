@@ -1,9 +1,9 @@
 import React from 'react';
-import { GestureResponderEvent, Pressable, PressableProps, ViewStyle } from 'react-native';
+import { GestureResponderEvent, Pressable, PressableProps, StyleProp, ViewStyle } from 'react-native';
 
 interface PressableViewProps extends PressableProps {
   children: React.ReactNode;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   onPress?: (event?: GestureResponderEvent) => void;
 }
 

@@ -1,67 +1,105 @@
+import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { dineService } from '@/services/dine.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import { accountStyles } from '@/styles/screens/account.styles';
+import { DineBooking } from '@/types/dine.types';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const [activeBookings, setActiveBookings] = useState<DineBooking[]>([]);
+
+  // Alert states
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+  const [showComingSoonAlert, setShowComingSoonAlert] = useState(false);
+  const [comingSoonMessage, setComingSoonMessage] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      loadActiveBookings();
+    }, [user])
+  );
+
+  const loadActiveBookings = async () => {
+    if (!user) return;
+
+    try {
+      const bookings = await dineService.getUserBookings(user.id.toString());
+      const active = bookings.filter(
+        (b) => b.status === 'active' && new Date(b.bookedUntil) > new Date()
+      );
+      setActiveBookings(active);
+    } catch (error) {
+      console.error('Error loading active bookings:', error);
+    }
+  };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await dispatch(logout());
-            router.replace('/(auth)/login');
-          },
-        },
-      ]
-    );
+    setShowLogoutAlert(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutAlert(false);
+    await dispatch(logout());
+    router.replace('/(auth)/login');
+  };
+
+  const showComingSoon = (feature: string) => {
+    setComingSoonMessage(`${feature} will be available soon!`);
+    setShowComingSoonAlert(true);
   };
 
   const menuItems = [
     {
+      icon: 'receipt-outline',
+      title: 'My Orders',
+      onPress: () => {
+        router.push('/my-orders');
+      },
+    },
+    {
+      icon: 'restaurant-outline',
+      title: 'My Bookings',
+      badge: activeBookings.length > 0 ? activeBookings.length : undefined,
+      onPress: () => {
+        router.push('/my-bookings');
+      },
+    },
+    {
       icon: 'person-outline',
       title: 'Edit Profile',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Edit profile feature will be available soon!');
+        showComingSoon('Edit profile feature');
       },
     },
     {
       icon: 'notifications-outline',
       title: 'Notifications',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Notification settings will be available soon!');
+        showComingSoon('Notification settings');
       },
     },
     {
       icon: 'card-outline',
       title: 'Payment Methods',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Payment methods will be available soon!');
+        showComingSoon('Payment methods');
       },
     },
     {
       icon: 'location-outline',
       title: 'Addresses',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Address management will be available soon!');
+        showComingSoon('Address management');
       },
     },
   ];
@@ -101,6 +139,13 @@ export default function Account() {
                 style={accountStyles.menuIcon}
               />
               <Text variant="body" style={accountStyles.menuText}>{item.title}</Text>
+              {item.badge && (
+                <RView style={accountStyles.badge}>
+                  <Text variant="caption" style={accountStyles.badgeText}>
+                    {item.badge}
+                  </Text>
+                </RView>
+              )}
               <Ionicons
                 name="chevron-forward"
                 size={20}
@@ -117,6 +162,40 @@ export default function Account() {
         title="Logout"
         onPress={handleLogout}
         style={accountStyles.logoutButton}
+      />
+
+      {/* Logout Confirmation Alert */}
+      <Alert
+        visible={showLogoutAlert}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        buttons={[
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => setShowLogoutAlert(false),
+          },
+          {
+            text: 'Logout',
+            style: 'destructive',
+            onPress: confirmLogout,
+          },
+        ]}
+        onDismiss={() => setShowLogoutAlert(false)}
+      />
+
+      {/* Coming Soon Alert */}
+      <Alert
+        visible={showComingSoonAlert}
+        title="Coming Soon"
+        message={comingSoonMessage}
+        buttons={[
+          {
+            text: 'OK',
+            onPress: () => setShowComingSoonAlert(false),
+          },
+        ]}
+        onDismiss={() => setShowComingSoonAlert(false)}
       />
     </ScrollView>
   );

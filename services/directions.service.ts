@@ -93,6 +93,21 @@ export const getDirections = async (
       body: JSON.stringify(body),
     });
 
+    // Check if response is OK
+    if (!response.ok) {
+      console.error('❌ OpenRouteService HTTP error:', response.status, response.statusText);
+      return null;
+    }
+
+    // Check content type
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.error('❌ OpenRouteService returned non-JSON response:', contentType);
+      const text = await response.text();
+      console.error('Response text:', text.substring(0, 200));
+      return null;
+    }
+
     const data: OpenRouteResponse = await response.json();
 
     console.log('📦 OpenRouteService Response:', JSON.stringify(data, null, 2));

@@ -75,6 +75,21 @@ export const accountStyles = StyleSheet.create({
   menuArrow: {
     color: '#999',
   },
+  badge: {
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: 8,
+    minWidth: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#fff',
+  },
   logoutButton: {
     backgroundColor: '#ff6b35',
     marginHorizontal: 20,
