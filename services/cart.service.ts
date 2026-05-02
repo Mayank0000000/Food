@@ -47,7 +47,11 @@ class CartService {
       
       const filteredCarts = carts.filter(cart => cart.userId !== userId);
       
-      await githubService.updateFile(this.CART_FILE, filteredCarts);
+      await githubService.updateFile(
+        this.CART_FILE, 
+        filteredCarts, 
+        `Clear cart for user ${userId}`
+      );
     } catch (error) {
       console.error('Error clearing cart:', error);
       throw error;

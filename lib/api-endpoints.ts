@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
     BANNERS: ENV.BANNERS_FILE_PATH || 'data/banners.json',
     BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
     DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
+    NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
   },
 
   // Direct endpoints
@@ -27,6 +28,7 @@ export const API_ENDPOINTS = {
   BANNERS: ENV.BANNERS_FILE_PATH || 'data/banners.json',
   BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
   DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
+  NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
 
   // GitHub file operations
   getFileUrl: (filePath: string) => 
@@ -44,11 +46,4 @@ export const HTTP_STATUS = {
   NOT_FOUND: 404,
   UNPROCESSABLE_ENTITY: 422,
   INTERNAL_SERVER_ERROR: 500,
-} as const;
-
-// Request timeout configurations
-export const TIMEOUTS = {
-  DEFAULT: 30000, // 30 seconds
-  UPLOAD: 60000,  // 60 seconds for file uploads
-  DOWNLOAD: 120000, // 2 minutes for downloads
 } as const;

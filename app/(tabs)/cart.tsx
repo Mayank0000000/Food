@@ -166,6 +166,13 @@ export default function Cart() {
 
       const order = await createOrder(orderData);
 
+      // Store order ID for tracking
+      await AsyncStorage.setItem('currentOrderId', order.id);
+
+      // Send order placed notification
+      const { notificationService } = await import('@/services/notification.service');
+      await notificationService.notifyOrderPlaced(order.id, 'Perfect Pairing');
+
       // Add to active orders in Redux (central store)
       const { addActiveOrder } = await import('@/store/slices/orderSlice');
       dispatch(addActiveOrder(order));

@@ -26,7 +26,8 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS"
       ]
     },
     "web": {
@@ -51,6 +52,15 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "We need your location to deliver your order to the correct address."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#FF6B35",
+          "sounds": [],
+          "mode": "production"
         }
       ],
       "@react-native-community/datetimepicker"

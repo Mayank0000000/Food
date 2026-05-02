@@ -130,9 +130,10 @@ export default function OrderTracking() {
           // Auto-navigate home when delivered
           if (data.status === 'delivered') {
             if (interval) clearInterval(interval);
+            // Give user time to see the delivered status before navigating
             setTimeout(async () => {
               await handleOrderComplete();
-            }, 1000);
+            }, 2000);
           }
         };
 
@@ -151,8 +152,22 @@ export default function OrderTracking() {
   }, [deliveryLocation, orderId, restaurant, delivery]);
 
   const handleOrderComplete = async () => {
-    // Don't update order status here - it's already delivered based on time
-    // Just clean up local storage and navigate
+    if (!orderId) return;
+
+    try {
+      
+      // Send order delivered notification
+      const { notificationService } = await import('@/services/notification.service');
+      await notificationService.notifyOrderDelivered(orderId);
+      
+    } catch (error) {
+      console.error('❌ Failed to send delivered notification:', error);
+    }
+
+    // Wait a bit to ensure notification is processed
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Clean up local storage and navigate
     await AsyncStorage.removeItem('deliveryLocation');
     await AsyncStorage.removeItem('currentOrderId');
     await clearTrackingData();
@@ -185,6 +200,10 @@ export default function OrderTracking() {
     try {
       await cancelOrder(orderId);
       console.log('✅ Order cancelled');
+
+      // Send order cancelled notification
+      const { notificationService } = await import('@/services/notification.service');
+      await notificationService.notifyOrderCancelled(orderId, 'Order cancelled by user');
 
       // Clear stored data and go home
       await AsyncStorage.removeItem('deliveryLocation');

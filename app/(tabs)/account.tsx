@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { dineService } from '@/services/dine.service';
+import { notificationHistoryService } from '@/services/notification-history.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import { accountStyles } from '@/styles/screens/account.styles';
@@ -17,6 +18,7 @@ export default function Account() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [activeBookings, setActiveBookings] = useState<DineBooking[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   // Alert states
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
@@ -26,6 +28,7 @@ export default function Account() {
   useFocusEffect(
     useCallback(() => {
       loadActiveBookings();
+      loadUnreadNotifications();
     }, [user])
   );
 
@@ -40,6 +43,17 @@ export default function Account() {
       setActiveBookings(active);
     } catch (error) {
       console.error('Error loading active bookings:', error);
+    }
+  };
+
+  const loadUnreadNotifications = async () => {
+    if (!user) return;
+
+    try {
+      const count = await notificationHistoryService.getUnreadCount(user.id.toString());
+      setUnreadNotifications(count);
+    } catch (error) {
+      console.error('Error loading unread notifications:', error);
     }
   };
 
@@ -84,8 +98,9 @@ export default function Account() {
     {
       icon: 'notifications-outline',
       title: 'Notifications',
+      badge: unreadNotifications > 0 ? unreadNotifications : undefined,
       onPress: () => {
-        showComingSoon('Notification settings');
+        router.push('/notifications');
       },
     },
     {
