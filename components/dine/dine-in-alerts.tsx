@@ -1,4 +1,5 @@
 import { Alert } from '@/components/ui/alert';
+import { useCMS } from '@/hooks/useCMS';
 import { getBookingConfirmationMessage } from '@/utils/dineUtils';
 import React from 'react';
 
@@ -40,6 +41,8 @@ export const DineInAlerts: React.FC<DineInAlertsProps> = ({
   onSuccessConfirm,
   onDismissSuccess,
 }) => {
+  const { t } = useCMS();
+
   return (
     <>
       {/* Error Alert */}
@@ -49,7 +52,7 @@ export const DineInAlerts: React.FC<DineInAlertsProps> = ({
         message={errorMessage}
         buttons={[
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: onDismissError,
           },
         ]}
@@ -59,7 +62,7 @@ export const DineInAlerts: React.FC<DineInAlertsProps> = ({
       {/* Confirmation Alert */}
       <Alert
         visible={showConfirmAlert}
-        title="Confirm Booking"
+        title={t('dineIn.alerts.confirmTitle')}
         message={
           selectedSeatNumber
             ? getBookingConfirmationMessage(selectedSeatNumber, selectedDateTime, duration)
@@ -67,12 +70,12 @@ export const DineInAlerts: React.FC<DineInAlertsProps> = ({
         }
         buttons={[
           {
-            text: 'Cancel',
+            text: t('dineIn.alerts.cancel'),
             style: 'cancel',
             onPress: onDismissConfirm,
           },
           {
-            text: 'Confirm',
+            text: t('dineIn.alerts.confirm'),
             onPress: onConfirmBooking,
           },
         ]}
@@ -82,11 +85,11 @@ export const DineInAlerts: React.FC<DineInAlertsProps> = ({
       {/* Success Alert */}
       <Alert
         visible={showSuccessAlert}
-        title="Booking Confirmed!"
+        title={t('dineIn.alerts.successTitle')}
         message={successMessage}
         buttons={[
           {
-            text: 'OK',
+            text: t('dineIn.alerts.ok'),
             onPress: onSuccessConfirm,
           },
         ]}

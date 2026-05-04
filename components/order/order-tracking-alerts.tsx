@@ -1,4 +1,5 @@
 import { Alert } from '@/components/ui/alert';
+import { useCMS } from '@/hooks/useCMS';
 import { OrderTrackingAlertsProps } from '@/types/components/order-tracking-alerts.types';
 import React from 'react';
 
@@ -13,16 +14,18 @@ export const OrderTrackingAlerts: React.FC<OrderTrackingAlertsProps> = ({
   onDismissLeave,
   onDismissCancel,
 }) => {
+  const { t } = useCMS();
+
   return (
     <>
       {/* Delivered Alert */}
       <Alert
         visible={showDeliveredAlert}
-        title="Order Delivered! 🎉"
-        message="Your order has been delivered successfully. Enjoy your meal!"
+        title={t('orderTracking.alerts.deliveredTitle')}
+        message={t('orderTracking.alerts.deliveredMessage')}
         buttons={[
           {
-            text: 'OK',
+            text: t('orderTracking.alerts.ok'),
             onPress: onDeliveredConfirm,
           },
         ]}
@@ -32,15 +35,15 @@ export const OrderTrackingAlerts: React.FC<OrderTrackingAlertsProps> = ({
       {/* Leave Tracking Alert */}
       <Alert
         visible={showLeaveAlert}
-        title="Leave Tracking?"
-        message="Your order is still being delivered. Are you sure you want to leave?"
+        title={t('orderTracking.alerts.leaveTitle')}
+        message={t('orderTracking.alerts.leaveMessage')}
         buttons={[
           {
-            text: 'Cancel',
+            text: t('orderTracking.alerts.no'),
             style: 'cancel',
           },
           {
-            text: 'Leave',
+            text: t('orderTracking.alerts.leave'),
             style: 'destructive',
             onPress: onLeaveConfirm,
           },
@@ -51,15 +54,15 @@ export const OrderTrackingAlerts: React.FC<OrderTrackingAlertsProps> = ({
       {/* Cancel Order Alert */}
       <Alert
         visible={showCancelAlert}
-        title="Cancel Order?"
-        message="Are you sure you want to cancel this order? This action cannot be undone."
+        title={t('orderTracking.alerts.cancelTitle')}
+        message={t('orderTracking.alerts.cancelMessage')}
         buttons={[
           {
-            text: 'No',
+            text: t('orderTracking.alerts.no'),
             style: 'cancel',
           },
           {
-            text: 'Yes',
+            text: t('orderTracking.alerts.yes'),
             style: 'destructive',
             onPress: onCancelConfirm,
           },

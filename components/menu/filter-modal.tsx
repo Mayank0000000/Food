@@ -6,6 +6,7 @@ import { FilterSidebar } from '@/components/menu/filter-sidebar';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { filterModalStyles } from '@/styles/components/filter-modal.styles';
 import { FilterModalProps } from '@/types/components/filter-modal.types';
 import React, { useRef, useState } from 'react';
@@ -19,6 +20,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   activeFilters,
   onApplyFilters,
 }) => {
+  const { t } = useCMS();
   const [tempFilters, setTempFilters] = useState(activeFilters);
   const [activeSection, setActiveSection] = useState<FilterSection>('sortBy');
   const scrollViewRef = useRef<ScrollView>(null);
@@ -81,11 +83,11 @@ export const FilterModal: React.FC<FilterModalProps> = ({
         >
           <RView style={filterModalStyles.header}>
             <Text variant="title" style={filterModalStyles.title}>
-              Filters and sorting
+              {t('filters.title')}
             </Text>
             <TouchableOpacity onPress={handleClear}>
               <Text variant="body" style={filterModalStyles.clearText}>
-                Clear all
+                {t('filters.clearAll')}
               </Text>
             </TouchableOpacity>
           </RView>
@@ -121,14 +123,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <RView style={filterModalStyles.footer}>
             <Button
-              title="Close"
+              title={t('filters.close')}
               variant="outline"
               size="large"
               onPress={onClose}
               style={filterModalStyles.footerButton}
             />
             <Button
-              title="Show results"
+              title={t('filters.showResults', { count: 0 })}
               variant="primary"
               size="large"
               onPress={handleApply}

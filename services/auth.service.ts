@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { githubService } from './github.service';
+import { getCMSText } from '@/utils/cms';
 
 interface User {
   id: string;
@@ -26,11 +27,11 @@ class AuthService {
       const user = users.find(u => u.email === credentials.email);
       
       if (!user) {
-        throw new Error('User not found. Please sign up first.');
+        throw new Error(getCMSText('errors.auth.userNotFound'));
       }
       
       if (user.password !== credentials.password) {
-        throw new Error('Invalid password');
+        throw new Error(getCMSText('errors.auth.invalidPassword'));
       }
       
       return {
@@ -42,7 +43,7 @@ class AuthService {
         token: 'user-' + user.id,
       };
     } catch (error: any) {
-      throw new Error(error.message || 'Login failed');
+      throw new Error(error.message || getCMSText('errors.auth.loginFailed'));
     }
   }
 
@@ -54,7 +55,7 @@ class AuthService {
       const existingUser = users.find(u => u.email === data.email);
       
       if (existingUser) {
-        throw new Error('User already exists. Please login.');
+        throw new Error(getCMSText('errors.auth.userExists'));
       }
       
       const newUser: User = {

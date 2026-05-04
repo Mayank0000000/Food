@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { orderProgressBannerStyles } from '@/styles/components/order-progress-banner.styles';
 import { OrderProgressBannerProps } from '@/types/components/order-progress-banner.types';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +12,7 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
   order,
   onTrackOrder,
 }) => {
+  const { t } = useCMS();
   const [progress] = useState(new Animated.Value(0));
   const [progressPercent, setProgressPercent] = useState(0);
 
@@ -63,13 +65,15 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
           <Ionicons name="bicycle" size={24} color="#FF6B35" />
         </RView>
         <RView style={orderProgressBannerStyles.textContainer}>
-          <Text style={orderProgressBannerStyles.title}>Order on the way!</Text>
+          <Text style={orderProgressBannerStyles.title}>
+            {t('orderTracking.orderStatus')}
+          </Text>
           <Text style={orderProgressBannerStyles.subtitle}>
             {progressPercent}% complete • Arriving soon
           </Text>
         </RView>
         <Button
-          title="Track"
+          title={t('orderTracking.alerts.ok')}
           onPress={onTrackOrder}
           size="small"
           style={orderProgressBannerStyles.trackButton}

@@ -14,10 +14,12 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
   onCancelOrder,
   onBackToHome,
 }) => {
+  const { t } = useCMS();
+
   return (
     <ScrollView style={orderTrackingStyles.infoContainer}>
       <RView style={orderTrackingStyles.statusCard}>
-        <Text style={orderTrackingStyles.statusTitle}>Order Status</Text>
+        <Text style={orderTrackingStyles.statusTitle}>{t('orderTracking.orderStatus')}</Text>
         
         {/* Order Confirmed */}
         <RView style={orderTrackingStyles.statusItem}>
@@ -25,9 +27,9 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
             <Ionicons name="checkmark" size={16} color={trackingData && isStatusActive(trackingData.status, 'confirmed') ? '#fff' : '#999'} />
           </RView>
           <RView style={orderTrackingStyles.statusContent}>
-            <Text style={orderTrackingStyles.statusLabel}>Order Confirmed</Text>
+            <Text style={orderTrackingStyles.statusLabel}>{t('orders.status.confirmed')}</Text>
             <Text style={orderTrackingStyles.statusTime}>
-              {trackingData ? getStatusTimeText(trackingData.status, 'confirmed') : 'Pending'}
+              {trackingData ? getStatusTimeText(trackingData.status, 'confirmed') : t('orderTracking.pending')}
             </Text>
           </RView>
         </RView>
@@ -41,10 +43,10 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
           </RView>
           <RView style={orderTrackingStyles.statusContent}>
             <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'preparing') && { color: '#999' }]}>
-              Preparing Your Order
+              {t('orders.status.preparing')}
             </Text>
             <Text style={orderTrackingStyles.statusTime}>
-              {trackingData ? getStatusTimeText(trackingData.status, 'preparing') : 'Pending'}
+              {trackingData ? getStatusTimeText(trackingData.status, 'preparing') : t('orderTracking.pending')}
             </Text>
           </RView>
         </RView>
@@ -58,10 +60,10 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
           </RView>
           <RView style={orderTrackingStyles.statusContent}>
             <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'out_for_delivery') && { color: '#999' }]}>
-              Out for Delivery
+              {t('orders.status.outForDelivery')}
             </Text>
             <Text style={orderTrackingStyles.statusTime}>
-              {trackingData ? getStatusTimeText(trackingData.status, 'out_for_delivery') : 'Pending'}
+              {trackingData ? getStatusTimeText(trackingData.status, 'out_for_delivery') : t('orderTracking.pending')}
             </Text>
           </RView>
         </RView>
@@ -75,10 +77,10 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
           </RView>
           <RView style={orderTrackingStyles.statusContent}>
             <Text style={[orderTrackingStyles.statusLabel, trackingData && !isStatusActive(trackingData.status, 'delivered') && { color: '#999' }]}>
-              Delivered
+              {t('orders.status.delivered')}
             </Text>
             <Text style={orderTrackingStyles.statusTime}>
-              {trackingData ? getStatusTimeText(trackingData.status, 'delivered') : 'Pending'}
+              {trackingData ? getStatusTimeText(trackingData.status, 'delivered') : t('orderTracking.pending')}
             </Text>
           </RView>
         </RView>
@@ -89,13 +91,13 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
         <RView style={orderTrackingStyles.infoRow}>
           <Ionicons name="location-outline" size={20} color="#666" />
           <Text style={orderTrackingStyles.infoText}>
-            Distance: {distance} km
+            {t('orderTracking.distance', { distance: distance.toString() })}
           </Text>
         </RView>
         <RView style={orderTrackingStyles.infoRow}>
           <Ionicons name="cash-outline" size={20} color="#666" />
           <Text style={orderTrackingStyles.infoText}>
-            Payment: Cash on Delivery
+            {t('orderTracking.payment')}
           </Text>
         </RView>
       </RView>
@@ -103,7 +105,7 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
       {/* Cancel button - only show if order is not out for delivery or delivered */}
       {trackingData && trackingData.status !== 'out_for_delivery' && trackingData.status !== 'delivered' && (
         <Button
-          title="Cancel Order"
+          title={t('orderTracking.cancelOrder')}
           onPress={onCancelOrder}
           variant="outline"
           style={[orderTrackingStyles.backButton, { borderColor: '#EF4444' }]}
@@ -112,7 +114,7 @@ export const OrderStatusSection: React.FC<OrderStatusSectionProps> = ({
       )}
 
       <Button
-        title="Back to Home"
+        title={t('orderTracking.backToHome')}
         onPress={onBackToHome}
         variant="outline"
         style={orderTrackingStyles.backButton}

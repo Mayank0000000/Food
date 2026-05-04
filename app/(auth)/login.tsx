@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearError, login } from '@/store/slices/authSlice';
 import { authStyles } from '@/styles/auth.styles';
@@ -14,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function Login() {
+  const { t } = useCMS();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -31,10 +33,10 @@ export default function Login() {
 
   useEffect(() => {
     if (error) {
-      Alert.alert('Login Failed', error);
+      Alert.alert(t('errors.auth.loginFailed'), error);
       dispatch(clearError());
     }
-  }, [error]);
+  }, [error, t]);
 
   const handleLogin = async () => {
     setEmailError(null);
@@ -64,8 +66,8 @@ export default function Login() {
         showsVerticalScrollIndicator={false}
       >
         <RView style={authStyles.header}>
-          <Text variant="title">Log In</Text>
-          <Text variant="subtitle">Please sign in to your existing account</Text>
+          <Text variant="title">{t('auth.login.title')}</Text>
+          <Text variant="subtitle">{t('auth.login.subtitle')}</Text>
         </RView>
 
         <RView style={authStyles.form}>
@@ -76,8 +78,8 @@ export default function Login() {
           />
 
           <Input
-            label="EMAIL"
-            placeholder="example@gmail.com"
+            label={t('auth.login.emailLabel')}
+            placeholder={t('auth.login.emailPlaceholder')}
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -89,8 +91,8 @@ export default function Login() {
           />
 
           <PasswordInput
-            label="PASSWORD"
-            placeholder="••••••••••"
+            label={t('auth.login.passwordLabel')}
+            placeholder={t('auth.login.passwordPlaceholder')}
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -100,15 +102,16 @@ export default function Login() {
           />
 
           <Button
-            title={isLoading ? 'LOGGING IN...' : 'LOG IN'}
+            title={t('auth.login.loginButton')}
             onPress={handleLogin}
             style={authStyles.primaryButton}
             disabled={isLoading}
+            loading={isLoading}
           />
 
           <AuthFooter
-            text="Don't have an account?"
-            linkText="SIGN UP"
+            text={t('auth.login.footerText')}
+            linkText={t('auth.login.footerLink')}
             href="/(auth)/signup"
           />
         </RView>

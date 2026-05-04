@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
+import { useCMS } from '@/hooks/useCMS';
 import { tabStyles } from '@/styles/tabs.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
@@ -6,6 +7,7 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 export default function TabLayout() {
+  const { t } = useCMS();
   const { isAuthenticated, isLoading } = useAuth('/(auth)/login');
 
   if (isLoading) {
@@ -34,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: t('tabs.home'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons 
               name={focused ? "home" : "home-outline"} 
@@ -47,7 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explorer"
         options={{
-          title: 'Explorer',
+          title: t('tabs.explorer'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons 
               name={focused ? "search" : "search-outline"} 
@@ -60,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="cart"
         options={{
-          title: 'Cart',
+          title: t('tabs.cart'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons 
               name={focused ? "bag" : "bag-outline"} 
@@ -73,7 +75,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="account"
         options={{
-          title: 'Account',
+          title: t('tabs.account'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons 
               name={focused ? "person" : "person-outline"} 

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { myBookingsStyles } from '@/styles/screens/my-bookings.styles';
 import { DineBooking } from '@/types/dine.types';
 import {
@@ -21,6 +22,7 @@ interface BookingItemProps {
 }
 
 export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) => {
+  const { t } = useCMS();
   const statusColor = getStatusColor(booking);
   const statusText = getStatusText(booking);
   const active = isBookingActive(booking);
@@ -32,7 +34,7 @@ export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) =
           <RView style={[myBookingsStyles.seatBadge, { backgroundColor: statusColor }]}>
             <Ionicons name="restaurant" size={20} color="#fff" />
             <Text variant="body" style={myBookingsStyles.seatNumber}>
-              Seat {booking.seatNumber}
+              {t('bookings.seat', { number: booking.seatNumber.toString() })}
             </Text>
           </RView>
           <RView style={[myBookingsStyles.statusBadge, { backgroundColor: statusColor }]}>
@@ -68,18 +70,21 @@ export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) =
         <RView style={myBookingsStyles.detailRow}>
           <Ionicons name="fast-food-outline" size={16} color="#666" />
           <Text variant="body" style={myBookingsStyles.detailText}>
-            {booking.cartItems.length} item{booking.cartItems.length > 1 ? 's' : ''}
+            {booking.cartItems.length === 1 
+              ? t('bookings.items', { count: booking.cartItems.length.toString() })
+              : t('bookings.itemsPlural', { count: booking.cartItems.length.toString() })
+            }
           </Text>
         </RView>
       </RView>
 
       <RView style={myBookingsStyles.bookingFooter}>
         <Text variant="subtitle" style={myBookingsStyles.totalAmount}>
-          ₹{booking.totalAmount}
+          {t('bookings.totalAmount', { amount: booking.totalAmount.toString() })}
         </Text>
         {active && (
           <Button
-            title="Cancel"
+            title={t('bookings.cancel')}
             variant="outline"
             size="small"
             onPress={() => onCancel(booking)}
@@ -92,7 +97,7 @@ export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) =
       {booking.cartItems.length > 0 && (
         <RView style={myBookingsStyles.itemsSection}>
           <Text variant="caption" style={myBookingsStyles.itemsTitle}>
-            Order Items:
+            {t('bookings.orderItems')}
           </Text>
           {booking.cartItems.map((cartItem, index) => (
             <RView key={index} style={myBookingsStyles.itemRow}>

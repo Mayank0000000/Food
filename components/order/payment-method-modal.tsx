@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { paymentMethodModalStyles } from '@/styles/components/payment-method-modal.styles';
 import { PaymentMethod } from '@/types/order.types';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const { t } = useCMS();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('cod');
 
   const handleConfirm = () => {
@@ -42,7 +44,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           onPress={(e) => e.stopPropagation()}
         >
           <RView style={paymentMethodModalStyles.header}>
-            <Text style={paymentMethodModalStyles.title}>Select Payment Method</Text>
+            <Text style={paymentMethodModalStyles.title}>{t('payment.selectMethod')}</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#333" />
             </TouchableOpacity>
@@ -60,7 +62,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                 <Ionicons name="cash-outline" size={24} color="#FF6B35" />
               </RView>
               <RView style={paymentMethodModalStyles.methodInfo}>
-                <Text style={paymentMethodModalStyles.methodTitle}>Cash on Delivery</Text>
+                <Text style={paymentMethodModalStyles.methodTitle}>{t('payment.methods.cod')}</Text>
                 <Text style={paymentMethodModalStyles.methodDescription}>
                   Pay when you receive your order
                 </Text>
@@ -93,7 +95,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
 
           <RView style={paymentMethodModalStyles.footer}>
             <Button
-              title="Confirm Order"
+              title={t('payment.proceedToPay')}
               onPress={handleConfirm}
               size="large"
             />

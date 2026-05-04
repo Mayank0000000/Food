@@ -7,6 +7,7 @@ import { Carousel } from '@/components/ui/carousel';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { AVAILABLE_COUPONS } from '@/data/coupons';
+import { useCMS } from '@/hooks/useCMS';
 import { bannerService } from '@/services/banner.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchMenu } from '@/store/slices/menuSlice';
@@ -30,6 +31,7 @@ const CAROUSEL_IMAGES = [
 ];
 
 export default function Home() {
+  const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
@@ -109,17 +111,17 @@ export default function Home() {
             <RView style={homeStyles.headerText}>
               <RView style={homeStyles.titleRow}>
                 <Text variant="title" style={homeStyles.restaurantName}>
-                  Perfect Pairing
+                  {t('home.restaurantName')}
                 </Text>
                 <RView style={homeStyles.ratingBadge}>
                   <Ionicons name="star" size={16} color="#fff" />
                   <Text variant="body" style={homeStyles.ratingText}>
-                    4.0
+                    {t('home.rating')}
                   </Text>
                 </RView>
               </RView>
               <Text variant="caption" style={homeStyles.reviewCount}>
-                By 31K+
+                {t('home.reviewCount')}
               </Text>
             </RView>
           </RView>
@@ -127,7 +129,7 @@ export default function Home() {
             <RView style={homeStyles.detailItem}>
               <Ionicons name="location-outline" size={16} color="#666" />
               <Text variant="caption" style={homeStyles.detailText}>
-                2.8 km • JP Nagar
+                {t('home.location')}
               </Text>
             </RView>
           </RView>
@@ -136,7 +138,7 @@ export default function Home() {
             <RView style={homeStyles.detailItem}>
               <Ionicons name="flash-outline" size={16} color="#22C55E" />
               <Text variant="caption" style={homeStyles.detailText}>
-                20-25 mins • Schedule for later
+                {t('home.deliveryTime')}
               </Text>
             </RView>
           </RView>
@@ -144,7 +146,7 @@ export default function Home() {
           <RView style={homeStyles.trustBadge}>
             <Ionicons name="checkmark-circle" size={16} color="#22C55E" />
             <Text variant="caption" style={homeStyles.trustText}>
-              Last 100 orders without complaints
+              {t('home.trustBadge')}
             </Text>
           </RView>
 
@@ -165,7 +167,7 @@ export default function Home() {
         <RView style={homeStyles.deliveryOffer}>
           <Ionicons name="bicycle" size={24} color="#FFD700" />
           <Text variant="body" style={homeStyles.deliveryText}>
-            Get FREE delivery above ₹49 with <Text style={homeStyles.goldText}>GOLD</Text>
+            {t('home.freeDeliveryText')}<Text style={homeStyles.goldText}>{t('home.goldText')}</Text>
           </Text>
         </RView>
       </ScrollView>

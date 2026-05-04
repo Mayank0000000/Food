@@ -4,14 +4,15 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { RView } from '@/components/ui/rview';
 import { ScreenHeader } from '@/components/ui/screen-header';
+import { useCMS } from '@/hooks/useCMS';
 import { orderService } from '@/services/order.service';
 import { useAppSelector } from '@/store/hooks';
 import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import {
-  filterOrdersByQuery,
-  getCompletedOrders,
-  sortOrdersByDate,
+    filterOrdersByQuery,
+    getCompletedOrders,
+    sortOrdersByDate,
 } from '@/utils/orderUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -20,6 +21,7 @@ import { Alert, FlatList, RefreshControl, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MyOrders() {
+  const { t } = useCMS();
   const router = useRouter();
   const { user } = useAppSelector((state) => state.auth);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -47,7 +49,7 @@ export default function MyOrders() {
       setOrders(completedOrders);
     } catch (error) {
       console.error('Error loading orders:', error);
-      Alert.alert('Error', 'Failed to load orders. Please try again.');
+      Alert.alert(t('orders.errorLoading'), t('orders.errorLoadingMessage'));
     } finally {
       setIsLoading(false);
     }
@@ -64,7 +66,7 @@ export default function MyOrders() {
   };
 
   const handleReorder = (order: Order) => {
-    Alert.alert('Reorder', 'Reorder functionality coming soon!');
+    Alert.alert(t('orders.reorder'), t('orders.reorderComingSoon'));
   };
 
   const handleMenuPress = (order: Order) => {
@@ -78,7 +80,7 @@ export default function MyOrders() {
   if (isLoading) {
     return (
       <SafeAreaView style={myOrdersStyles.container}>
-        <ScreenHeader title="Your Orders" />
+        <ScreenHeader title={t('orders.title')} />
         <OrdersSkeleton />
       </SafeAreaView>
     );
@@ -86,7 +88,7 @@ export default function MyOrders() {
 
   return (
     <SafeAreaView style={myOrdersStyles.container}>
-      <ScreenHeader title="Your Orders" />
+      <ScreenHeader title={t('orders.title')} />
 
       {/* Search Bar */}
       <RView style={myOrdersStyles.searchContainer}>
@@ -98,7 +100,7 @@ export default function MyOrders() {
         />
         <TextInput
           style={myOrdersStyles.searchInput}
-          placeholder="Search by restaurant or dish"
+          placeholder={t('orders.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholderTextColor="#999"
@@ -118,11 +120,11 @@ export default function MyOrders() {
       {filteredOrders.length === 0 ? (
         <EmptyState
           icon="receipt-outline"
-          title={searchQuery ? 'No orders found' : 'No orders yet'}
+          title={searchQuery ? t('explorer.noResults') : t('orders.emptyTitle')}
           subtitle={
             searchQuery
-              ? 'Try searching with different keywords'
-              : 'Your completed orders will appear here'
+              ? t('explorer.noResultsSubtitle')
+              : t('orders.emptySubtitle')
           }
         />
       ) : (

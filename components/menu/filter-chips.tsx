@@ -1,5 +1,6 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { filterChipsStyles } from '@/styles/components/filter-chips.styles';
 import { FilterChipsProps } from '@/types/components/filter-chips.types';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +8,7 @@ import React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 export const FilterChips: React.FC<FilterChipsProps> = ({ activeFilters, onOpenModal }) => {
+  const { t } = useCMS();
   const hasActiveFilters = activeFilters.veg !== null ||
     activeFilters.hasOffers ||
     activeFilters.sortBy !== 'relevance' ||
@@ -39,7 +41,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({ activeFilters, onOpenM
               hasActiveFilters && filterChipsStyles.chipTextActive,
             ]}
           >
-            Filters
+            {t('explorer.filters')}
           </Text>
           <Ionicons
             name="chevron-down"

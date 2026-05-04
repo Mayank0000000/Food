@@ -4,6 +4,7 @@ import { OrderTrackingAlerts } from '@/components/order/order-tracking-alerts';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { DEMO_LOCATIONS, RESTAURANT_ADDRESS, RESTAURANT_NAME } from '@/data/locations';
+import { useCMS } from '@/hooks/useCMS';
 import { getDirections } from '@/services/directions.service';
 import { cancelOrder, getOrderById } from '@/services/order.service';
 import { useAppSelector } from '@/store/hooks';
@@ -21,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function OrderTracking() {
+  const { t } = useCMS();
   const router = useRouter();
   const { orderId: urlOrderId } = useLocalSearchParams<{ orderId?: string }>();
   const { activeOrders } = useAppSelector((state) => state.order);
@@ -230,8 +232,8 @@ export default function OrderTracking() {
             </Text>
             <Text style={orderTrackingStyles.headerSubtitle}>
               {trackingData?.status === 'delivered' 
-                ? 'Order completed!' 
-                : `Arriving in ${formatTime(remainingTime)}`}
+                ? t('orderTracking.alerts.deliveredMessage')
+                : `${t('orderTracking.estimatedTime', { time: formatTime(remainingTime) })}`}
             </Text>
           </RView>
         </RView>

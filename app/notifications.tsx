@@ -2,6 +2,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { RView } from '@/components/ui/rview';
 import { ScreenHeader } from '@/components/ui/screen-header';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { notificationHistoryService } from '@/services/notification-history.service';
 import { useAppSelector } from '@/store/hooks';
 import { notificationsStyles } from '@/styles/screens/notifications.styles';
@@ -18,6 +19,7 @@ import { ActivityIndicator, FlatList, RefreshControl, TouchableOpacity } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Notifications() {
+  const { t } = useCMS();
   const { user } = useAppSelector((state) => state.auth);
   const [notifications, setNotifications] = useState<NotificationHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -132,11 +134,11 @@ export default function Notifications() {
   if (isLoading) {
     return (
       <SafeAreaView style={notificationsStyles.container}>
-        <ScreenHeader title="Notifications" />
+        <ScreenHeader title={t('notifications.title')} />
         <RView style={notificationsStyles.loadingContainer}>
           <ActivityIndicator size="large" color="#FF6B35" />
           <Text variant="body" style={notificationsStyles.loadingText}>
-            Loading notifications...
+            {t('common.loading')}
           </Text>
         </RView>
       </SafeAreaView>
@@ -145,13 +147,13 @@ export default function Notifications() {
 
   return (
     <SafeAreaView style={notificationsStyles.container}>
-      <ScreenHeader title="Notifications" />
+      <ScreenHeader title={t('notifications.title')} />
 
       {notifications.length === 0 ? (
         <EmptyState
           icon="notifications-outline"
-          title="No notifications yet"
-          subtitle="We'll notify you when something important happens"
+          title={t('notifications.emptyTitle')}
+          subtitle={t('notifications.emptySubtitle')}
         />
       ) : (
         <FlatList

@@ -1,30 +1,32 @@
+import { getCMSText } from './cms';
+
 export const validateEmail = (email: string): string | null => {
   if (!email) {
-    return 'Email is required';
+    return getCMSText('validation.emailRequired');
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return 'Please enter a valid email';
+    return getCMSText('validation.emailInvalid');
   }
   return null;
 };
 
 export const validatePassword = (password: string): string | null => {
   if (!password) {
-    return 'Password is required';
+    return getCMSText('validation.passwordRequired');
   }
   if (password.length < 6) {
-    return 'Password must be at least 6 characters';
+    return getCMSText('validation.passwordMinLength');
   }
   return null;
 };
 
 export const validateName = (name: string): string | null => {
   if (!name) {
-    return 'Name is required';
+    return getCMSText('validation.nameRequired');
   }
   if (name.length < 2) {
-    return 'Name must be at least 2 characters';
+    return getCMSText('validation.nameMinLength');
   }
   return null;
 };

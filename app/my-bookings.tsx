@@ -3,6 +3,7 @@ import { BookingsSkeleton } from '@/components/bookings/bookings-skeleton';
 import { Alert } from '@/components/ui/alert';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ScreenHeader } from '@/components/ui/screen-header';
+import { useCMS } from '@/hooks/useCMS';
 import { dineService } from '@/services/dine.service';
 import { useAppSelector } from '@/store/hooks';
 import { myBookingsStyles } from '@/styles/screens/my-bookings.styles';
@@ -13,6 +14,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MyBookings() {
+  const { t } = useCMS();
   const router = useRouter();
   const { user } = useAppSelector((state) => state.auth);
   const [bookings, setBookings] = useState<DineBooking[]>([]);
@@ -43,7 +45,7 @@ export default function MyBookings() {
       setBookings(sortedBookings);
     } catch (error) {
       console.error('Error loading bookings:', error);
-      setErrorMessage('Failed to load bookings. Please try again.');
+      setErrorMessage(t('bookings.alerts.errorMessage'));
       setShowErrorAlert(true);
     } finally {
       setIsLoading(false);
@@ -71,7 +73,7 @@ export default function MyBookings() {
       loadBookings();
     } catch (error) {
       setShowCancelConfirm(false);
-      setErrorMessage('Failed to cancel booking. Please try again.');
+      setErrorMessage(t('bookings.alerts.cancelError'));
       setShowErrorAlert(true);
     }
   };
@@ -83,7 +85,7 @@ export default function MyBookings() {
   if (isLoading) {
     return (
       <SafeAreaView style={myBookingsStyles.container}>
-        <ScreenHeader title="My Bookings" />
+        <ScreenHeader title={t('bookings.title')} />
         <BookingsSkeleton />
       </SafeAreaView>
     );
@@ -91,13 +93,13 @@ export default function MyBookings() {
 
   return (
     <SafeAreaView style={myBookingsStyles.container}>
-      <ScreenHeader title="My Bookings" />
+      <ScreenHeader title={t('bookings.title')} />
 
       {bookings.length === 0 ? (
         <EmptyState
           icon="calendar-outline"
-          title="No bookings yet"
-          subtitle="Book a table to see your reservations here"
+          title={t('bookings.emptyTitle')}
+          subtitle={t('bookings.emptySubtitle')}
         />
       ) : (
         <FlatList
@@ -119,11 +121,11 @@ export default function MyBookings() {
       {/* Error Alert */}
       <Alert
         visible={showErrorAlert}
-        title="Error"
+        title={t('bookings.alerts.errorTitle')}
         message={errorMessage}
         buttons={[
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => setShowErrorAlert(false),
           },
         ]}
@@ -133,15 +135,15 @@ export default function MyBookings() {
       {/* Cancel Confirmation Alert */}
       <Alert
         visible={showCancelConfirm}
-        title="Cancel Booking"
+        title={t('bookings.alerts.cancelTitle')}
         message={
           bookingToCancel
-            ? `Are you sure you want to cancel your booking for Seat ${bookingToCancel.seatNumber}?`
+            ? t('bookings.alerts.cancelMessage')
             : ''
         }
         buttons={[
           {
-            text: 'No',
+            text: t('common.no'),
             style: 'cancel',
             onPress: () => {
               setShowCancelConfirm(false);
@@ -149,7 +151,7 @@ export default function MyBookings() {
             },
           },
           {
-            text: 'Yes, Cancel',
+            text: t('bookings.cancel'),
             style: 'destructive',
             onPress: confirmCancelBooking,
           },
@@ -163,11 +165,11 @@ export default function MyBookings() {
       {/* Success Alert */}
       <Alert
         visible={showSuccessAlert}
-        title="Success"
-        message="Booking cancelled successfully"
+        title={t('bookings.alerts.cancelSuccess')}
+        message={t('bookings.alerts.cancelSuccessMessage')}
         buttons={[
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => setShowSuccessAlert(false),
           },
         ]}

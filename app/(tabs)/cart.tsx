@@ -8,6 +8,7 @@ import { RView } from '@/components/ui/rview';
 import { MenuListSkeleton } from '@/components/ui/skeleton';
 import { Text } from '@/components/ui/text';
 import { AVAILABLE_COUPONS } from '@/data/coupons';
+import { useCMS } from '@/hooks/useCMS';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart, fetchCart, updateCartItemQuantity } from '@/store/slices/cartSlice';
 import { cartStyles } from '@/styles/screens/cart.styles';
@@ -22,6 +23,7 @@ import { Alert, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Cart() {
+  const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { cart, isLoading } = useAppSelector((state) => state.cart);
@@ -53,12 +55,12 @@ export default function Cart() {
 
   const handleClearCart = () => {
     Alert.alert(
-      'Clear Cart',
-      'Are you sure you want to remove all items from your cart?',
+      t('cart.clearCart'),
+      t('cart.clearCartConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cart.cancel'), style: 'cancel' },
         {
-          text: 'Clear',
+          text: t('cart.clear'),
           style: 'destructive',
           onPress: () => {
             if (user?.id) {
@@ -72,7 +74,7 @@ export default function Cart() {
 
   const handleDineIn = () => {
     if (!cart || cart.items.length === 0) {
-      Alert.alert('Empty Cart', 'Please add items to your cart first.');
+      Alert.alert(t('cart.emptyCartAlert'), t('cart.emptyCartMessage'));
       return;
     }
     router.push('/dine-in');
@@ -80,7 +82,7 @@ export default function Cart() {
 
   const handleOrder = async () => {
     if (!cart || cart.items.length === 0) {
-      Alert.alert('Empty Cart', 'Please add items to your cart first.');
+      Alert.alert(t('cart.emptyCartAlert'), t('cart.emptyCartMessage'));
       return;
     }
 
@@ -89,11 +91,11 @@ export default function Cart() {
 
     if (!locationResult.granted) {
       Alert.alert(
-        'Location Required',
-        'We need your location to deliver your order. Please enable location access in settings.',
+        t('cart.locationRequired'),
+        t('cart.locationMessage'),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Try Again', onPress: handleOrder },
+          { text: t('cart.cancel'), style: 'cancel' },
+          { text: t('cart.tryAgain'), onPress: handleOrder },
         ]
       );
       return;
@@ -117,7 +119,7 @@ export default function Cart() {
       const locationResult = await requestLocationPermission();
       
       if (!locationResult.granted || !locationResult.location) {
-        Alert.alert('Error', 'Unable to get your location. Please try again.');
+        Alert.alert(t('cart.locationError'), t('cart.locationErrorMessage'));
         setIsOrderLoading(false);
         return;
       }
@@ -182,7 +184,7 @@ export default function Cart() {
       router.push('/order-tracking');
     } catch (error) {
       console.error('Failed to create order:', error);
-      Alert.alert('Error', 'Failed to place order. Please try again.');
+      Alert.alert(t('errors.generic.somethingWentWrong'), t('errors.generic.tryAgain'));
     } finally {
       setIsOrderLoading(false);
     }
@@ -194,13 +196,13 @@ export default function Cart() {
     const validation = validateCoupon(coupon, cart.totalAmount);
     
     if (!validation.valid) {
-      Alert.alert('Minimum Order Not Met', validation.message);
+      Alert.alert(t('coupons.notApplicable'), validation.message);
       return;
     }
 
     setAppliedCoupon(coupon);
     setIsCouponModalVisible(false);
-    Alert.alert('Coupon Applied', `${coupon.code} has been applied successfully!`);
+    Alert.alert(t('coupons.applied'), `${coupon.code} has been applied successfully!`);
   };
 
   const cartSummary = cart ? getCartSummary(cart.totalAmount, appliedCoupon) : null;
@@ -218,8 +220,8 @@ export default function Cart() {
       <SafeAreaView style={cartStyles.container}>
         <EmptyState
           icon="cart-outline"
-          title="Your cart is empty"
-          subtitle="Add some delicious items to get started"
+          title={t('cart.emptyTitle')}
+          subtitle={t('cart.emptySubtitle')}
         />
       </SafeAreaView>
     );
@@ -229,10 +231,10 @@ export default function Cart() {
     <SafeAreaView style={cartStyles.container}>
       <RView style={cartStyles.header}>
         <Text variant="title" style={cartStyles.title}>
-          Your Cart ({cart.totalItems} items)
+          {t('cart.title')} ({cart.totalItems} items)
         </Text>
         <Button
-          title="Clear"
+          title={t('common.clear')}
           variant="outline"
           size="small"
           onPress={handleClearCart}
@@ -277,12 +279,12 @@ export default function Cart() {
 
      <RView style={cartStyles.billContainer}>
         <Text variant="subtitle" style={cartStyles.billTitle}>
-          Bill Summary
+          {t('cart.billSummary')}
         </Text>
         
         <RView style={cartStyles.billRow}>
           <Text variant="body" style={cartStyles.billLabel}>
-            Item Total
+            {t('cart.itemTotal')}
           </Text>
           <Text variant="body" style={cartStyles.billValue}>
             ₹{cartSummary?.itemTotal}
@@ -291,7 +293,7 @@ export default function Cart() {
 
         <RView style={cartStyles.billRow}>
           <Text variant="body" style={cartStyles.billLabel}>
-            Delivery Fee
+            {t('cart.deliveryFee')}
           </Text>
           <Text variant="body" style={cartStyles.billValue}>
             ₹{cartSummary?.deliveryFee}
@@ -300,7 +302,7 @@ export default function Cart() {
 
         <RView style={cartStyles.billRow}>
           <Text variant="body" style={cartStyles.billLabel}>
-            Taxes & Charges
+            {t('cart.gst')}
           </Text>
           <Text variant="body" style={cartStyles.billValue}>
             ₹{cartSummary?.taxes}
@@ -310,7 +312,7 @@ export default function Cart() {
         {cartSummary && cartSummary.discount > 0 && (
           <RView style={cartStyles.billRow}>
             <Text variant="body" style={[cartStyles.billLabel, cartStyles.discountLabel]}>
-              Coupon Discount ({appliedCoupon?.code})
+              {t('cart.discount')} ({appliedCoupon?.code})
             </Text>
             <Text variant="body" style={[cartStyles.billValue, cartStyles.discountValue]}>
               -₹{Math.round(cartSummary.discount)}
@@ -320,7 +322,7 @@ export default function Cart() {
 
         <RView style={[cartStyles.billRow, cartStyles.totalRow]}>
           <Text variant="subtitle" style={cartStyles.totalLabel}>
-            Total Amount
+            {t('cart.toPay')}
           </Text>
           <Text variant="subtitle" style={cartStyles.totalValue}>
             ₹{cartSummary?.finalTotal}
@@ -329,14 +331,14 @@ export default function Cart() {
 
         <RView style={cartStyles.ctaContainer}>
           <Button
-            title="Dine In"
+            title={t('cart.dineInButton')}
             onPress={handleDineIn}
             variant="outline"
             style={cartStyles.ctaButton}
             disabled={isOrderLoading}
           />
           <Button
-            title="Order"
+            title={t('cart.orderButton')}
             onPress={handleOrder}
             style={cartStyles.ctaButton}
             loading={isOrderLoading}

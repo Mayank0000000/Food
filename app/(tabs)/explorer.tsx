@@ -6,6 +6,7 @@ import { MenuItemDetailModal } from '@/components/menu/menu-item-detail-modal';
 import { RView } from '@/components/ui/rview';
 import { SearchInput } from '@/components/ui/search-input';
 import { MenuListSkeleton } from '@/components/ui/skeleton';
+import { useCMS } from '@/hooks/useCMS';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchMenu } from '@/store/slices/menuSlice';
 import { explorerStyles } from '@/styles/screens/explorer.styles';
@@ -17,12 +18,13 @@ import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Explorer() {
+  const { t } = useCMS();
   const dispatch = useAppDispatch();
-  const { items: menuItems, isLoading, error } = useAppSelector((state) => state.menu);
+  const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
   
   const [groupedMenu, setGroupedMenu] = useState<GroupedMenu>({});
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>(t('explorer.allCategory'));
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -43,15 +45,15 @@ export default function Explorer() {
       const grouped = groupMenuByCategory(menuItems);
       setGroupedMenu(grouped);
       
-      const uniqueCategories = ['All', ...Object.keys(grouped)];
+      const uniqueCategories = [t('explorer.allCategory'), ...Object.keys(grouped)];
       setCategories(uniqueCategories);
     }
-  }, [menuItems]);
+  }, [menuItems, t]);
 
   const getFilteredItems = (): MenuItem[] => {
     let items: MenuItem[] = [];
     
-    if (selectedCategory === 'All') {
+    if (selectedCategory === t('explorer.allCategory')) {
       items = menuItems;
     } else {
       items = groupedMenu[selectedCategory] || [];
@@ -62,7 +64,7 @@ export default function Explorer() {
 
   const getItemCounts = () => {
     const counts: { [key: string]: number } = {
-      All: applyMenuFilters(menuItems, filters, searchQuery).length,
+      [t('explorer.allCategory')]: applyMenuFilters(menuItems, filters, searchQuery).length,
     };
     Object.keys(groupedMenu).forEach((category) => {
       counts[category] = applyMenuFilters(groupedMenu[category], filters, searchQuery).length;
@@ -82,7 +84,7 @@ export default function Explorer() {
           <SearchInput
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Search dishes..."
+            placeholder={t('explorer.searchPlaceholder')}
           />
         </RView>
         <MenuListSkeleton count={6} />
@@ -96,7 +98,7 @@ export default function Explorer() {
         <SearchInput
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder="Search dishes..."
+          placeholder={t('explorer.searchPlaceholder')}
         />
       </RView>
 

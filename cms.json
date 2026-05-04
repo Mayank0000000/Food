@@ -1,0 +1,349 @@
+{
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "subtitle": "Please sign in to your existing account",
+      "emailLabel": "EMAIL",
+      "emailPlaceholder": "example@gmail.com",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "••••••••••",
+      "loginButton": "Log In",
+      "footerText": "Don't have an account?",
+      "footerLink": "Sign Up"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "subtitle": "Please create a new account",
+      "nameLabel": "NAME",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "EMAIL",
+      "emailPlaceholder": "example@gmail.com",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "••••••••••",
+      "signupButton": "Sign Up",
+      "footerText": "Already have an account?",
+      "footerLink": "Log In"
+    },
+    "biometricLock": {
+      "appName": "FooD",
+      "welcomeBack": "Welcome back, {{name}} 👋",
+      "title": "App Locked",
+      "subtitle": "Use {{biometricType}} to continue",
+      "scanButton": "Scan to Unlock",
+      "usePasswordButton": "Use Password",
+      "signOutRequired": "Sign out required",
+      "signOutMessage": "To use password login you need to sign out first. Continue?",
+      "cancel": "Cancel",
+      "signOut": "Sign Out"
+    }
+  },
+  "tabs": {
+    "home": "Home",
+    "explorer": "Explorer",
+    "cart": "Cart",
+    "account": "Account"
+  },
+  "home": {
+    "restaurantName": "Perfect Pairing",
+    "rating": "4.0",
+    "reviewCount": "By 31K+",
+    "location": "2.8 km • JP Nagar",
+    "deliveryTime": "20-25 mins • Schedule for later",
+    "trustBadge": "Last 100 orders without complaints",
+    "perfectPairingsTitle": "Perfect pairings for you",
+    "menuButton": "Menu",
+    "freeDeliveryText": "Get FREE delivery above ₹49 with ",
+    "goldText": "GOLD"
+  },
+  "explorer": {
+    "searchPlaceholder": "Search dishes...",
+    "allCategory": "All",
+    "totalItems": "Total {{count}} items",
+    "filters": "Filters",
+    "noResults": "No items found",
+    "noResultsSubtitle": "Try adjusting your filters"
+  },
+  "cart": {
+    "title": "Cart",
+    "emptyTitle": "Your cart is empty",
+    "emptySubtitle": "Add items to get started",
+    "clearCart": "Clear Cart",
+    "clearCartConfirm": "Are you sure you want to remove all items from your cart?",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "dineInButton": "Dine In",
+    "orderButton": "Place Order",
+    "billSummary": "Bill Summary",
+    "itemTotal": "Item Total",
+    "deliveryFee": "Delivery Fee",
+    "platformFee": "Platform Fee",
+    "gst": "GST and Restaurant Charges",
+    "discount": "Discount",
+    "toPay": "TO PAY",
+    "applyCoupon": "Apply Coupon",
+    "couponApplied": "Coupon Applied",
+    "removeCoupon": "Remove",
+    "emptyCartAlert": "Empty Cart",
+    "emptyCartMessage": "Please add items to your cart first.",
+    "locationRequired": "Location Required",
+    "locationMessage": "We need your location to deliver your order. Please enable location access in settings.",
+    "tryAgain": "Try Again",
+    "locationError": "Error",
+    "locationErrorMessage": "Unable to get your location. Please try again."
+  },
+  "menu": {
+    "prepTime": "Prep time: {{time}} mins",
+    "discount": "{{percent}}% OFF",
+    "addItem": "Add item - ₹{{price}}",
+    "spicy": "Spicy",
+    "reviews": "{{count}} reviews",
+    "veg": "Veg",
+    "nonVeg": "Non-Veg"
+  },
+  "filters": {
+    "title": "Filters and sorting",
+    "clearAll": "Clear all",
+    "showResults": "Show {{count}} results",
+    "close": "Close",
+    "sortBy": "Sort by",
+    "relevance": "Relevance",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "rating": "Rating",
+    "restaurantRating": "Restaurant Rating",
+    "rated35Plus": "Rated 3.5+",
+    "rated40Plus": "Rated 4.0+",
+    "offers": "Offers",
+    "dealsAndDiscounts": "Deals and Discounts",
+    "foodType": "Food Type"
+  },
+  "orders": {
+    "title": "Your Orders",
+    "searchPlaceholder": "Search orders...",
+    "emptyTitle": "No orders yet",
+    "emptySubtitle": "Place an order to see your history here",
+    "reorder": "Reorder",
+    "reorderComingSoon": "Reorder functionality coming soon!",
+    "errorLoading": "Error",
+    "errorLoadingMessage": "Failed to load orders. Please try again.",
+    "status": {
+      "confirmed": "Order Confirmed",
+      "preparing": "Preparing Your Order",
+      "outForDelivery": "Out for Delivery",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "orderTracking": {
+    "title": "Order Tracking",
+    "orderStatus": "Order Status",
+    "distance": "Distance: {{distance}} km",
+    "payment": "Payment: Cash on Delivery",
+    "cancelOrder": "Cancel Order",
+    "backToHome": "Back to Home",
+    "estimatedTime": "Estimated: {{time}} mins",
+    "pending": "Pending",
+    "alerts": {
+      "deliveredTitle": "Order Delivered! 🎉",
+      "deliveredMessage": "Your order has been delivered successfully. Enjoy your meal!",
+      "leaveTitle": "Leave Tracking?",
+      "leaveMessage": "Your order is still being delivered. Are you sure you want to leave?",
+      "cancelTitle": "Cancel Order?",
+      "cancelMessage": "Are you sure you want to cancel this order? This action cannot be undone.",
+      "yes": "Yes",
+      "no": "No",
+      "ok": "OK",
+      "leave": "Leave"
+    }
+  },
+  "bookings": {
+    "title": "My Bookings",
+    "emptyTitle": "No bookings yet",
+    "emptySubtitle": "Book a table to see your reservations here",
+    "cancel": "Cancel",
+    "seat": "Seat {{number}}",
+    "items": "{{count}} item",
+    "itemsPlural": "{{count}} items",
+    "orderItems": "Order Items:",
+    "totalAmount": "₹{{amount}}",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "alerts": {
+      "errorTitle": "Error",
+      "errorMessage": "Failed to load bookings. Please try again.",
+      "cancelTitle": "Cancel Booking?",
+      "cancelMessage": "Are you sure you want to cancel this booking?",
+      "cancelSuccess": "Booking Cancelled",
+      "cancelSuccessMessage": "Your booking has been cancelled successfully.",
+      "cancelError": "Failed to cancel booking. Please try again."
+    }
+  },
+  "dineIn": {
+    "title": "Dine In",
+    "subtitle": "Book a table and enjoy your meal",
+    "selectSeat": "Select a Seat",
+    "selectDateTime": "Select Date & Time",
+    "selectDuration": "Select Duration",
+    "bookingSummary": "Booking Summary",
+    "dateTime": "Date & Time",
+    "items": "Items",
+    "seatNumber": "Seat Number",
+    "duration": "Duration",
+    "hours": "{{count}} hour(s)",
+    "totalAmount": "Total Amount",
+    "confirmBooking": "Confirm Booking - Seat {{number}}",
+    "selectASeat": "Select a Seat",
+    "errors": {
+      "loadSeatsTitle": "Error",
+      "loadSeatsMessage": "Failed to load seats. Please try again.",
+      "noSeatTitle": "No Seat Selected",
+      "noSeatMessage": "Please select a seat to continue.",
+      "emptyCartTitle": "Empty Cart",
+      "emptyCartMessage": "Please add items to your cart first.",
+      "invalidTimeTitle": "Invalid Time",
+      "invalidTimeMessage": "Please select a future date and time.",
+      "bookingFailedTitle": "Booking Failed",
+      "bookingFailedMessage": "Failed to book seat. Please try again."
+    },
+    "alerts": {
+      "confirmTitle": "Confirm Booking",
+      "confirmMessage": "Are you sure you want to book Seat {{number}} for {{date}} at {{time}}?",
+      "successTitle": "Booking Confirmed! 🎉",
+      "successMessage": "Your table has been booked successfully.",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "ok": "OK"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "profile": "Profile",
+    "security": "Security",
+    "preferences": "Preferences",
+    "support": "Support",
+    "logout": "Logout",
+    "menuItems": {
+      "myOrders": "My Orders",
+      "myBookings": "My Bookings",
+      "editProfile": "Edit Profile",
+      "notifications": "Notifications",
+      "paymentMethods": "Payment Methods",
+      "addresses": "Addresses"
+    },
+    "biometric": {
+      "login": "{{type}} Login",
+      "notAvailable": "Not available on this device",
+      "notSetup": "Set up {{type}} in device settings",
+      "enabled": "Enabled",
+      "enabledMessage": "{{type}} login is now enabled.",
+      "disabled": "Disabled",
+      "disabledMessage": "{{type}} login has been disabled.",
+      "cancelled": "Cancelled",
+      "cancelledMessage": "{{type}} login was not enabled.",
+      "notAvailableAlert": "Not Available",
+      "notAvailableMessage": "Biometric authentication is not available on this device.",
+      "notSetupAlert": "Not Set Up",
+      "notSetupMessage": "Please set up {{type}} in your device settings first."
+    },
+    "alerts": {
+      "logoutTitle": "Logout",
+      "logoutMessage": "Are you sure you want to logout?",
+      "comingSoonTitle": "Coming Soon",
+      "comingSoonMessage": "{{feature}} will be available soon!",
+      "cancel": "Cancel",
+      "logout": "Logout"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "emptyTitle": "No notifications",
+    "emptySubtitle": "You're all caught up!",
+    "markAsRead": "Mark as read",
+    "types": {
+      "order": "Order Update",
+      "booking": "Booking Update",
+      "promotion": "Promotion",
+      "general": "Notification"
+    }
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "nameRequired": "Name is required",
+    "nameMinLength": "Name must be at least 2 characters"
+  },
+  "errors": {
+    "auth": {
+      "userNotFound": "User not found. Please sign up first.",
+      "invalidPassword": "Invalid password",
+      "userExists": "User already exists. Please login.",
+      "loginFailed": "Login failed",
+      "signupFailed": "Signup failed"
+    },
+    "generic": {
+      "somethingWentWrong": "Something went wrong",
+      "tryAgain": "Please try again",
+      "networkError": "Network error. Please check your connection."
+    }
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "apply": "Apply",
+    "clear": "Clear",
+    "viewAll": "View All",
+    "seeMore": "See More",
+    "seeLess": "See Less"
+  },
+  "payment": {
+    "methods": {
+      "cod": "Cash on Delivery",
+      "card": "Credit/Debit Card",
+      "upi": "UPI",
+      "wallet": "Wallet"
+    },
+    "selectMethod": "Select Payment Method",
+    "proceedToPay": "Proceed to Pay"
+  },
+  "delivery": {
+    "deliveryTo": "Delivery to",
+    "changeAddress": "Change Address",
+    "addAddress": "Add Address",
+    "deliveryInstructions": "Delivery Instructions",
+    "instructionsPlaceholder": "Add delivery instructions (optional)"
+  },
+  "coupons": {
+    "title": "Apply Coupon",
+    "available": "Available Coupons",
+    "enterCode": "Enter coupon code",
+    "apply": "Apply",
+    "applied": "Coupon Applied",
+    "invalid": "Invalid coupon code",
+    "expired": "This coupon has expired",
+    "notApplicable": "This coupon is not applicable",
+    "minOrder": "Minimum order value: ₹{{amount}}",
+    "save": "Save ₹{{amount}}",
+    "off": "{{percent}}% OFF"
+  }
+}

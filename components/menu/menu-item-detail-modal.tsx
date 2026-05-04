@@ -4,6 +4,7 @@ import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useToast } from '@/contexts/toast-context';
+import { useCMS } from '@/hooks/useCMS';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
 import { menuItemDetailModalStyles } from '@/styles/components/menu-item-detail-modal.styles';
@@ -24,6 +25,7 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
   item,
   onClose,
 }) => {
+  const { t } = useCMS();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { isLoading, cart } = useAppSelector((state) => state.cart);
@@ -103,7 +105,7 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
                 <RView style={menuItemDetailModalStyles.spicyBadge}>
                   <Ionicons name="flame" size={14} color="#FF6B35" />
                   <Text variant="caption" style={menuItemDetailModalStyles.spicyText}>
-                    Spicy
+                    {t('menu.spicy')}
                   </Text>
                 </RView>
               </RView>
@@ -132,21 +134,21 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
                   {averageRating}
                 </Text>
                 <Text variant="body" style={menuItemDetailModalStyles.reviews}>
-                  ({item.reviews} reviews)
+                  {t('menu.reviews', { count: item.reviews.toString() })}
                 </Text>
               </RView>
 
               <RView style={menuItemDetailModalStyles.prepTimeContainer}>
                 <Ionicons name="time-outline" size={18} color="#666" />
                 <Text variant="body" style={menuItemDetailModalStyles.prepTime}>
-                  Prep time: {item.prepTime} mins
+                  {t('menu.prepTime', { time: item.prepTime.toString() })}
                 </Text>
               </RView>
 
               {item.discount > 0 && (
                 <RView style={menuItemDetailModalStyles.discountBadge}>
                   <Text variant="body" style={menuItemDetailModalStyles.discountText}>
-                    {item.discount}% OFF
+                    {t('menu.discount', { percent: item.discount.toString() })}
                   </Text>
                 </RView>
               )}
@@ -176,7 +178,7 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
               </Button>
             </RView>
             <Button
-              title={`Add item ₹${item.price * quantity}`}
+              title={t('menu.addItem', { price: (item.price * quantity).toString() })}
               onPress={handleAddToCart}
               style={menuItemDetailModalStyles.addButton}
               disabled={isLoading}

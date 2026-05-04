@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearError, signup } from '@/store/slices/authSlice';
 import { authStyles } from '@/styles/auth.styles';
@@ -14,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function Signup() {
+  const { t } = useCMS();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,10 +35,10 @@ export default function Signup() {
 
   useEffect(() => {
     if (error) {
-      Alert.alert('Signup Failed', error);
+      Alert.alert(t('errors.auth.signupFailed'), error);
       dispatch(clearError());
     }
-  }, [error]);
+  }, [error, t]);
 
   const handleSignup = async () => {
     setNameError(null);
@@ -69,8 +71,8 @@ export default function Signup() {
         showsVerticalScrollIndicator={false}
       >
         <RView style={authStyles.header}>
-          <Text variant="title">Sign Up</Text>
-          <Text variant="subtitle">Please create a new account</Text>
+          <Text variant="title">{t('auth.signup.title')}</Text>
+          <Text variant="subtitle">{t('auth.signup.subtitle')}</Text>
         </RView>
 
         <RView style={authStyles.form}>
@@ -81,8 +83,8 @@ export default function Signup() {
           />
           
           <Input
-            label="NAME"
-            placeholder="John Doe"
+            label={t('auth.signup.nameLabel')}
+            placeholder={t('auth.signup.namePlaceholder')}
             value={name}
             onChangeText={(text) => {
               setName(text);
@@ -92,8 +94,8 @@ export default function Signup() {
           />
 
           <Input
-            label="EMAIL"
-            placeholder="example@gmail.com"
+            label={t('auth.signup.emailLabel')}
+            placeholder={t('auth.signup.emailPlaceholder')}
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -105,8 +107,8 @@ export default function Signup() {
           />
 
           <PasswordInput
-            label="PASSWORD"
-            placeholder="••••••••••"
+            label={t('auth.signup.passwordLabel')}
+            placeholder={t('auth.signup.passwordPlaceholder')}
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -116,15 +118,16 @@ export default function Signup() {
           />
 
           <Button 
-            title={isLoading ? "SIGNING UP..." : "SIGN UP"}
+            title={t('auth.signup.signupButton')}
             onPress={handleSignup}
             style={authStyles.primaryButton}
             disabled={isLoading}
+            loading={isLoading}
           />
 
           <AuthFooter 
-            text="Already have an account?"
-            linkText="LOG IN"
+            text={t('auth.signup.footerText')}
+            linkText={t('auth.signup.footerLink')}
             href="/(auth)/login"
           />
         </RView>

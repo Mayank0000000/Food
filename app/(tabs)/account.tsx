@@ -3,7 +3,7 @@ import { Alert as CustomAlert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { biometricService } from '@/services/biometric.service';
+import { useCMS } from '@/hooks/useCMS';
 import { dineService } from '@/services/dine.service';
 import { notificationHistoryService } from '@/services/notification-history.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -14,9 +14,10 @@ import { getBiometricStatus, toggleBiometric } from '@/utils/biometric';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
+  const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -93,21 +94,21 @@ export default function Account() {
   };
 
   const showComingSoon = (feature: string) => {
-    setComingSoonMessage(`${feature} will be available soon!`);
+    setComingSoonMessage(t('account.alerts.comingSoonMessage', { feature }));
     setShowComingSoonAlert(true);
   };
 
   const menuItems = [
     {
       icon: 'receipt-outline',
-      title: 'My Orders',
+      title: t('account.menuItems.myOrders'),
       onPress: () => {
         router.push('/my-orders');
       },
     },
     {
       icon: 'restaurant-outline',
-      title: 'My Bookings',
+      title: t('account.menuItems.myBookings'),
       badge: activeBookings.length > 0 ? activeBookings.length : undefined,
       onPress: () => {
         router.push('/my-bookings');
@@ -115,14 +116,14 @@ export default function Account() {
     },
     {
       icon: 'person-outline',
-      title: 'Edit Profile',
+      title: t('account.menuItems.editProfile'),
       onPress: () => {
-        showComingSoon('Edit profile feature');
+        showComingSoon(t('account.menuItems.editProfile'));
       },
     },
     {
       icon: 'notifications-outline',
-      title: 'Notifications',
+      title: t('account.menuItems.notifications'),
       badge: unreadNotifications > 0 ? unreadNotifications : undefined,
       onPress: () => {
         router.push('/notifications');
@@ -130,16 +131,16 @@ export default function Account() {
     },
     {
       icon: 'card-outline',
-      title: 'Payment Methods',
+      title: t('account.menuItems.paymentMethods'),
       onPress: () => {
-        showComingSoon('Payment methods');
+        showComingSoon(t('account.menuItems.paymentMethods'));
       },
     },
     {
       icon: 'location-outline',
-      title: 'Addresses',
+      title: t('account.menuItems.addresses'),
       onPress: () => {
-        showComingSoon('Address management');
+        showComingSoon(t('account.menuItems.addresses'));
       },
     },
   ];
@@ -162,7 +163,7 @@ export default function Account() {
 
       <RView style={accountStyles.content}>
         <RView style={accountStyles.section}>
-          <Text variant="subtitle" style={accountStyles.sectionTitle}>Account</Text>
+          <Text variant="subtitle" style={accountStyles.sectionTitle}>{t('account.title')}</Text>
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
@@ -208,7 +209,7 @@ export default function Account() {
       </RView>
 
       <Button
-        title="Logout"
+        title={t('account.logout')}
         onPress={handleLogout}
         style={accountStyles.logoutButton}
       />
@@ -216,16 +217,16 @@ export default function Account() {
       {/* Logout Confirmation Alert */}
       <CustomAlert
         visible={showLogoutAlert}
-        title="Logout"
-        message="Are you sure you want to logout?"
+        title={t('account.alerts.logoutTitle')}
+        message={t('account.alerts.logoutMessage')}
         buttons={[
           {
-            text: 'Cancel',
+            text: t('account.alerts.cancel'),
             style: 'cancel',
             onPress: () => setShowLogoutAlert(false),
           },
           {
-            text: 'Logout',
+            text: t('account.alerts.logout'),
             style: 'destructive',
             onPress: confirmLogout,
           },
@@ -236,11 +237,11 @@ export default function Account() {
       {/* Coming Soon Alert */}
       <CustomAlert
         visible={showComingSoonAlert}
-        title="Coming Soon"
+        title={t('account.alerts.comingSoonTitle')}
         message={comingSoonMessage}
         buttons={[
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => setShowComingSoonAlert(false),
           },
         ]}

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import { formatOrderDate, getOrderStatusColor, getOrderStatusText } from '@/utils/orderUtils';
@@ -16,6 +17,7 @@ interface OrderItemProps {
 }
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPress }) => {
+  const { t } = useCMS();
   const statusColor = getOrderStatusColor(order.status);
   const firstItem = order.items[0];
 
@@ -100,7 +102,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
               </RView>
             </RView>
             <Button
-              title="Reorder"
+              title={t('orders.reorder')}
               onPress={() => onReorder(order)}
               style={myOrdersStyles.reorderButton}
               size="small"

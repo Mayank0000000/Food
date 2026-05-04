@@ -8,15 +8,16 @@ import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { DURATION_OPTIONS } from '@/constants/dine.constants';
+import { useCMS } from '@/hooks/useCMS';
 import { dineService } from '@/services/dine.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart } from '@/store/slices/cartSlice';
 import { dineInStyles } from '@/styles/screens/dine-in.styles';
 import { DineBooking, Seat } from '@/types/dine.types';
 import {
-  calculateBookingEndTime,
-  getBookingSuccessMessage,
-  isValidBookingTime
+    calculateBookingEndTime,
+    getBookingSuccessMessage,
+    isValidBookingTime
 } from '@/utils/dineUtils';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -24,6 +25,7 @@ import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function DineIn() {
+  const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { cart } = useAppSelector((state) => state.cart);
@@ -56,8 +58,8 @@ export default function DineIn() {
     } catch (error) {
       console.error('Error loading seats:', error);
       setErrorMessage({
-        title: 'Error',
-        message: 'Failed to load seats. Please try again.',
+        title: t('dineIn.errors.loadSeatsTitle'),
+        message: t('dineIn.errors.loadSeatsMessage'),
       });
       setShowErrorAlert(true);
     } finally {
@@ -72,8 +74,8 @@ export default function DineIn() {
   const handleConfirmBooking = async () => {
     if (!selectedSeat) {
       setErrorMessage({
-        title: 'No Seat Selected',
-        message: 'Please select a seat to continue.',
+        title: t('dineIn.errors.noSeatTitle'),
+        message: t('dineIn.errors.noSeatMessage'),
       });
       setShowErrorAlert(true);
       return;
@@ -81,8 +83,8 @@ export default function DineIn() {
 
     if (!cart || cart.items.length === 0) {
       setErrorMessage({
-        title: 'Empty Cart',
-        message: 'Please add items to your cart first.',
+        title: t('dineIn.errors.emptyCartTitle'),
+        message: t('dineIn.errors.emptyCartMessage'),
       });
       setShowErrorAlert(true);
       return;
@@ -91,8 +93,8 @@ export default function DineIn() {
     // Check if selected date/time is in the past
     if (!isValidBookingTime(selectedDateTime)) {
       setErrorMessage({
-        title: 'Invalid Time',
-        message: 'Please select a future date and time.',
+        title: t('dineIn.errors.invalidTimeTitle'),
+        message: t('dineIn.errors.invalidTimeMessage'),
       });
       setShowErrorAlert(true);
       return;
@@ -140,8 +142,8 @@ export default function DineIn() {
     } catch (error: any) {
       console.error('Error creating booking:', error);
       setErrorMessage({
-        title: 'Booking Failed',
-        message: error.message || 'Failed to book seat. Please try again.',
+        title: t('dineIn.errors.bookingFailedTitle'),
+        message: error.message || t('dineIn.errors.bookingFailedMessage'),
       });
       setShowErrorAlert(true);
     } finally {
@@ -162,10 +164,10 @@ export default function DineIn() {
       <ScrollView contentContainerStyle={dineInStyles.scrollContent}>
         <RView style={dineInStyles.header}>
           <Text variant="title" style={dineInStyles.title}>
-            Dine In Booking
+            {t('dineIn.title')}
           </Text>
           <Text variant="body" style={dineInStyles.subtitle}>
-            Select date, time, seat and duration for your dining experience
+            {t('dineIn.subtitle')}
           </Text>
         </RView>
 
@@ -182,7 +184,7 @@ export default function DineIn() {
 
         <Card style={dineInStyles.durationSelector}>
           <Text variant="subtitle" style={dineInStyles.durationTitle}>
-            Select Duration
+            {t('dineIn.selectDuration')}
           </Text>
           <RView style={dineInStyles.durationOptions}>
             {DURATION_OPTIONS.map((option) => {
