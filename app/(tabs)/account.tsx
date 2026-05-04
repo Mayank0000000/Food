@@ -1,17 +1,20 @@
-import { Alert } from '@/components/ui/alert';
+import { BiometricToggle } from '@/components/account/biometric-toggle';
+import { Alert as CustomAlert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { biometricService } from '@/services/biometric.service';
 import { dineService } from '@/services/dine.service';
 import { notificationHistoryService } from '@/services/notification-history.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import { accountStyles } from '@/styles/screens/account.styles';
 import { DineBooking } from '@/types/dine.types';
+import { getBiometricStatus, toggleBiometric } from '@/utils/biometric';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
   const router = useRouter();
@@ -19,6 +22,12 @@ export default function Account() {
   const { user } = useAppSelector((state) => state.auth);
   const [activeBookings, setActiveBookings] = useState<DineBooking[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  // Biometric states
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnrolled, setBiometricEnrolled] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricType, setBiometricType] = useState('Biometric');
 
   // Alert states
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
@@ -29,6 +38,12 @@ export default function Account() {
     useCallback(() => {
       loadActiveBookings();
       loadUnreadNotifications();
+      getBiometricStatus().then((status) => {
+        setBiometricAvailable(status.available);
+        setBiometricEnrolled(status.enrolled);
+        setBiometricEnabled(status.enabled);
+        setBiometricType(status.typeName);
+      });
     }, [user])
   );
 
@@ -55,6 +70,16 @@ export default function Account() {
     } catch (error) {
       console.error('Error loading unread notifications:', error);
     }
+  };
+
+
+
+  const handleBiometricToggle = (value: boolean) => {
+    toggleBiometric(
+      value,
+      { available: biometricAvailable, enrolled: biometricEnrolled, typeName: biometricType },
+      setBiometricEnabled
+    );
   };
 
   const handleLogout = () => {
@@ -170,6 +195,15 @@ export default function Account() {
           ))}
         </RView>
 
+        {/* Security Section */}
+        <BiometricToggle
+          biometricType={biometricType}
+          biometricAvailable={biometricAvailable}
+          biometricEnrolled={biometricEnrolled}
+          biometricEnabled={biometricEnabled}
+          onToggle={handleBiometricToggle}
+        />
+
         <Text variant="caption" style={accountStyles.version}>Version 1.0.0</Text>
       </RView>
 
@@ -180,7 +214,7 @@ export default function Account() {
       />
 
       {/* Logout Confirmation Alert */}
-      <Alert
+      <CustomAlert
         visible={showLogoutAlert}
         title="Logout"
         message="Are you sure you want to logout?"
@@ -200,7 +234,7 @@ export default function Account() {
       />
 
       {/* Coming Soon Alert */}
-      <Alert
+      <CustomAlert
         visible={showComingSoonAlert}
         title="Coming Soon"
         message={comingSoonMessage}
@@ -212,6 +246,7 @@ export default function Account() {
         ]}
         onDismiss={() => setShowComingSoonAlert(false)}
       />
+
     </ScrollView>
   );
 }

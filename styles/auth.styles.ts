@@ -85,4 +85,41 @@ export const authStyles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+
+  // Biometric login styles
+  biometricContainer: {
+    marginBottom: 20,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    color: '#999',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  biometricButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#FF6347',
+    backgroundColor: '#FFF1EE',
+  },
+  biometricText: {
+    color: '#FF6347',
+    fontWeight: '600',
+    fontSize: 15,
+  },
 });

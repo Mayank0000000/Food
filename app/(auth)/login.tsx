@@ -53,12 +53,12 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={authStyles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}
     >
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={authStyles.scrollContent}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -69,12 +69,12 @@ export default function Login() {
         </RView>
 
         <RView style={authStyles.form}>
-          <Image 
-            source={require('@/assets/images/Logo.png')} 
+          <Image
+            source={require('@/assets/images/Logo.png')}
             style={authStyles.logo}
             contentFit="contain"
           />
-          
+
           <Input
             label="EMAIL"
             placeholder="example@gmail.com"
@@ -99,14 +99,14 @@ export default function Login() {
             error={passwordError || undefined}
           />
 
-          <Button 
-            title={isLoading ? "LOGGING IN..." : "LOG IN"}
+          <Button
+            title={isLoading ? 'LOGGING IN...' : 'LOG IN'}
             onPress={handleLogin}
             style={authStyles.primaryButton}
             disabled={isLoading}
           />
 
-          <AuthFooter 
+          <AuthFooter
             text="Don't have an account?"
             linkText="SIGN UP"
             href="/(auth)/signup"

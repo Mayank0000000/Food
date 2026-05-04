@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { checkAuth } from '@/store/slices/authSlice';
+import { biometricService } from '@/services/biometric.service';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -13,28 +14,39 @@ export default function SplashScreen() {
 
   useEffect(() => {
     const initializeApp = async () => {
+      let authenticated = false;
+
       try {
         await dispatch(checkAuth()).unwrap();
-      } catch (error) {
+        authenticated = true;
+      } catch {
+        authenticated = false;
       }
 
-      setTimeout(() => {
-        if (isAuthenticated) {
-          router.replace('/(tabs)/home');
+      setTimeout(async () => {
+        if (authenticated) {
+          // Check if biometric lock is enabled on this device
+          const biometricEnabled = await biometricService.isBiometricEnabled();
+          if (biometricEnabled) {
+            // Send to lock screen — user must scan to enter
+            router.replace('/biometric-lock');
+          } else {
+            router.replace('/(tabs)/home');
+          }
         } else {
           router.replace('/(auth)/login');
         }
-      }, 2000);
+      }, 1500);
     };
 
     initializeApp();
-  }, [dispatch, router, isAuthenticated]);
+  }, [dispatch, router]);
 
   return (
     <RView style={splashStyles.container}>
       <RView style={splashStyles.content}>
-        <Image 
-          source={require('@/assets/images/Logo.png')} 
+        <Image
+          source={require('@/assets/images/Logo.png')}
           style={splashStyles.logo}
           contentFit="contain"
         />
