@@ -1,4 +1,5 @@
 import { BiometricToggle } from '@/components/account/biometric-toggle';
+import { LanguageSelector } from '@/components/settings/language-selector';
 import { Alert as CustomAlert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
@@ -17,7 +18,7 @@ import React, { useCallback, useState } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
-  const { t } = useCMS();
+  const { t, getLanguage, getAvailableLanguages } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -34,6 +35,7 @@ export default function Account() {
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [showComingSoonAlert, setShowComingSoonAlert] = useState(false);
   const [comingSoonMessage, setComingSoonMessage] = useState('');
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -98,6 +100,13 @@ export default function Account() {
     setShowComingSoonAlert(true);
   };
 
+  const getCurrentLanguageName = () => {
+    const currentLang = getLanguage();
+    const languages = getAvailableLanguages();
+    const lang = languages.find(l => l.code === currentLang);
+    return lang?.nativeName || 'English';
+  };
+
   const menuItems = [
     {
       icon: 'receipt-outline',
@@ -143,6 +152,14 @@ export default function Account() {
         showComingSoon(t('account.menuItems.addresses'));
       },
     },
+    {
+      icon: 'language-outline',
+      title: 'Language',
+      subtitle: getCurrentLanguageName(),
+      onPress: () => {
+        setShowLanguageSelector(true);
+      },
+    },
   ];
 
   const getInitial = (name: string) => {
@@ -179,7 +196,14 @@ export default function Account() {
                 color="#666"
                 style={accountStyles.menuIcon}
               />
-              <Text variant="body" style={accountStyles.menuText}>{item.title}</Text>
+              <RView style={{ flex: 1 }}>
+                <Text variant="body" style={accountStyles.menuText}>{item.title}</Text>
+                {item.subtitle && (
+                  <Text variant="caption" style={{ color: '#999', marginTop: 2 }}>
+                    {item.subtitle}
+                  </Text>
+                )}
+              </RView>
               {item.badge && (
                 <RView style={accountStyles.badge}>
                   <Text variant="caption" style={accountStyles.badgeText}>
@@ -246,6 +270,16 @@ export default function Account() {
           },
         ]}
         onDismiss={() => setShowComingSoonAlert(false)}
+      />
+
+      {/* Language Selector */}
+      <LanguageSelector
+        visible={showLanguageSelector}
+        onClose={() => setShowLanguageSelector(false)}
+        onLanguageChange={() => {
+          // Force re-render to update all text
+          setShowLanguageSelector(false);
+        }}
       />
 
     </ScrollView>

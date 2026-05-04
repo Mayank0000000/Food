@@ -31,6 +31,21 @@ class ApiClient {
     this.setupInterceptors();
   }
 
+  private decodeBase64Utf8(base64Content: string): string {
+    const binary = atob(base64Content);
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
+  private encodeBase64Utf8(content: string): string {
+    const bytes = new TextEncoder().encode(content);
+    let binary = '';
+    bytes.forEach((byte) => {
+      binary += String.fromCharCode(byte);
+    });
+    return btoa(binary);
+  }
+
   private setupInterceptors() {
     // Request interceptor
     this.client.interceptors.request.use(
@@ -138,7 +153,7 @@ class ApiClient {
       const response = await this.get(url);
       
       if (response.content) {
-        const decodedContent = atob(response.content);
+        const decodedContent = this.decodeBase64Utf8(response.content);
         return JSON.parse(decodedContent);
       }
       
@@ -168,7 +183,7 @@ class ApiClient {
         }
       }
 
-      const encodedContent = btoa(JSON.stringify(content, null, 2));
+      const encodedContent = this.encodeBase64Utf8(JSON.stringify(content, null, 2));
       
       const body: any = {
         message,

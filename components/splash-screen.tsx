@@ -1,6 +1,8 @@
+import { biometricService } from '@/services/biometric.service';
+import { cmsService } from '@/services/cms.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { checkAuth } from '@/store/slices/authSlice';
-import { biometricService } from '@/services/biometric.service';
+import { getLanguage } from '@/utils/language-storage';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -17,6 +19,10 @@ export default function SplashScreen() {
       let authenticated = false;
 
       try {
+        // Load saved language or default to English
+        const savedLanguage = await getLanguage();
+        await cmsService.initialize(savedLanguage || 'en');
+        
         await dispatch(checkAuth()).unwrap();
         authenticated = true;
       } catch {

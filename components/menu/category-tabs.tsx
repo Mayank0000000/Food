@@ -1,5 +1,6 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { categoryTabsStyles } from '@/styles/components/category-tabs.styles';
 import { CategoryTabsProps } from '@/types/components/category-tabs.types';
 import React from 'react';
@@ -11,6 +12,17 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
   onSelectCategory,
   itemCounts,
 }) => {
+  const { t } = useCMS();
+
+  const getCategoryDisplayName = (category: string) => {
+    // If it's a CMS key (contains a dot), translate it
+    if (category.includes('.')) {
+      return t(category);
+    }
+    // Otherwise, it's a category name from menu data
+    return category;
+  };
+
   return (
     <RView style={categoryTabsStyles.container}>
       <ScrollView
@@ -37,7 +49,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
                   isSelected && categoryTabsStyles.tabTextActive,
                 ]}
               >
-                {category}
+                {getCategoryDisplayName(category)}
               </Text>
             </TouchableOpacity>
           );
@@ -45,7 +57,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
       </ScrollView>
       
       <Text variant="caption" style={categoryTabsStyles.itemCount}>
-        Total {itemCounts[selectedCategory] || 0} items
+        {t('explorer.totalItems', { count: (itemCounts[selectedCategory] || 0).toString() })}
       </Text>
     </RView>
   );

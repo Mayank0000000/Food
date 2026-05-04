@@ -1,51 +1,92 @@
 import localCMS from '@/cms.json';
+import { ENV } from '@/config/env';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 
 type CMSContent = typeof localCMS;
 
-/**
- * CMS Service
- * Manages content/text strings for the app with support for:
- * - Local fallback (cms.json)
- * - Remote CMS fetching (for different languages)
- * - Template string interpolation
- */
+// Language code mapping
+const LANGUAGE_FILE_MAP: Record<string, string> = {
+  'en': API_ENDPOINTS.FILES.LANGUAGES.ENGLISH,
+  'hi': API_ENDPOINTS.FILES.LANGUAGES.HINDI,
+  'kn': API_ENDPOINTS.FILES.LANGUAGES.KANNADA,
+  'te': API_ENDPOINTS.FILES.LANGUAGES.TELUGU,
+};
+
+// Language change listeners
+type LanguageChangeListener = () => void;
+const languageChangeListeners: Set<LanguageChangeListener> = new Set();
+
+
 class CMSService {
   private content: CMSContent = localCMS;
   private language: string = 'en';
   private remoteContent: CMSContent | null = null;
+  private isInitialized: boolean = false;
 
-  /**
-   * Initialize CMS with optional language
-   */
+
+  subscribe(listener: LanguageChangeListener): () => void {
+    languageChangeListeners.add(listener);
+    return () => {
+      languageChangeListeners.delete(listener);
+    };
+  }
+
+  private notifyListeners() {
+    languageChangeListeners.forEach(listener => listener());
+  }
+
+
   async initialize(language: string = 'en') {
+    if (this.isInitialized && this.language === language) {
+      return;
+    }
+
     this.language = language;
     
     // Try to fetch remote content for the specified language
     try {
       await this.fetchRemoteContent(language);
+      this.isInitialized = true;
     } catch (error) {
-      console.log('Using local CMS fallback');
+      console.log('CMS: Using local fallback', error);
+      this.isInitialized = true;
     }
   }
 
   /**
-   * Fetch remote CMS content from backend
+   * Fetch remote CMS content from GitHub
    */
   private async fetchRemoteContent(language: string): Promise<void> {
-    // TODO: Implement API call to fetch CMS content
-    // Example:
-    // const response = await fetch(`${API_BASE_URL}/cms/${language}`);
-    // this.remoteContent = await response.json();
+    const filePath = LANGUAGE_FILE_MAP[language];
     
-    // For now, we'll use local content as fallback
-    this.remoteContent = null;
+    if (!filePath) {
+      console.warn(`CMS: Language ${language} not supported, using local fallback`);
+      return;
+    }
+
+    try {
+      const url = `${ENV.GITHUB_API_BASE_URL}${API_ENDPOINTS.getFileUrl(filePath)}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `token ${ENV.GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3.raw', // Get raw content directly
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch language file: ${response.status}`);
+      }
+
+      const content = await response.json();
+      this.remoteContent = content as CMSContent;
+      console.log(`CMS: Successfully loaded ${language} content from GitHub`);
+    } catch (error) {
+      console.error('CMS: Error fetching remote content:', error);
+      throw error;
+    }
   }
 
-  /**
-   * Get text by path with optional template variables
-   * @param path - Dot notation path (e.g., 'auth.login.title')
-   * @param variables - Optional variables for template interpolation
-   */
   getText(path: string, variables?: Record<string, string | number>): string {
     const content = this.remoteContent || this.content;
     const keys = path.split('.');
@@ -108,8 +149,13 @@ class CMSService {
    * Set current language and reload content
    */
   async setLanguage(language: string) {
+    if (this.language === language && this.remoteContent) {
+      return; // Already loaded
+    }
+
     this.language = language;
     await this.fetchRemoteContent(language);
+    this.notifyListeners(); // Notify all components to re-render
   }
 
   /**
@@ -117,6 +163,18 @@ class CMSService {
    */
   getLanguage(): string {
     return this.language;
+  }
+
+  /**
+   * Get available languages
+   */
+  getAvailableLanguages(): Array<{ code: string; name: string; nativeName: string }> {
+    return [
+      { code: 'en', name: 'English', nativeName: 'English' },
+      { code: 'hi', name: 'Hindi', nativeName: 'हिंदी' },
+      { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ' },
+      { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' },
+    ];
   }
 
   /**
@@ -131,6 +189,7 @@ class CMSService {
    */
   async reload() {
     await this.fetchRemoteContent(this.language);
+    this.notifyListeners();
   }
 
   /**
@@ -138,6 +197,7 @@ class CMSService {
    */
   clearRemoteContent() {
     this.remoteContent = null;
+    this.notifyListeners();
   }
 }
 

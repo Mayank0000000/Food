@@ -18,13 +18,14 @@ import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Explorer() {
-  const { t } = useCMS();
+  const { t, getLanguage } = useCMS();
   const dispatch = useAppDispatch();
   const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
+  const currentLanguage = getLanguage();
   
   const [groupedMenu, setGroupedMenu] = useState<GroupedMenu>({});
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>(t('explorer.allCategory'));
+  const [selectedCategory, setSelectedCategory] = useState<string>('explorer.allCategory'); // Use CMS key
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -38,22 +39,22 @@ export default function Explorer() {
 
   useEffect(() => {
     dispatch(fetchMenu());
-  }, [dispatch]);
+  }, [dispatch, currentLanguage]);
 
   useEffect(() => {
     if (menuItems.length > 0) {
       const grouped = groupMenuByCategory(menuItems);
       setGroupedMenu(grouped);
       
-      const uniqueCategories = [t('explorer.allCategory'), ...Object.keys(grouped)];
+      const uniqueCategories = ['explorer.allCategory', ...Object.keys(grouped)]; // Use CMS key
       setCategories(uniqueCategories);
     }
-  }, [menuItems, t]);
+  }, [menuItems]);
 
   const getFilteredItems = (): MenuItem[] => {
     let items: MenuItem[] = [];
     
-    if (selectedCategory === t('explorer.allCategory')) {
+    if (selectedCategory === 'explorer.allCategory') { // Compare with CMS key
       items = menuItems;
     } else {
       items = groupedMenu[selectedCategory] || [];
@@ -64,7 +65,7 @@ export default function Explorer() {
 
   const getItemCounts = () => {
     const counts: { [key: string]: number } = {
-      [t('explorer.allCategory')]: applyMenuFilters(menuItems, filters, searchQuery).length,
+      'explorer.allCategory': applyMenuFilters(menuItems, filters, searchQuery).length, // Use CMS key
     };
     Object.keys(groupedMenu).forEach((category) => {
       counts[category] = applyMenuFilters(groupedMenu[category], filters, searchQuery).length;
