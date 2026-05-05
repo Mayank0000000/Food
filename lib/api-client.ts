@@ -114,7 +114,10 @@ class ApiClient {
           apiError.message = 'Network error. Please check your internet connection.';
         }
 
-        console.error('❌ API Error:', apiError);
+        // Only log unexpected errors — 409 conflicts are handled by retry logic upstream
+        if (apiError.status !== 409) {
+          console.error('❌ API Error:', apiError);
+        }
         return Promise.reject(apiError);
       }
     );
@@ -167,7 +170,9 @@ class ApiClient {
     }
   }
 
-  async updateGitHubFile(filePath: string, content: any, message: string = 'Update file'): Promise<void> {
+  async updateGitHubFile(filePath: string, content: any, message: string = 'Update file', retryCount: number = 0): Promise<void> {
+    const MAX_RETRIES = 3;
+    
     try {
       const url = `/repos/${ENV.GITHUB_REPO_OWNER}/${ENV.GITHUB_REPO_NAME}/contents/${filePath}`;
       
@@ -195,7 +200,15 @@ class ApiClient {
       }
 
       await this.put(url, body);
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 409 conflict - file was updated by another process
+      if (error.status === 409 && retryCount < MAX_RETRIES) {
+        console.log(`⚠️ File conflict detected, retrying... (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+        // Wait a bit before retrying to avoid race conditions
+        await new Promise(resolve => setTimeout(resolve, 500 * (retryCount + 1)));
+        return this.updateGitHubFile(filePath, content, message, retryCount + 1);
+      }
+      
       console.error('Error updating GitHub file:', error);
       throw error;
     }
@@ -214,6 +227,3 @@ class ApiClient {
 
 // Export singleton instance
 export const apiClient = new ApiClient();
-
-// Export types for use in services
-export type { ApiError, ApiResponse };

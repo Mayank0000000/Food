@@ -9,38 +9,56 @@ class NotificationHistoryService {
    * Create a new notification history entry
    */
   async createNotification(data: NotificationHistoryCreate): Promise<NotificationHistory> {
-    try {
-      // Get existing notifications
-      const notifications: NotificationHistory[] = 
-        (await githubService.getFile(this.NOTIFICATIONS_FILE)) || [];
+    const MAX_RETRIES = 3;
+    let lastError: any;
 
-      // Generate new notification ID
-      const notificationId = `NOTIF_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        // Get existing notifications (fresh fetch each time)
+        const notifications: NotificationHistory[] = 
+          (await githubService.getFile(this.NOTIFICATIONS_FILE)) || [];
 
-      // Create new notification
-      const newNotification: NotificationHistory = {
-        ...data,
-        id: notificationId,
-        isRead: false,
-        createdAt: new Date().toISOString(),
-      };
+        // Generate new notification ID
+        const notificationId = `NOTIF_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Add to notifications array
-      notifications.push(newNotification);
+        // Create new notification
+        const newNotification: NotificationHistory = {
+          ...data,
+          id: notificationId,
+          isRead: false,
+          createdAt: new Date().toISOString(),
+        };
 
-      // Update notifications file
-      await githubService.updateFile(
-        this.NOTIFICATIONS_FILE,
-        notifications,
-        `Add notification ${notificationId}`
-      );
+        // Add to notifications array
+        notifications.push(newNotification);
 
-      console.log('✅ Notification saved:', notificationId);
-      return newNotification;
-    } catch (error) {
-      console.error('Failed to create notification:', error);
-      throw error;
+        // Update notifications file
+        await githubService.updateFile(
+          this.NOTIFICATIONS_FILE,
+          notifications,
+          `Add notification ${notificationId}`
+        );
+
+        console.log('✅ Notification saved:', notificationId);
+        return newNotification;
+      } catch (error: any) {
+        lastError = error;
+        
+        // If it's a 409 conflict, retry
+        if (error.status === 409 && attempt < MAX_RETRIES - 1) {
+          console.log(`⚠️ Notification conflict, retrying... (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+          continue;
+        }
+        
+        // For other errors or max retries reached, throw
+        break;
+      }
     }
+
+    console.error('Failed to create notification after retries:', lastError);
+    throw lastError;
   }
 
   /**
@@ -64,34 +82,50 @@ class NotificationHistoryService {
    * Mark notification as read
    */
   async markAsRead(notificationId: string): Promise<void> {
-    try {
-      const notifications: NotificationHistory[] = 
-        (await githubService.getFile(this.NOTIFICATIONS_FILE)) || [];
+    const MAX_RETRIES = 3;
+    let lastError: any;
 
-      const notificationIndex = notifications.findIndex(n => n.id === notificationId);
-      if (notificationIndex === -1) {
-        throw new Error('Notification not found');
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const notifications: NotificationHistory[] = 
+          (await githubService.getFile(this.NOTIFICATIONS_FILE)) || [];
+
+        const notificationIndex = notifications.findIndex(n => n.id === notificationId);
+        if (notificationIndex === -1) {
+          throw new Error('Notification not found');
+        }
+
+        // Update notification
+        notifications[notificationIndex] = {
+          ...notifications[notificationIndex],
+          isRead: true,
+          readAt: new Date().toISOString(),
+        };
+
+        // Save updated notifications
+        await githubService.updateFile(
+          this.NOTIFICATIONS_FILE,
+          notifications,
+          `Mark notification ${notificationId} as read`
+        );
+
+        console.log('✅ Notification marked as read:', notificationId);
+        return;
+      } catch (error: any) {
+        lastError = error;
+        
+        if (error.status === 409 && attempt < MAX_RETRIES - 1) {
+          console.log(`⚠️ Conflict marking notification as read, retrying... (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+          continue;
+        }
+        
+        break;
       }
-
-      // Update notification
-      notifications[notificationIndex] = {
-        ...notifications[notificationIndex],
-        isRead: true,
-        readAt: new Date().toISOString(),
-      };
-
-      // Save updated notifications
-      await githubService.updateFile(
-        this.NOTIFICATIONS_FILE,
-        notifications,
-        `Mark notification ${notificationId} as read`
-      );
-
-      console.log('✅ Notification marked as read:', notificationId);
-    } catch (error) {
-      console.error('Failed to mark notification as read:', error);
-      throw error;
     }
+
+    console.error('Failed to mark notification as read:', lastError);
+    throw lastError;
   }
 
   /**

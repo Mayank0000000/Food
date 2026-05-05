@@ -1,14 +1,19 @@
+import { ReviewSubmissionModal } from '@/components/reviews/review-submission-modal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
+import { reviewService } from '@/services/review.service';
+import { useAppSelector } from '@/store/hooks';
 import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import { formatOrderDate, getOrderStatusColor, getOrderStatusText } from '@/utils/orderUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 interface OrderItemProps {
   order: Order;
@@ -17,9 +22,52 @@ interface OrderItemProps {
 }
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPress }) => {
+  const [reviewModalVisible, setReviewModalVisible] = useState(false);
+  const [selectedItemForReview, setSelectedItemForReview] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const { user } = useAppSelector((state) => state.auth);
   const { t } = useCMS();
   const statusColor = getOrderStatusColor(order.status);
   const firstItem = order.items[0];
+
+  // Check if user already reviewed this order's first item
+  useEffect(() => {
+    if (order.status !== 'delivered' || !user) return;
+
+    reviewService
+      .hasUserReviewed(firstItem.id, user.id.toString(), firstItem.name)
+      .then(({ reviewed, rating }) => {
+        setHasReviewed(reviewed);
+        setUserRating(rating);
+      })
+      .catch(() => setHasReviewed(false));
+  }, [order.id, order.status, user?.id]);
+
+  const handleRateItem = (item: Order['items'][0]) => {
+    if (hasReviewed) return;
+    setSelectedItemForReview({ id: item.id, name: item.name });
+    setReviewModalVisible(true);
+  };
+
+  const handleSubmitReview = async (rating: number, feedback: string) => {
+    if (!user || !selectedItemForReview) return;
+
+    await reviewService.submitReview(
+      selectedItemForReview.id,
+      user.id.toString(),
+      user.name,
+      rating,
+      feedback,
+      selectedItemForReview.name
+    );
+    Alert.alert(t('reviews.success'), t('reviews.thankYou'));
+    setHasReviewed(true);
+    setUserRating(rating); // store the actual rating given
+  };
 
   return (
     <Card style={myOrdersStyles.orderCard}>
@@ -43,14 +91,6 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
             View menu ▸
           </Text>
         </RView>
-        <Button
-          variant="outline"
-          size="small"
-          onPress={() => onMenuPress?.(order)}
-          style={myOrdersStyles.menuButton}
-        >
-          <Ionicons name="ellipsis-vertical" size={20} color="#666" />
-        </Button>
       </RView>
 
       {/* Order Items */}
@@ -85,22 +125,46 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
         </Text>
         {order.status === 'delivered' && (
           <RView style={myOrdersStyles.actionButtons}>
-            <RView style={myOrdersStyles.ratingSection}>
-              <Text variant="caption" style={myOrdersStyles.rateLabel}>
-                Rate
-              </Text>
-              <RView style={myOrdersStyles.stars}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Ionicons
-                    key={star}
-                    name="star-outline"
-                    size={16}
-                    color="#D1D5DB"
-                    style={{ marginLeft: 2 }}
-                  />
-                ))}
+            {hasReviewed ? (
+              // Already reviewed — show actual rating stars, non-tappable
+              <RView style={myOrdersStyles.ratingSection}>
+                <Text variant="caption" style={[myOrdersStyles.rateLabel, { color: '#FF6B35' }]}>
+                  Rated
+                </Text>
+                <RView style={myOrdersStyles.stars}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Ionicons
+                      key={star}
+                      name={star <= userRating ? 'star' : 'star-outline'}
+                      size={16}
+                      color={star <= userRating ? '#FF6B35' : '#D1D5DB'}
+                      style={{ marginLeft: 2 }}
+                    />
+                  ))}
+                </RView>
               </RView>
-            </RView>
+            ) : (
+              // Not yet reviewed — tappable
+              <PressableView
+                style={myOrdersStyles.ratingSection}
+                onPress={() => handleRateItem(firstItem)}
+              >
+                <Text variant="caption" style={myOrdersStyles.rateLabel}>
+                  Rate
+                </Text>
+                <RView style={myOrdersStyles.stars}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Ionicons
+                      key={star}
+                      name="star-outline"
+                      size={16}
+                      color="#D1D5DB"
+                      style={{ marginLeft: 2 }}
+                    />
+                  ))}
+                </RView>
+              </PressableView>
+            )}
             <Button
               title={t('orders.reorder')}
               onPress={() => onReorder(order)}
@@ -110,6 +174,19 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
           </RView>
         )}
       </RView>
+
+      {/* Review Modal */}
+      {selectedItemForReview && (
+        <ReviewSubmissionModal
+          visible={reviewModalVisible}
+          itemName={selectedItemForReview.name}
+          onClose={() => {
+            setReviewModalVisible(false);
+            setSelectedItemForReview(null);
+          }}
+          onSubmit={handleSubmitReview}
+        />
+      )}
     </Card>
   );
 };

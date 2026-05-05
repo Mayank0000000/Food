@@ -80,6 +80,13 @@ export default function Home() {
     router.push(`/order-tracking?orderId=${orderId}`);
   };
 
+  // Filter out orders that are 100% complete (past estimated delivery time)
+  const activeOrdersToShow = activeOrders?.filter((order) => {
+    const estimatedTime = new Date(order.estimatedDeliveryTime).getTime();
+    const now = Date.now();
+    return now < estimatedTime; // Only show orders that haven't reached delivery time yet
+  }) || [];
+
   const perfectPairings = menuItems.slice(0, 3);
 
   return (
@@ -87,8 +94,8 @@ export default function Home() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Carousel images={CAROUSEL_IMAGES} height={250} autoPlay={true} />
 
-        {/* Show progress banner for each active order */}
-        {activeOrders && activeOrders.length > 0 && activeOrders.map((order) => (
+        {/* Show progress banner for each active order that hasn't been delivered yet */}
+        {activeOrdersToShow.length > 0 && activeOrdersToShow.map((order) => (
           <OrderProgressBanner 
             key={order.id}
             order={order} 

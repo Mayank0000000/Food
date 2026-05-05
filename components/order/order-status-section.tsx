@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { orderTrackingStyles } from '@/styles/screens/order-tracking.styles';
 import { OrderStatusSectionProps } from '@/types/components/order-status-section.types';
 import { getStatusTimeText, isStatusActive } from '@/utils/orderTrackingHelpers';

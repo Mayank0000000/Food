@@ -345,5 +345,25 @@
     "minOrder": "Minimum order value: ₹{{amount}}",
     "save": "Save ₹{{amount}}",
     "off": "{{percent}}% OFF"
+  },
+  "reviews": {
+    "rateYourExperience": "Rate Your Experience",
+    "yourRating": "Your Rating",
+    "yourFeedback": "Your Feedback (Optional)",
+    "feedbackPlaceholder": "Share your thoughts about this dish...",
+    "submit": "Submit Review",
+    "error": "Error",
+    "pleaseSelectRating": "Please select a rating",
+    "submitError": "Failed to submit review. Please try again.",
+    "success": "Success",
+    "thankYou": "Thank you for your review!",
+    "noReviews": "No reviews yet",
+    "beTheFirst": "Be the first to review this dish",
+    "customerReviews": "Customer Reviews",
+    "basedOn": "Based on {{count}} reviews",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{days}} days ago",
+    "weeksAgo": "{{weeks}} weeks ago"
   }
 }

@@ -15,6 +15,7 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
   const { t } = useCMS();
   const [progress] = useState(new Animated.Value(0));
   const [progressPercent, setProgressPercent] = useState(0);
+  const [shouldHide, setShouldHide] = useState(false);
 
   useEffect(() => {
     // Calculate progress based on time elapsed
@@ -28,6 +29,11 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
       
       const percent = Math.min((elapsed / totalDuration) * 100, 100);
       setProgressPercent(Math.round(percent));
+      
+      // Hide banner when 100% complete
+      if (percent >= 100) {
+        setShouldHide(true);
+      }
       
       return percent / 100;
     };
@@ -57,6 +63,11 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
     inputRange: [0, 1],
     outputRange: ['0%', '100%'],
   });
+
+  // Don't render if order is complete
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <RView style={orderProgressBannerStyles.container}>

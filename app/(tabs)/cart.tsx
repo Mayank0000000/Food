@@ -146,12 +146,12 @@ export default function Cart() {
       const orderData = {
         userId: user.id.toString(),
         items: cart.items.map(item => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
+          id: item.menuItem.id, // Use menu item ID, not cart item ID
+          name: item.menuItem.name,
+          price: item.menuItem.price,
           quantity: item.quantity,
-          image: item.image,
-          category: item.category,
+          image: item.menuItem.image,
+          category: item.menuItem.category,
         })),
         totalAmount: summary.itemTotal,
         deliveryFee: summary.deliveryFee,

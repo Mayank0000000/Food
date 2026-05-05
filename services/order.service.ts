@@ -9,36 +9,30 @@ class OrderService {
    * Create a new order
    */
   async createOrder(orderData: Omit<Order, 'id' | 'createdAt'>): Promise<Order> {
-    try {
-      // Get existing orders
-      const orders: Order[] = (await githubService.getFile(this.ORDERS_FILE)) || [];
+    const MAX_RETRIES = 3;
+    let lastError: any;
 
-      // Generate new order ID
-      const orderId = `ORD_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      // Create new order
-      const newOrder: Order = {
-        ...orderData,
-        id: orderId,
-        createdAt: new Date().toISOString(),
-      };
-
-      // Add to orders array
-      orders.push(newOrder);
-
-      // Update orders file
-      await githubService.updateFile(
-        this.ORDERS_FILE,
-        orders,
-        `Create order ${orderId}`
-      );
-
-      console.log('✅ Order created successfully:', orderId);
-      return newOrder;
-    } catch (error) {
-      console.error('Failed to create order:', error);
-      throw error;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const orders: Order[] = (await githubService.getFile(this.ORDERS_FILE)) || [];
+        const orderId = `ORD_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const newOrder: Order = { ...orderData, id: orderId, createdAt: new Date().toISOString() };
+        orders.push(newOrder);
+        await githubService.updateFile(this.ORDERS_FILE, orders, `Create order ${orderId}`);
+        console.log('✅ Order created successfully:', orderId);
+        return newOrder;
+      } catch (error: any) {
+        lastError = error;
+        if (error.status === 409 && attempt < MAX_RETRIES - 1) {
+          console.log(`⚠️ Order create conflict, retrying (${attempt + 1}/${MAX_RETRIES})...`);
+          await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
+          continue;
+        }
+        break;
+      }
     }
+    console.error('Failed to create order:', lastError);
+    throw lastError;
   }
 
   /**
@@ -70,37 +64,31 @@ class OrderService {
   /**
    * Update order status to final state (delivered or cancelled only)
    */
-  async updateOrderStatus(
-    orderId: string,
-    status: 'delivered' | 'cancelled'
-  ): Promise<Order | null> {
-    try {
-      const orders: Order[] = (await githubService.getFile(this.ORDERS_FILE)) || [];
+  async updateOrderStatus(orderId: string, status: 'delivered' | 'cancelled'): Promise<Order | null> {
+    const MAX_RETRIES = 3;
+    let lastError: any;
 
-      const orderIndex = orders.findIndex(order => order.id === orderId);
-      if (orderIndex === -1) {
-        throw new Error('Order not found');
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const orders: Order[] = (await githubService.getFile(this.ORDERS_FILE)) || [];
+        const orderIndex = orders.findIndex(order => order.id === orderId);
+        if (orderIndex === -1) throw new Error('Order not found');
+
+        orders[orderIndex] = { ...orders[orderIndex], status };
+        await githubService.updateFile(this.ORDERS_FILE, orders, `Update order ${orderId} status to ${status}`);
+        console.log(`✅ Order ${orderId} status updated to ${status}`);
+        return orders[orderIndex];
+      } catch (error: any) {
+        lastError = error;
+        if (error.status === 409 && attempt < MAX_RETRIES - 1) {
+          await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
+          continue;
+        }
+        break;
       }
-
-      // Update order status to final state
-      orders[orderIndex] = {
-        ...orders[orderIndex],
-        status,
-      };
-
-      // Save updated orders
-      await githubService.updateFile(
-        this.ORDERS_FILE,
-        orders,
-        `Update order ${orderId} status to ${status}`
-      );
-
-      console.log(`✅ Order ${orderId} status updated to ${status}`);
-      return orders[orderIndex];
-    } catch (error) {
-      console.error('Failed to update order status:', error);
-      throw error;
     }
+    console.error('Failed to update order status:', lastError);
+    throw lastError;
   }
 
   /**

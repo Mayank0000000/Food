@@ -3,16 +3,30 @@ import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { reviewService } from '@/services/review.service';
 import { menuItemCardStyles } from '@/styles/components/menu-item-card.styles';
 import { MenuItemCardProps } from '@/types/components/menu-item-card.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => {
-  const averageRating = item.rating.length > 0 
-    ? (item.rating.reduce((a, b) => a + b, 0) / item.rating.length).toFixed(1)
-    : '0.0';
+  const [averageRating, setAverageRating] = useState('0.0');
+  const [totalReviews, setTotalReviews] = useState(0);
+
+  useEffect(() => {
+    loadStats();
+  }, [item.id]);
+
+  const loadStats = async () => {
+    try {
+      const stats = await reviewService.getMenuItemStats(item.id);
+      setAverageRating(stats.averageRating.toFixed(1));
+      setTotalReviews(stats.totalReviews);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
 
   return (
     <PressableView onPress={onPress}>
@@ -44,7 +58,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => 
                 {averageRating}
               </Text>
               <Text variant="caption" style={menuItemCardStyles.reviews}>
-                ({item.reviews} Review)
+                ({totalReviews} Review)
               </Text>
             </RView>
           </RView>

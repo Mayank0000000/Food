@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
     DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
     NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
+    FEEDBACK: ENV.FEEDBACK_FILE_PATH || 'data/feedback.json',
     // Language files
     LANGUAGES: {
       ENGLISH: 'data/english.json',
