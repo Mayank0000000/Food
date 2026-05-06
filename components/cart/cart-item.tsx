@@ -4,11 +4,12 @@ import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { cartItemStyles } from '@/styles/components/cart-item.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCartItemStyles } from '@/styles/components/cart-item.styles';
 import { CartItem } from '@/types/cart.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface CartItemProps {
   item: CartItem;
@@ -21,6 +22,8 @@ export const CartItemComponent: React.FC<CartItemProps> = ({
   onUpdateQuantity,
   onRemove,
 }) => {
+  const { theme, colors } = useTheme();
+  const cartItemStyles = useMemo(() => createCartItemStyles(theme), [theme]);
   const handleDecrease = () => {
     if (item.quantity > 1) {
       onUpdateQuantity(item.id, item.quantity - 1);
@@ -61,7 +64,7 @@ export const CartItemComponent: React.FC<CartItemProps> = ({
               onPress={handleDecrease}
               style={cartItemStyles.quantityButton}
             >
-              <Ionicons name="remove" size={16} color="#FF6B35" />
+              <Ionicons name="remove" size={16} color={colors.primary} />
             </Button>
             <Text variant="body" style={cartItemStyles.quantity}>
               {item.quantity}
@@ -72,7 +75,7 @@ export const CartItemComponent: React.FC<CartItemProps> = ({
               onPress={handleIncrease}
               style={cartItemStyles.quantityButton}
             >
-              <Ionicons name="add" size={16} color="#FF6B35" />
+              <Ionicons name="add" size={16} color={colors.primary} />
             </Button>
           </RView>
 
@@ -86,7 +89,7 @@ export const CartItemComponent: React.FC<CartItemProps> = ({
         style={cartItemStyles.removeButton}
         onPress={() => onRemove(item.id)}
       >
-        <Ionicons name="trash-outline" size={20} color="#EF4444" />
+        <Ionicons name="trash-outline" size={20} color={colors.error} />
       </PressableView>
     </Card>
   );

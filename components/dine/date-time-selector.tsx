@@ -2,9 +2,10 @@ import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { dateTimeSelectorStyles } from '@/styles/components/date-time-selector.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createDateTimeSelectorStyles } from '@/styles/components/date-time-selector.styles';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 
 interface DateTimeSelectorProps {
@@ -16,6 +17,8 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   selectedDate,
   onDateChange,
 }) => {
+  const { theme, colors } = useTheme();
+  const dateTimeSelectorStyles = useMemo(() => createDateTimeSelectorStyles(theme), [theme]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -87,7 +90,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
           onPress={() => setShowDatePicker(true)}
         >
           <RView style={dateTimeSelectorStyles.iconContainer}>
-            <Ionicons name="calendar-outline" size={20} color="#FF6B35" />
+            <Ionicons name="calendar-outline" size={20} color={colors.primary} />
           </RView>
           <RView style={dateTimeSelectorStyles.textContainer}>
             <Text variant="caption" style={dateTimeSelectorStyles.label}>
@@ -97,7 +100,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
               {formatDate(selectedDate)}
             </Text>
           </RView>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+          <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
         </PressableView>
 
         {/* Time Selector */}
@@ -106,7 +109,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
           onPress={() => setShowTimePicker(true)}
         >
           <RView style={dateTimeSelectorStyles.iconContainer}>
-            <Ionicons name="time-outline" size={20} color="#FF6B35" />
+            <Ionicons name="time-outline" size={20} color={colors.primary} />
           </RView>
           <RView style={dateTimeSelectorStyles.textContainer}>
             <Text variant="caption" style={dateTimeSelectorStyles.label}>
@@ -116,7 +119,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
               {formatTime(selectedDate)}
             </Text>
           </RView>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+          <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
         </PressableView>
       </RView>
 
@@ -134,7 +137,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                 Select Date
               </Text>
               <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                <Ionicons name="close" size={24} color="#333" />
+                <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
             </View>
             <ScrollView style={dateTimeSelectorStyles.scrollView}>
@@ -160,7 +163,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                       {formatDate(date)}
                     </Text>
                     {isSelected && (
-                      <Ionicons name="checkmark" size={20} color="#FF6B35" />
+                      <Ionicons name="checkmark" size={20} color="colors.primary" />
                     )}
                   </TouchableOpacity>
                 );
@@ -184,7 +187,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                 Select Time
               </Text>
               <TouchableOpacity onPress={() => setShowTimePicker(false)}>
-                <Ionicons name="close" size={24} color="#333" />
+                <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
             </View>
             <ScrollView style={dateTimeSelectorStyles.scrollView}>
@@ -211,7 +214,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                       {formatTime(time)}
                     </Text>
                     {isSelected && (
-                      <Ionicons name="checkmark" size={20} color="#FF6B35" />
+                      <Ionicons name="checkmark" size={20} color="colors.primary" />
                     )}
                   </TouchableOpacity>
                 );

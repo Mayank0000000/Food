@@ -1,11 +1,12 @@
+import { Theme } from '@/types/theme.types';
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { height } = Dimensions.get('window');
 
-export const menuItemDetailModalStyles = StyleSheet.create({
+export const createMenuItemDetailModalStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'flex-end',
   },
   backdrop: {
@@ -16,7 +17,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
     bottom: 0,
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     height: height * 0.85,
@@ -28,13 +29,13 @@ export const menuItemDetailModalStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#fff',
+    borderBottomColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
     flex: 1,
   },
   closeButton: {
@@ -61,7 +62,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   spicyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFE5DC',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '30' : '#FFE5DC',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -69,7 +70,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   },
   spicyText: {
     fontSize: 12,
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '500',
     marginLeft: 4,
   },
@@ -83,7 +84,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
     flex: 1,
     fontSize: 22,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
     marginRight: 12,
   },
   actions: {
@@ -95,7 +96,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
     lineHeight: 20,
     marginBottom: 16,
   },
@@ -107,12 +108,12 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   rating: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginLeft: 6,
   },
   reviews: {
     fontSize: 14,
-    color: '#999',
+    color: theme.colors.textSecondary,
     marginLeft: 4,
   },
   prepTimeContainer: {
@@ -122,12 +123,12 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   },
   prepTime: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginLeft: 6,
   },
   discountBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#22C55E',
+    backgroundColor: theme.colors.success,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -142,8 +143,8 @@ export const menuItemDetailModalStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    backgroundColor: '#fff',
+    borderTopColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -158,7 +159,7 @@ export const menuItemDetailModalStyles = StyleSheet.create({
   quantity: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginHorizontal: 16,
   },
   addButton: {

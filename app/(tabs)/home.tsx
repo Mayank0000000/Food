@@ -1,3 +1,4 @@
+import { FloatingChatButton } from '@/components/chat/floating-chat-button';
 import { CouponBanner } from '@/components/coupons/coupon-banner';
 import { CouponModal } from '@/components/coupons/coupon-modal';
 import { DynamicBanners } from '@/components/home/dynamic-banners';
@@ -8,16 +9,17 @@ import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { AVAILABLE_COUPONS } from '@/data/coupons';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { bannerService } from '@/services/banner.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchMenu } from '@/store/slices/menuSlice';
 import { fetchActiveOrders } from '@/store/slices/orderSlice';
-import { homeStyles } from '@/styles/screens/home.styles';
+import { createHomeStyles } from '@/styles/screens/home.styles';
 import { Banner } from '@/types/banner.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -34,6 +36,8 @@ export default function Home() {
   const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { theme } = useTheme();
+  const homeStyles = useMemo(() => createHomeStyles(theme), [theme]);
   const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
   const { activeOrders } = useAppSelector((state) => state.order);
   const { user } = useAppSelector((state) => state.auth);
@@ -178,6 +182,8 @@ export default function Home() {
           </Text>
         </RView>
       </ScrollView>
+
+      <FloatingChatButton />
     </SafeAreaView>
   );
 }

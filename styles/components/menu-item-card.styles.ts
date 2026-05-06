@@ -1,6 +1,7 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const menuItemCardStyles = StyleSheet.create({
+export const createMenuItemCardStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginBottom: 16,
@@ -24,12 +25,12 @@ export const menuItemCardStyles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginRight: 8,
   },
   categoryBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FFE5DC',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '30' : '#FFE5DC',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -37,7 +38,7 @@ export const menuItemCardStyles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 12,
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '500',
   },
   footer: {
@@ -53,12 +54,12 @@ export const menuItemCardStyles = StyleSheet.create({
   rating: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginLeft: 4,
   },
   reviews: {
     fontSize: 12,
-    color: '#999',
+    color: theme.colors.textSecondary,
     marginLeft: 4,
   },
   priceRow: {
@@ -68,6 +69,6 @@ export const menuItemCardStyles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
 });

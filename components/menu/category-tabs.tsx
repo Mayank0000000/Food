@@ -1,9 +1,11 @@
+import React, { useMemo } from 'react';
+
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { categoryTabsStyles } from '@/styles/components/category-tabs.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCategoryTabsStyles } from '@/styles/components/category-tabs.styles';
 import { CategoryTabsProps } from '@/types/components/category-tabs.types';
-import React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 export const CategoryTabs: React.FC<CategoryTabsProps> = ({
@@ -13,6 +15,8 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
   itemCounts,
 }) => {
   const { t } = useCMS();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createCategoryTabsStyles(theme), [theme]);
 
   const getCategoryDisplayName = (category: string) => {
     // If it's a CMS key (contains a dot), translate it
@@ -24,11 +28,11 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
   };
 
   return (
-    <RView style={categoryTabsStyles.container}>
+    <RView style={styles.container}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={categoryTabsStyles.scrollContent}
+        contentContainerStyle={styles.scrollContent}
       >
         {categories.map((category) => {
           const isSelected = selectedCategory === category;
@@ -36,8 +40,8 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
             <TouchableOpacity
               key={category}
               style={[
-                categoryTabsStyles.tab,
-                isSelected && categoryTabsStyles.tabActive,
+                styles.tab,
+                isSelected && styles.tabActive,
               ]}
               onPress={() => onSelectCategory(category)}
               activeOpacity={0.7}
@@ -45,8 +49,8 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
               <Text
                 variant="body"
                 style={[
-                  categoryTabsStyles.tabText,
-                  isSelected && categoryTabsStyles.tabTextActive,
+                  styles.tabText,
+                  isSelected && styles.tabTextActive,
                 ]}
               >
                 {getCategoryDisplayName(category)}
@@ -56,7 +60,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
         })}
       </ScrollView>
       
-      <Text variant="caption" style={categoryTabsStyles.itemCount}>
+      <Text variant="caption" style={styles.itemCount}>
         {t('explorer.totalItems', { count: (itemCounts[selectedCategory] || 0).toString() })}
       </Text>
     </RView>

@@ -1,12 +1,13 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const accountStyles = StyleSheet.create({
+export const createAccountStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: theme.colors.background,
   },
   header: {
-    backgroundColor: '#1a1d2e',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.surface : '#1a1d2e',
     paddingTop: 60,
     paddingBottom: 30,
     paddingHorizontal: 20,
@@ -16,7 +17,7 @@ export const accountStyles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#ff6b35',
+    backgroundColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 15,
@@ -34,14 +35,14 @@ export const accountStyles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 16,
-    color: '#999',
+    color: theme.colors.textSecondary,
   },
   content: {
     flex: 1,
     padding: 20,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     marginBottom: 20,
     overflow: 'hidden',
@@ -49,7 +50,7 @@ export const accountStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     padding: 20,
     paddingBottom: 10,
   },
@@ -59,7 +60,7 @@ export const accountStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   menuItemLast: {
     borderBottomWidth: 0,
@@ -70,13 +71,13 @@ export const accountStyles = StyleSheet.create({
   menuText: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: theme.colors.text,
   },
   menuArrow: {
-    color: '#999',
+    color: theme.colors.textSecondary,
   },
   badge: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -91,13 +92,13 @@ export const accountStyles = StyleSheet.create({
     color: '#fff',
   },
   logoutButton: {
-    backgroundColor: '#ff6b35',
+    backgroundColor: theme.colors.primary,
     marginHorizontal: 20,
     marginBottom: 30,
   },
   version: {
     textAlign: 'center',
-    color: '#999',
+    color: theme.colors.textSecondary,
     fontSize: 14,
     marginBottom: 20,
   },

@@ -1,8 +1,9 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { filterModalStyles } from '@/styles/components/filter-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createFilterModalStyles } from '@/styles/components/filter-modal.styles';
 import { FilterModalState } from '@/types/components/filter-modal.types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 interface FilterSectionOffersProps {
@@ -11,19 +12,21 @@ interface FilterSectionOffersProps {
 }
 
 export const FilterSectionOffers: React.FC<FilterSectionOffersProps> = ({ filters, onUpdate }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createFilterModalStyles(theme), [theme]);
   return (
-    <RView style={filterModalStyles.section}>
-      <Text variant="subtitle" style={filterModalStyles.sectionTitle}>
+    <RView style={styles.section}>
+      <Text variant="subtitle" style={styles.sectionTitle}>
         Offers
       </Text>
       <TouchableOpacity
         style={[
-          filterModalStyles.offerOption,
-          filters.hasOffers && filterModalStyles.offerOptionActive,
+          styles.offerOption,
+          filters.hasOffers && styles.offerOptionActive,
         ]}
         onPress={() => onUpdate({ ...filters, hasOffers: !filters.hasOffers })}
       >
-        <Text variant="body" style={filterModalStyles.offerText}>
+        <Text variant="body" style={styles.offerText}>
           Deals and Discounts
         </Text>
       </TouchableOpacity>

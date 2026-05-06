@@ -5,10 +5,11 @@ import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { DEMO_LOCATIONS, RESTAURANT_ADDRESS, RESTAURANT_NAME } from '@/data/locations';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { getDirections } from '@/services/directions.service';
 import { cancelOrder, getOrderById } from '@/services/order.service';
 import { useAppSelector } from '@/store/hooks';
-import { orderTrackingStyles } from '@/styles/screens/order-tracking.styles';
+import { createOrderTrackingStyles } from '@/styles/screens/order-tracking.styles';
 import { Location } from '@/types/order.types';
 import { calculateDistance } from '@/utils/locationUtils';
 import { clearTrackingData, formatTime, OrderTrackingData } from '@/utils/orderSimulation';
@@ -17,13 +18,15 @@ import { calculateRemainingTime, calculateTrackingData } from '@/utils/orderTrac
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function OrderTracking() {
   const { t } = useCMS();
   const router = useRouter();
+  const { theme, colors } = useTheme();
+  const orderTrackingStyles = useMemo(() => createOrderTrackingStyles(theme), [theme]);
   const { orderId: urlOrderId } = useLocalSearchParams<{ orderId?: string }>();
   const { activeOrders } = useAppSelector((state) => state.order);
   const [trackingData, setTrackingData] = useState<OrderTrackingData | null>(null);
@@ -224,7 +227,7 @@ export default function OrderTracking() {
           <Ionicons 
             name={trackingData?.status === 'delivered' ? 'checkmark-circle' : 'time'} 
             size={32} 
-            color={trackingData?.status === 'delivered' ? '#22C55E' : '#FF6B35'} 
+            color={trackingData?.status === 'delivered' ? colors.success : colors.primary} 
           />
           <RView style={orderTrackingStyles.headerText}>
             <Text style={orderTrackingStyles.headerTitle}>

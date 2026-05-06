@@ -1,3 +1,4 @@
+import { useTheme } from '@/hooks/useTheme';
 import { deliveryMapStyles } from '@/styles/components/delivery-map.styles';
 import { DeliveryMapProps } from '@/types/components/delivery-map.types';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +13,8 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
   restaurantName,
   restaurantAddress,
 }) => {
+  const { colors } = useTheme();
+  
   return (
     <MapView
       style={deliveryMapStyles.map}
@@ -29,7 +32,7 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
         description={restaurantAddress}
         anchor={{ x: 0.5, y: 0.5 }}
       >
-        <Ionicons name="restaurant" size={32} color="#FF6B35" />
+        <Ionicons name="restaurant" size={32} color={colors.primary} />
       </Marker>
 
       {/* Delivery Person Marker (animated) */}
@@ -52,14 +55,14 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
         description="Your delivery address"
         anchor={{ x: 0.5, y: 0.5 }}
       >
-        <Ionicons name="location" size={32} color="#22C55E" />
+        <Ionicons name="location" size={32} color={colors.success} />
       </Marker>
 
       {/* Route Path */}
       {routePath.length > 2 && (
         <Polyline
           coordinates={routePath}
-          strokeColor="#FF6B35"
+          strokeColor={colors.primary}
           strokeWidth={3}
           lineDashPattern={[1]}
         />

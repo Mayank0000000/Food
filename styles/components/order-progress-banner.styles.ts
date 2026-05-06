@@ -1,8 +1,9 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const orderProgressBannerStyles = StyleSheet.create({
+export const createOrderProgressBannerStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: '#FFF',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
@@ -22,7 +23,7 @@ export const orderProgressBannerStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FFF5F2',
+    backgroundColor: theme.colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -33,12 +34,12 @@ export const orderProgressBannerStyles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
+    color: theme.colors.text,
     marginBottom: 2,
   },
   subtitle: {
     fontSize: 13,
-    color: '#6B7280',
+    color: theme.colors.textSecondary,
   },
   trackButton: {
     paddingHorizontal: 16,
@@ -46,13 +47,13 @@ export const orderProgressBannerStyles = StyleSheet.create({
   },
   progressBarContainer: {
     height: 6,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: theme.colors.border,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressBar: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
     borderRadius: 3,
   },
 });

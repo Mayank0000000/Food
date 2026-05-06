@@ -1,8 +1,9 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const couponBannerStyles = StyleSheet.create({
+export const createCouponBannerStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: '#FFF7ED',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF7ED',
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -15,7 +16,7 @@ export const couponBannerStyles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -31,18 +32,18 @@ export const couponBannerStyles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     flex: 1,
   },
   count: {
     fontSize: 12,
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '600',
     marginRight: 4,
   },
   description: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
   chevron: {
     marginLeft: 8,

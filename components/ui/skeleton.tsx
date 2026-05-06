@@ -1,5 +1,6 @@
 import { RView } from '@/components/ui/rview';
-import React, { useEffect, useRef } from 'react';
+import { useTheme } from '@/hooks/useTheme';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet } from 'react-native';
 
 interface SkeletonProps {
@@ -15,6 +16,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   borderRadius = 4,
   style 
 }) => {
+  const { colors, mode } = useTheme();
   const opacity = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
@@ -34,10 +36,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     ).start();
   }, [opacity]);
 
+  const skeletonColor = mode === 'dark' ? colors.border : '#E0E0E0';
+
   return (
     <Animated.View
       style={[
-        styles.skeleton,
+        { backgroundColor: skeletonColor },
         { width, height, borderRadius, opacity },
         style,
       ]}
@@ -50,6 +54,8 @@ interface PairingSkeletonProps {
 }
 
 export const PairingSkeleton: React.FC<PairingSkeletonProps> = ({ count = 3 }) => {
+  const styles = useSkeletonStyles();
+  
   return (
     <RView style={styles.container}>
       {Array.from({ length: count }).map((_, index) => (
@@ -66,6 +72,8 @@ export const PairingSkeleton: React.FC<PairingSkeletonProps> = ({ count = 3 }) =
 };
 
 export const MenuItemCardSkeleton: React.FC = () => {
+  const styles = useSkeletonStyles();
+  
   return (
     <RView style={styles.menuCard}>
       <Skeleton width={120} height={120} borderRadius={12} />
@@ -84,6 +92,8 @@ interface MenuListSkeletonProps {
 }
 
 export const MenuListSkeleton: React.FC<MenuListSkeletonProps> = ({ count = 5 }) => {
+  const styles = useSkeletonStyles();
+  
   return (
     <RView style={styles.listContainer}>
       {Array.from({ length: count }).map((_, index) => (
@@ -93,32 +103,33 @@ export const MenuListSkeleton: React.FC<MenuListSkeletonProps> = ({ count = 5 })
   );
 };
 
-const styles = StyleSheet.create({
-  skeleton: {
-    backgroundColor: '#E0E0E0',
-  },
-  container: {
-    flexDirection: 'row',
-  },
-  card: {
-    marginRight: 12,
-  },
-  menuCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-  },
-  menuCardContent: {
-    flex: 1,
-    marginLeft: 12,
-    justifyContent: 'space-between',
-  },
-  marginBottom8: {
-    marginBottom: 8,
-  },
-  listContainer: {
-    padding: 16,
-  },
-});
+const useSkeletonStyles = () => {
+  const { colors } = useTheme();
+  
+  return useMemo(() => StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+    },
+    card: {
+      marginRight: 12,
+    },
+    menuCard: {
+      flexDirection: 'row',
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 16,
+    },
+    menuCardContent: {
+      flex: 1,
+      marginLeft: 12,
+      justifyContent: 'space-between',
+    },
+    marginBottom8: {
+      marginBottom: 8,
+    },
+    listContainer: {
+      padding: 16,
+    },
+  }), [colors]);
+};

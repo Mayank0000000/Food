@@ -1,18 +1,19 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const couponCardStyles = StyleSheet.create({
+export const createCouponCardStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e5e5e5',
+    borderColor: theme.colors.border,
     borderStyle: 'dashed',
   },
   appliedContainer: {
-    borderColor: '#22C55E',
-    backgroundColor: '#F0FDF4',
+    borderColor: theme.colors.success,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.success + '20' : '#F0FDF4',
   },
   header: {
     flexDirection: 'row',
@@ -31,39 +32,39 @@ export const couponCardStyles = StyleSheet.create({
   code: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: theme.colors.primary,
     marginLeft: 6,
   },
   title: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 4,
   },
   description: {
     fontSize: 13,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 8,
   },
   validUntil: {
     fontSize: 12,
-    color: '#999',
+    color: theme.colors.textTertiary,
   },
   applyButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderColor: theme.colors.primary,
   },
   appliedButton: {
-    backgroundColor: '#22C55E',
-    borderColor: '#22C55E',
+    backgroundColor: theme.colors.success,
+    borderColor: theme.colors.success,
   },
   applyButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   appliedButtonText: {
     color: '#fff',
@@ -72,12 +73,12 @@ export const couponCardStyles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e5e5e5',
+    borderTopColor: theme.colors.border,
   },
   termsTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 6,
   },
   termItem: {
@@ -87,13 +88,13 @@ export const couponCardStyles = StyleSheet.create({
   },
   termBullet: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginRight: 6,
     marginTop: 2,
   },
   termText: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
     flex: 1,
   },
 });

@@ -1,8 +1,9 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { accountStyles } from '@/styles/screens/account.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createAccountStyles } from '@/styles/screens/account.styles';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Switch } from 'react-native';
 
 interface BiometricToggleProps {
@@ -20,6 +21,8 @@ export function BiometricToggle({
   biometricEnabled,
   onToggle,
 }: BiometricToggleProps) {
+  const { theme, colors } = useTheme();
+  const accountStyles = useMemo(() => createAccountStyles(theme), [theme]);
   const icon = biometricType === 'Face ID' ? 'scan-outline' : 'finger-print-outline';
 
   return (
@@ -32,7 +35,7 @@ export function BiometricToggle({
         <Ionicons
           name={icon}
           size={24}
-          color="#666"
+          color={colors.textSecondary}
           style={accountStyles.menuIcon}
         />
 
@@ -42,13 +45,13 @@ export function BiometricToggle({
           </Text>
 
           {!biometricAvailable && (
-            <Text variant="caption" style={{ color: '#999', marginTop: 2 }}>
+            <Text variant="caption" style={{ color: colors.textTertiary, marginTop: 2 }}>
               Not available on this device
             </Text>
           )}
 
           {biometricAvailable && !biometricEnrolled && (
-            <Text variant="caption" style={{ color: '#999', marginTop: 2 }}>
+            <Text variant="caption" style={{ color: colors.textTertiary, marginTop: 2 }}>
               Set up {biometricType} in device settings
             </Text>
           )}
@@ -58,7 +61,7 @@ export function BiometricToggle({
           value={biometricEnabled}
           onValueChange={onToggle}
           disabled={!biometricAvailable || !biometricEnrolled}
-          trackColor={{ false: '#E0E0E0', true: '#FF6347' }}
+          trackColor={{ false: colors.border, true: colors.primary }}
           thumbColor="#FFF"
         />
       </RView>

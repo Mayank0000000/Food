@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { screenHeaderStyles } from '@/styles/components/screen-header.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createScreenHeaderStyles } from '@/styles/components/screen-header.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
 interface ScreenHeaderProps {
@@ -23,6 +24,8 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   style,
 }) => {
   const router = useRouter();
+  const { theme, colors } = useTheme();
+  const screenHeaderStyles = useMemo(() => createScreenHeaderStyles(theme), [theme]);
 
   const handleBack = () => {
     if (onBack) {
@@ -41,7 +44,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
           onPress={handleBack}
           style={screenHeaderStyles.backButton}
         >
-          <Ionicons name="arrow-back" size={16} color="#333" />
+          <Ionicons name="arrow-back" size={16} color={colors.text} />
         </Button>
       ) : (
         <RView style={screenHeaderStyles.placeholder} />

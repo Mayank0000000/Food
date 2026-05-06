@@ -1,9 +1,10 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { couponCardStyles } from '@/styles/components/coupon-card.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCouponCardStyles } from '@/styles/components/coupon-card.styles';
 import { CouponCardProps } from '@/types/coupon.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable } from 'react-native';
 
 export const CouponCard: React.FC<CouponCardProps> = ({
@@ -12,6 +13,8 @@ export const CouponCard: React.FC<CouponCardProps> = ({
   isApplied = false,
   showApplyButton = true,
 }) => {
+  const { theme, colors } = useTheme();
+  const couponCardStyles = useMemo(() => createCouponCardStyles(theme), [theme]);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-IN', { 
@@ -36,7 +39,7 @@ export const CouponCard: React.FC<CouponCardProps> = ({
       <RView style={couponCardStyles.header}>
         <RView style={couponCardStyles.leftSection}>
           <RView style={couponCardStyles.codeContainer}>
-            <Ionicons name="pricetag" size={16} color="#FF6B35" />
+            <Ionicons name="pricetag" size={16} color={colors.primary} />
             <Text style={couponCardStyles.code}>{coupon.code}</Text>
           </RView>
           <Text style={couponCardStyles.title}>{getDiscountText()}</Text>

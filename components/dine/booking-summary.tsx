@@ -3,10 +3,11 @@ import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { dineInStyles } from '@/styles/screens/dine-in.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createDineInStyles } from '@/styles/screens/dine-in.styles';
 import { Seat } from '@/types/dine.types';
 import { formatBookingDate, formatBookingTime } from '@/utils/dineUtils';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface BookingSummaryProps {
   selectedDateTime: Date;
@@ -28,6 +29,8 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({
   onConfirmBooking,
 }) => {
   const { t } = useCMS();
+  const { theme } = useTheme();
+  const dineInStyles = useMemo(() => createDineInStyles(theme), [theme]);
 
   return (
     <>

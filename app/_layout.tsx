@@ -2,15 +2,20 @@ import { DeliveryAlertProvider } from '@/contexts/delivery-alert-context';
 import { ToastProvider } from '@/contexts/toast-context';
 import { notificationService } from '@/services/notification.service';
 import { store } from '@/store';
+import { loadTheme } from '@/store/slices/themeSlice';
 import { Stack } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/types';
 
 function AppContent() {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
+    // Load theme from storage
+    dispatch(loadTheme() as any);
+
     // Initialize notification service on app start
     // Note: The warning about push notifications in Expo Go can be ignored
     // We're using local notifications which work fine in Expo Go

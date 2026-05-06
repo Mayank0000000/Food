@@ -1,30 +1,33 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { filterChipsStyles } from '@/styles/components/filter-chips.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createFilterChipsStyles } from '@/styles/components/filter-chips.styles';
 import { FilterChipsProps } from '@/types/components/filter-chips.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 export const FilterChips: React.FC<FilterChipsProps> = ({ activeFilters, onOpenModal }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createFilterChipsStyles(theme), [theme]);
   const hasActiveFilters = activeFilters.veg !== null ||
     activeFilters.hasOffers ||
     activeFilters.sortBy !== 'relevance' ||
     activeFilters.minRating !== null;
 
   return (
-    <RView style={filterChipsStyles.container}>
+    <RView style={styles.container}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={filterChipsStyles.scrollContent}
+        contentContainerStyle={styles.scrollContent}
       >
         <TouchableOpacity
           style={[
-            filterChipsStyles.chip,
-            hasActiveFilters && filterChipsStyles.chipActive,
+            styles.chip,
+            hasActiveFilters && styles.chipActive,
           ]}
           onPress={onOpenModal}
           activeOpacity={0.7}
@@ -32,13 +35,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({ activeFilters, onOpenM
           <Ionicons
             name="options-outline"
             size={16}
-            color={hasActiveFilters ? '#FF6B35' : '#666'}
+            color={hasActiveFilters ? colors.primary : colors.textSecondary}
           />
           <Text
             variant="caption"
             style={[
-              filterChipsStyles.chipText,
-              hasActiveFilters && filterChipsStyles.chipTextActive,
+              styles.chipText,
+              hasActiveFilters && styles.chipTextActive,
             ]}
           >
             {t('explorer.filters')}
@@ -46,7 +49,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({ activeFilters, onOpenM
           <Ionicons
             name="chevron-down"
             size={14}
-            color={hasActiveFilters ? '#FF6B35' : '#666'}
+            color={hasActiveFilters ? colors.primary : colors.textSecondary}
           />
         </TouchableOpacity>
       </ScrollView>

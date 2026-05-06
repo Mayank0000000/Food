@@ -5,24 +5,25 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { RView } from '@/components/ui/rview';
 import { ScreenHeader } from '@/components/ui/screen-header';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { orderService } from '@/services/order.service';
 import { useAppSelector } from '@/store/hooks';
-import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
+import { createMyOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import {
-    filterOrdersByQuery,
-    getCompletedOrders,
-    sortOrdersByDate,
+  filterOrdersByQuery,
+  getCompletedOrders,
+  sortOrdersByDate,
 } from '@/utils/orderUtils';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, FlatList, RefreshControl, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MyOrders() {
   const { t } = useCMS();
-  const router = useRouter();
+  const { theme, colors } = useTheme();
+  const myOrdersStyles = useMemo(() => createMyOrdersStyles(theme), [theme]);
   const { user } = useAppSelector((state) => state.auth);
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
@@ -65,11 +66,11 @@ export default function MyOrders() {
     setFilteredOrders(filterOrdersByQuery(orders, searchQuery));
   };
 
-  const handleReorder = (order: Order) => {
+  const handleReorder = () => {
     Alert.alert(t('orders.reorder'), t('orders.reorderComingSoon'));
   };
 
-  const handleMenuPress = (order: Order) => {
+  const handleMenuPress = () => {
     // Menu options functionality
   };
 
@@ -95,7 +96,7 @@ export default function MyOrders() {
         <Ionicons
           name="search-outline"
           size={20}
-          color="#999"
+          color={colors.textSecondary}
           style={myOrdersStyles.searchIcon}
         />
         <TextInput
@@ -103,7 +104,7 @@ export default function MyOrders() {
           placeholder={t('orders.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textTertiary}
         />
         {searchQuery.length > 0 && (
           <Button
@@ -112,7 +113,7 @@ export default function MyOrders() {
             onPress={() => setSearchQuery('')}
             style={myOrdersStyles.clearButton}
           >
-            <Ionicons name="close-circle" size={20} color="#999" />
+            <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
           </Button>
         )}
       </RView>
@@ -138,7 +139,7 @@ export default function MyOrders() {
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={handleRefresh}
-              colors={['#FF6B35']}
+              colors={[colors.primary]}
             />
           }
         />

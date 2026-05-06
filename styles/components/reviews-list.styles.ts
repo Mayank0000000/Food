@@ -1,6 +1,7 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const reviewsListStyles = StyleSheet.create({
+export const createReviewsListStyles = (theme: Theme) => StyleSheet.create({
   container: {
     marginTop: 16,
   },
@@ -15,15 +16,15 @@ export const reviewsListStyles = StyleSheet.create({
   averageRating: {
     fontSize: 48,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   totalReviews: {
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginTop: 4,
   },
   divider: {
     height: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: theme.colors.border,
     marginVertical: 16,
   },
   reviewsList: {
@@ -35,10 +36,12 @@ export const reviewsListStyles = StyleSheet.create({
     marginBottom: 8,
   },
   reviewItem: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: theme.mode === 'light' ? '#F9F9F9' : theme.colors.card,
     borderRadius: 12,
     padding: 16,
     gap: 12,
+    borderWidth: theme.mode === 'dark' ? 1 : 0,
+    borderColor: theme.mode === 'dark' ? theme.colors.border : 'transparent',
   },
   reviewHeader: {
     flexDirection: 'row',
@@ -55,7 +58,7 @@ export const reviewsListStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -69,12 +72,12 @@ export const reviewsListStyles = StyleSheet.create({
     fontWeight: '600',
   },
   reviewDate: {
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontSize: 12,
   },
   reviewText: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
     lineHeight: 20,
   },
   emptyContainer: {
@@ -84,11 +87,11 @@ export const reviewsListStyles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontWeight: '600',
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#999',
+    color: theme.colors.textTertiary,
   },
 });

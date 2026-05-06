@@ -1,10 +1,14 @@
 import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Skeleton } from '@/components/ui/skeleton';
-import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
-import React from 'react';
+import { useTheme } from '@/hooks/useTheme';
+import { createMyOrdersStyles } from '@/styles/screens/my-orders.styles';
+import React, { useMemo } from 'react';
 
 export const OrdersSkeleton: React.FC = () => {
+  const { theme } = useTheme();
+  const myOrdersStyles = useMemo(() => createMyOrdersStyles(theme), [theme]);
+  
   return (
     <RView style={myOrdersStyles.listContent}>
       {[1, 2, 3].map((index) => (

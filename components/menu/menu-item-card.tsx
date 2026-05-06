@@ -3,14 +3,17 @@ import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
+import { useTheme } from '@/hooks/useTheme';
 import { reviewService } from '@/services/review.service';
-import { menuItemCardStyles } from '@/styles/components/menu-item-card.styles';
+import { createMenuItemCardStyles } from '@/styles/components/menu-item-card.styles';
 import { MenuItemCardProps } from '@/types/components/menu-item-card.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createMenuItemCardStyles(theme), [theme]);
   const [averageRating, setAverageRating] = useState('0.0');
   const [totalReviews, setTotalReviews] = useState(0);
 
@@ -30,41 +33,41 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => 
 
   return (
     <PressableView onPress={onPress}>
-      <Card style={menuItemCardStyles.container}>
+      <Card style={styles.container}>
         <Image 
           source={{ uri: item.image }}
-          style={menuItemCardStyles.image}
+          style={styles.image}
           contentFit="cover"
         />
         
-        <RView style={menuItemCardStyles.content}>
-          <RView style={menuItemCardStyles.header}>
-            <Text variant="subtitle" style={menuItemCardStyles.name} numberOfLines={1}>
+        <RView style={styles.content}>
+          <RView style={styles.header}>
+            <Text variant="subtitle" style={styles.name} numberOfLines={1}>
               {item.name}
             </Text>
             <VegIndicator isVeg={item.veg} />
           </RView>
 
-          <RView style={menuItemCardStyles.categoryBadge}>
-            <Text variant="caption" style={menuItemCardStyles.categoryText}>
+          <RView style={styles.categoryBadge}>
+            <Text variant="caption" style={styles.categoryText}>
               {item.category}
             </Text>
           </RView>
 
-          <RView style={menuItemCardStyles.footer}>
-            <RView style={menuItemCardStyles.ratingContainer}>
+          <RView style={styles.footer}>
+            <RView style={styles.ratingContainer}>
               <Ionicons name="star" size={16} color="#FF6B35" />
-              <Text variant="caption" style={menuItemCardStyles.rating}>
+              <Text variant="caption" style={styles.rating}>
                 {averageRating}
               </Text>
-              <Text variant="caption" style={menuItemCardStyles.reviews}>
+              <Text variant="caption" style={styles.reviews}>
                 ({totalReviews} Review)
               </Text>
             </RView>
           </RView>
 
-          <RView style={menuItemCardStyles.priceRow}>
-            <Text variant="subtitle" style={menuItemCardStyles.price}>
+          <RView style={styles.priceRow}>
+            <Text variant="subtitle" style={styles.price}>
               ₹{item.price}
             </Text>
           </RView>

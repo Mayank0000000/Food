@@ -2,10 +2,11 @@ import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { paymentMethodModalStyles } from '@/styles/components/payment-method-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createPaymentMethodModalStyles } from '@/styles/components/payment-method-modal.styles';
 import { PaymentMethod } from '@/types/order.types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Modal, Pressable, TouchableOpacity } from 'react-native';
 
 interface PaymentMethodModalProps {
@@ -20,6 +21,8 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onConfirm,
 }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const paymentMethodModalStyles = useMemo(() => createPaymentMethodModalStyles(theme), [theme]);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('cod');
 
   const handleConfirm = () => {
@@ -46,7 +49,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           <RView style={paymentMethodModalStyles.header}>
             <Text style={paymentMethodModalStyles.title}>{t('payment.selectMethod')}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} color="#333" />
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </RView>
 
@@ -59,7 +62,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               onPress={() => setSelectedMethod('cod')}
             >
               <RView style={paymentMethodModalStyles.methodIcon}>
-                <Ionicons name="cash-outline" size={24} color="#FF6B35" />
+                <Ionicons name="cash-outline" size={24} color={colors.primary} />
               </RView>
               <RView style={paymentMethodModalStyles.methodInfo}>
                 <Text style={paymentMethodModalStyles.methodTitle}>{t('payment.methods.cod')}</Text>
@@ -80,13 +83,13 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               disabled
             >
               <RView style={paymentMethodModalStyles.methodIcon}>
-                <Ionicons name="card-outline" size={24} color="#ccc" />
+                <Ionicons name="card-outline" size={24} color={colors.border} />
               </RView>
               <RView style={paymentMethodModalStyles.methodInfo}>
-                <Text style={[paymentMethodModalStyles.methodTitle, { color: '#ccc' }]}>
+                <Text style={[paymentMethodModalStyles.methodTitle, { color: colors.textTertiary }]}>
                   Online Payment
                 </Text>
-                <Text style={[paymentMethodModalStyles.methodDescription, { color: '#ccc' }]}>
+                <Text style={[paymentMethodModalStyles.methodDescription, { color: colors.textTertiary }]}>
                   Coming soon
                 </Text>
               </RView>

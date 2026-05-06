@@ -1,12 +1,13 @@
 import { RView } from '@/components/ui/rview';
 import { PairingSkeleton } from '@/components/ui/skeleton';
 import { Text } from '@/components/ui/text';
-import { perfectPairingsStyles } from '@/styles/components/perfect-pairings.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createPerfectPairingsStyles } from '@/styles/components/perfect-pairings.styles';
 import { MenuItem } from '@/types/menu.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 interface PerfectPairingsProps {
@@ -16,22 +17,24 @@ interface PerfectPairingsProps {
 
 export const PerfectPairings: React.FC<PerfectPairingsProps> = ({ items, isLoading }) => {
   const router = useRouter();
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createPerfectPairingsStyles(theme), [theme]);
 
   const handleMenuClick = () => {
     router.push('/(tabs)/explorer');
   };
 
   return (
-    <RView style={perfectPairingsStyles.section}>
-      <RView style={perfectPairingsStyles.header}>
-        <RView style={perfectPairingsStyles.title}>
-          <Ionicons name="flame" size={20} color="#FF6B35" />
-          <Text variant="subtitle" style={perfectPairingsStyles.titleText}>
+    <RView style={styles.section}>
+      <RView style={styles.header}>
+        <RView style={styles.title}>
+          <Ionicons name="flame" size={20} color={colors.primary} />
+          <Text variant="subtitle" style={styles.titleText}>
             Perfect pairings for you
           </Text>
         </RView>
         <TouchableOpacity>
-          <Ionicons name="chevron-up" size={20} color="#333" />
+          <Ionicons name="chevron-up" size={20} color={colors.text} />
         </TouchableOpacity>
       </RView>
 
@@ -41,20 +44,20 @@ export const PerfectPairings: React.FC<PerfectPairingsProps> = ({ items, isLoadi
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={perfectPairingsStyles.scroll}
+          contentContainerStyle={styles.scroll}
         >
           {items.map((item) => (
-            <TouchableOpacity key={item.id} style={perfectPairingsStyles.card}>
+            <TouchableOpacity key={item.id} style={styles.card}>
               <Image
                 source={{ uri: item.image }}
-                style={perfectPairingsStyles.image}
+                style={styles.image}
                 contentFit="cover"
               />
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={perfectPairingsStyles.menuButton} onPress={handleMenuClick}>
+          <TouchableOpacity style={styles.menuButton} onPress={handleMenuClick}>
             <Ionicons name="restaurant" size={24} color="#fff" />
-            <Text variant="body" style={perfectPairingsStyles.menuButtonText}>
+            <Text variant="body" style={styles.menuButtonText}>
               Menu
             </Text>
           </TouchableOpacity>

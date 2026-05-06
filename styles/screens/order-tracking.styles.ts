@@ -1,15 +1,16 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const orderTrackingStyles = StyleSheet.create({
+export const createOrderTrackingStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.background,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
+    borderBottomColor: theme.colors.border,
   },
   headerContent: {
     flexDirection: 'row',
@@ -22,12 +23,12 @@ export const orderTrackingStyles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
   map: {
     height: 300,
@@ -36,11 +37,11 @@ export const orderTrackingStyles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#fff',
+    borderColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -52,11 +53,11 @@ export const orderTrackingStyles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#22C55E',
+    backgroundColor: theme.colors.success,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#fff',
+    borderColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -72,7 +73,7 @@ export const orderTrackingStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#fff',
+    borderColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -82,10 +83,10 @@ export const orderTrackingStyles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   statusCard: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: 16,
     margin: 16,
     borderRadius: 12,
@@ -93,7 +94,7 @@ export const orderTrackingStyles = StyleSheet.create({
   statusTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 16,
   },
   statusItem: {
@@ -104,7 +105,7 @@ export const orderTrackingStyles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.cardHover,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -112,7 +113,7 @@ export const orderTrackingStyles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#22C55E',
+    backgroundColor: theme.colors.success,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -123,22 +124,22 @@ export const orderTrackingStyles = StyleSheet.create({
   statusLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 2,
   },
   statusTime: {
     fontSize: 12,
-    color: '#999',
+    color: theme.colors.textTertiary,
   },
   statusLine: {
     width: 2,
     height: 24,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: theme.colors.border,
     marginLeft: 15,
     marginVertical: 4,
   },
   infoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: 16,
     marginHorizontal: 16,
     marginBottom: 16,
@@ -151,7 +152,7 @@ export const orderTrackingStyles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginLeft: 12,
   },
   backButton: {

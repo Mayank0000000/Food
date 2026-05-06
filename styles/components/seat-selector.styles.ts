@@ -1,6 +1,7 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const seatSelectorStyles = StyleSheet.create({
+export const createSeatSelectorStyles = (theme: Theme) => StyleSheet.create({
   container: {
     padding: 16,
     marginBottom: 16,
@@ -8,7 +9,7 @@ export const seatSelectorStyles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 16,
   },
   legend: {
@@ -17,7 +18,7 @@ export const seatSelectorStyles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   legendItem: {
     flexDirection: 'row',
@@ -31,7 +32,7 @@ export const seatSelectorStyles = StyleSheet.create({
   },
   legendText: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
   seatsGrid: {
     flexDirection: 'row',
@@ -45,16 +46,16 @@ export const seatSelectorStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 12,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.card : '#f9f9f9',
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: theme.colors.border,
   },
   seatDisabled: {
     opacity: 0.5,
   },
   seatSelected: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFF5F2',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   seatIcon: {
     width: 36,
@@ -67,20 +68,20 @@ export const seatSelectorStyles = StyleSheet.create({
   seatNumber: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
   },
   seatNumberDisabled: {
-    color: '#999',
+    color: theme.colors.textTertiary,
   },
   seatNumberSelected: {
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   seatTypes: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: theme.colors.border,
   },
   seatTypeItem: {
     flexDirection: 'row',
@@ -89,6 +90,6 @@ export const seatSelectorStyles = StyleSheet.create({
   },
   seatTypeText: {
     fontSize: 11,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
 });

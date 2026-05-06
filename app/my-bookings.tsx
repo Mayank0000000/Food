@@ -4,18 +4,21 @@ import { Alert } from '@/components/ui/alert';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ScreenHeader } from '@/components/ui/screen-header';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { dineService } from '@/services/dine.service';
 import { useAppSelector } from '@/store/hooks';
-import { myBookingsStyles } from '@/styles/screens/my-bookings.styles';
+import { createMyBookingsStyles } from '@/styles/screens/my-bookings.styles';
 import { DineBooking } from '@/types/dine.types';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MyBookings() {
   const { t } = useCMS();
   const router = useRouter();
+  const { theme, colors } = useTheme();
+  const myBookingsStyles = useMemo(() => createMyBookingsStyles(theme), [theme]);
   const { user } = useAppSelector((state) => state.auth);
   const [bookings, setBookings] = useState<DineBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -112,7 +115,7 @@ export default function MyBookings() {
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={handleRefresh}
-              colors={['#FF6B35']}
+              colors={[colors.primary]}
             />
           }
         />

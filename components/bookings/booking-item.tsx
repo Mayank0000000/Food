@@ -3,7 +3,8 @@ import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { myBookingsStyles } from '@/styles/screens/my-bookings.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createMyBookingsStyles } from '@/styles/screens/my-bookings.styles';
 import { DineBooking } from '@/types/dine.types';
 import {
     formatDate,
@@ -14,7 +15,7 @@ import {
     isBookingActive,
 } from '@/utils/bookingUtils';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface BookingItemProps {
   booking: DineBooking;
@@ -23,6 +24,8 @@ interface BookingItemProps {
 
 export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const myBookingsStyles = useMemo(() => createMyBookingsStyles(theme), [theme]);
   const statusColor = getStatusColor(booking);
   const statusText = getStatusText(booking);
   const active = isBookingActive(booking);
@@ -47,28 +50,28 @@ export const BookingItem: React.FC<BookingItemProps> = ({ booking, onCancel }) =
 
       <RView style={myBookingsStyles.bookingDetails}>
         <RView style={myBookingsStyles.detailRow}>
-          <Ionicons name="calendar-outline" size={16} color="#666" />
+          <Ionicons name="calendar-outline" size={16} color={colors.textSecondary} />
           <Text variant="body" style={myBookingsStyles.detailText}>
             {formatDate(booking.bookedAt)}
           </Text>
         </RView>
 
         <RView style={myBookingsStyles.detailRow}>
-          <Ionicons name="time-outline" size={16} color="#666" />
+          <Ionicons name="time-outline" size={16} color={colors.textSecondary} />
           <Text variant="body" style={myBookingsStyles.detailText}>
             {formatTime(booking.bookedAt)} - {formatTime(booking.bookedUntil)}
           </Text>
         </RView>
 
         <RView style={myBookingsStyles.detailRow}>
-          <Ionicons name="hourglass-outline" size={16} color="#666" />
+          <Ionicons name="hourglass-outline" size={16} color={colors.textSecondary} />
           <Text variant="body" style={myBookingsStyles.detailText}>
             {getDuration(booking.bookedAt, booking.bookedUntil)}
           </Text>
         </RView>
 
         <RView style={myBookingsStyles.detailRow}>
-          <Ionicons name="fast-food-outline" size={16} color="#666" />
+          <Ionicons name="fast-food-outline" size={16} color={colors.textSecondary} />
           <Text variant="body" style={myBookingsStyles.detailText}>
             {booking.cartItems.length === 1 
               ? t('bookings.items', { count: booking.cartItems.length.toString() })

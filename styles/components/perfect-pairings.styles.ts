@@ -1,8 +1,9 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const perfectPairingsStyles = StyleSheet.create({
+export const createPerfectPairingsStyles = (theme: Theme) => StyleSheet.create({
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.card,
     padding: 16,
     marginBottom: 8,
   },
@@ -19,7 +20,7 @@ export const perfectPairingsStyles = StyleSheet.create({
   titleText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginLeft: 8,
   },
   scroll: {
@@ -37,7 +38,7 @@ export const perfectPairingsStyles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 12,
-    backgroundColor: '#333',
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

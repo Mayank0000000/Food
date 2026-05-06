@@ -5,14 +5,15 @@ import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { reviewService } from '@/services/review.service';
 import { useAppSelector } from '@/store/hooks';
-import { myOrdersStyles } from '@/styles/screens/my-orders.styles';
+import { createMyOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import { formatOrderDate, getOrderStatusColor, getOrderStatusText } from '@/utils/orderUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 
 interface OrderItemProps {
@@ -22,6 +23,8 @@ interface OrderItemProps {
 }
 
 export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPress }) => {
+  const { theme, colors } = useTheme();
+  const myOrdersStyles = useMemo(() => createMyOrdersStyles(theme), [theme]);
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
   const [selectedItemForReview, setSelectedItemForReview] = useState<{
     id: number;
@@ -97,7 +100,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
       <RView style={myOrdersStyles.itemsSection}>
         {order.items.map((item, index) => (
           <RView key={index} style={myOrdersStyles.itemRow}>
-            <Ionicons name="square" size={12} color="#FF6B35" style={{ marginRight: 8 }} />
+            <Ionicons name="square" size={12} color={colors.primary} style={{ marginRight: 8 }} />
             <Text variant="body" style={myOrdersStyles.itemQuantity}>
               {item.quantity} x
             </Text>
@@ -128,7 +131,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
             {hasReviewed ? (
               // Already reviewed — show actual rating stars, non-tappable
               <RView style={myOrdersStyles.ratingSection}>
-                <Text variant="caption" style={[myOrdersStyles.rateLabel, { color: '#FF6B35' }]}>
+                <Text variant="caption" style={[myOrdersStyles.rateLabel, { color: colors.primary }]}>
                   Rated
                 </Text>
                 <RView style={myOrdersStyles.stars}>
@@ -137,7 +140,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
                       key={star}
                       name={star <= userRating ? 'star' : 'star-outline'}
                       size={16}
-                      color={star <= userRating ? '#FF6B35' : '#D1D5DB'}
+                      color={star <= userRating ? colors.primary : colors.border}
                       style={{ marginLeft: 2 }}
                     />
                   ))}
@@ -158,7 +161,7 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
                       key={star}
                       name="star-outline"
                       size={16}
-                      color="#D1D5DB"
+                      color={colors.border}
                       style={{ marginLeft: 2 }}
                     />
                   ))}

@@ -9,21 +9,24 @@ import { MenuListSkeleton } from '@/components/ui/skeleton';
 import { Text } from '@/components/ui/text';
 import { AVAILABLE_COUPONS } from '@/data/coupons';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart, fetchCart, updateCartItemQuantity } from '@/store/slices/cartSlice';
-import { cartStyles } from '@/styles/screens/cart.styles';
+import { createCartStyles } from '@/styles/screens/cart.styles';
 import { Coupon } from '@/types/coupon.types';
 import { PaymentMethod } from '@/types/order.types';
 import { getCartSummary, validateCoupon } from '@/utils/cartCalculations';
 import { requestLocationPermission } from '@/utils/locationUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Cart() {
   const { t } = useCMS();
+  const { theme } = useTheme();
+  const cartStyles = useMemo(() => createCartStyles(theme), [theme]);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { cart, isLoading } = useAppSelector((state) => state.cart);

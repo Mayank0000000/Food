@@ -1,23 +1,24 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const cartStyles = StyleSheet.create({
+export const createCartStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   listContent: {
     padding: 16,
@@ -25,18 +26,18 @@ export const cartStyles = StyleSheet.create({
   couponSection: {
     paddingHorizontal: 16,
     paddingBottom: 12,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   billContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: theme.colors.border,
   },
   billTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 12,
   },
   billRow: {
@@ -47,23 +48,23 @@ export const cartStyles = StyleSheet.create({
   },
   billLabel: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
   billValue: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
     fontWeight: '500',
   },
   discountLabel: {
-    color: '#22C55E',
+    color: theme.colors.success,
   },
   discountValue: {
-    color: '#22C55E',
+    color: theme.colors.success,
     fontWeight: '600',
   },
   totalRow: {
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: theme.colors.border,
     paddingTop: 12,
     marginTop: 8,
     marginBottom: 16,
@@ -71,12 +72,12 @@ export const cartStyles = StyleSheet.create({
   totalLabel: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   totalValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   ctaContainer: {
     flexDirection: 'row',

@@ -1,8 +1,9 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const categoryTabsStyles = StyleSheet.create({
+export const createCategoryTabsStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     paddingTop: 16,
   },
   scrollContent: {
@@ -16,20 +17,20 @@ export const categoryTabsStyles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#FF6B35',
+    borderBottomColor: theme.colors.primary,
   },
   tabText: {
     fontSize: 16,
-    color: '#999',
+    color: theme.colors.textSecondary,
     fontWeight: '500',
   },
   tabTextActive: {
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '600',
   },
   itemCount: {
     fontSize: 14,
-    color: '#999',
+    color: theme.colors.textSecondary,
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 8,

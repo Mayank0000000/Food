@@ -1,10 +1,10 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-// Styles for My Orders screen
-export const myOrdersStyles = StyleSheet.create({
+export const createMyOrdersStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -12,9 +12,9 @@ export const myOrdersStyles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   backButton: {
     width: 40,
@@ -25,7 +25,7 @@ export const myOrdersStyles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   loadingContainer: {
     flex: 1,
@@ -35,14 +35,14 @@ export const myOrdersStyles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     marginHorizontal: 16,
     marginVertical: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: theme.colors.border,
   },
   searchIcon: {
     marginRight: 8,
@@ -50,7 +50,7 @@ export const myOrdersStyles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
     padding: 0,
   },
   clearButton: {
@@ -76,7 +76,7 @@ export const myOrdersStyles = StyleSheet.create({
     height: 60,
     borderRadius: 8,
     marginRight: 12,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   headerInfo: {
     flex: 1,
@@ -84,17 +84,17 @@ export const myOrdersStyles = StyleSheet.create({
   restaurantName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 2,
   },
   restaurantLocation: {
     fontSize: 13,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 2,
   },
   viewMenu: {
     fontSize: 13,
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '500',
   },
   menuButton: {
@@ -113,14 +113,14 @@ export const myOrdersStyles = StyleSheet.create({
   },
   itemQuantity: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
     fontWeight: '500',
     marginRight: 6,
     marginLeft: 2,
   },
   itemName: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
     flex: 1,
   },
   orderDetails: {
@@ -128,7 +128,7 @@ export const myOrdersStyles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 13,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 4,
   },
   statusText: {
@@ -142,7 +142,7 @@ export const myOrdersStyles = StyleSheet.create({
   totalAmount: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -155,15 +155,15 @@ export const myOrdersStyles = StyleSheet.create({
   },
   rateLabel: {
     fontSize: 13,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginRight: 8,
   },
   stars: {
     flexDirection: 'row',
   },
   reorderButton: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderRadius: 8,

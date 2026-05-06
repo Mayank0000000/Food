@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { filterModalStyles } from '@/styles/components/filter-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createFilterModalStyles } from '@/styles/components/filter-modal.styles';
 import { FilterModalProps } from '@/types/components/filter-modal.types';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Modal, ScrollView, TouchableOpacity } from 'react-native';
 
 type FilterSection = 'sortBy' | 'rating' | 'offers' | 'foodType';
@@ -21,6 +22,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   onApplyFilters,
 }) => {
   const { t } = useCMS();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createFilterModalStyles(theme), [theme]);
   const [tempFilters, setTempFilters] = useState(activeFilters);
   const [activeSection, setActiveSection] = useState<FilterSection>('sortBy');
   const scrollViewRef = useRef<ScrollView>(null);
@@ -72,27 +75,27 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       onRequestClose={onClose}
     >
       <TouchableOpacity 
-        style={filterModalStyles.overlay}
+        style={styles.overlay}
         activeOpacity={1}
         onPress={onClose}
       >
         <TouchableOpacity 
           activeOpacity={1} 
-          style={filterModalStyles.container}
+          style={styles.container}
           onPress={(e) => e.stopPropagation()}
         >
-          <RView style={filterModalStyles.header}>
-            <Text variant="title" style={filterModalStyles.title}>
+          <RView style={styles.header}>
+            <Text variant="title" style={styles.title}>
               {t('filters.title')}
             </Text>
             <TouchableOpacity onPress={handleClear}>
-              <Text variant="body" style={filterModalStyles.clearText}>
+              <Text variant="body" style={styles.clearText}>
                 {t('filters.clearAll')}
               </Text>
             </TouchableOpacity>
           </RView>
 
-          <RView style={filterModalStyles.content}>
+          <RView style={styles.content}>
             <FilterSidebar 
               activeSection={activeSection}
               onSectionChange={scrollToSection}
@@ -100,7 +103,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
             <ScrollView 
               ref={scrollViewRef}
-              style={filterModalStyles.mainContent} 
+              style={styles.mainContent} 
               showsVerticalScrollIndicator={false}
             >
               <RView ref={sortByRef}>
@@ -121,20 +124,20 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             </ScrollView>
           </RView>
 
-          <RView style={filterModalStyles.footer}>
+          <RView style={styles.footer}>
             <Button
               title={t('filters.close')}
               variant="outline"
               size="large"
               onPress={onClose}
-              style={filterModalStyles.footerButton}
+              style={styles.footerButton}
             />
             <Button
               title={t('filters.showResults', { count: 0 })}
               variant="primary"
               size="large"
               onPress={handleApply}
-              style={filterModalStyles.footerButton}
+              style={styles.footerButton}
             />
           </RView>
         </TouchableOpacity>

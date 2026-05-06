@@ -1,24 +1,28 @@
 import { BiometricToggle } from '@/components/account/biometric-toggle';
 import { LanguageSelector } from '@/components/settings/language-selector';
+import { ThemeToggle } from '@/components/settings/theme-toggle';
 import { Alert as CustomAlert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { dineService } from '@/services/dine.service';
 import { notificationHistoryService } from '@/services/notification-history.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
-import { accountStyles } from '@/styles/screens/account.styles';
+import { createAccountStyles } from '@/styles/screens/account.styles';
 import { DineBooking } from '@/types/dine.types';
 import { getBiometricStatus, toggleBiometric } from '@/utils/biometric';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Account() {
   const { t, getLanguage, getAvailableLanguages } = useCMS();
+  const { theme, colors } = useTheme();
+  const accountStyles = useMemo(() => createAccountStyles(theme), [theme]);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -124,6 +128,14 @@ export default function Account() {
       },
     },
     {
+      icon: 'chatbubbles-outline',
+      title: 'Customer Support',
+      subtitle: 'Chat with our AI assistant',
+      onPress: () => {
+        router.push('/chat');
+      },
+    },
+    {
       icon: 'person-outline',
       title: t('account.menuItems.editProfile'),
       onPress: () => {
@@ -193,13 +205,13 @@ export default function Account() {
               <Ionicons
                 name={item.icon as any}
                 size={24}
-                color="#666"
+                color={colors.textSecondary}
                 style={accountStyles.menuIcon}
               />
               <RView style={{ flex: 1 }}>
                 <Text variant="body" style={accountStyles.menuText}>{item.title}</Text>
                 {item.subtitle && (
-                  <Text variant="caption" style={{ color: '#999', marginTop: 2 }}>
+                  <Text variant="caption" style={{ color: colors.textTertiary, marginTop: 2 }}>
                     {item.subtitle}
                   </Text>
                 )}
@@ -228,6 +240,9 @@ export default function Account() {
           biometricEnabled={biometricEnabled}
           onToggle={handleBiometricToggle}
         />
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         <Text variant="caption" style={accountStyles.version}>Version 1.0.0</Text>
       </RView>

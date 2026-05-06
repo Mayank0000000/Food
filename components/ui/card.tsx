@@ -1,11 +1,15 @@
 import { RView } from '@/components/ui/rview';
-import { cardStyles } from '@/styles/components/card.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCardStyles } from '@/styles/components/card.styles';
 import { CardProps } from '@/types/components/card.types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export const Card: React.FC<CardProps> = ({ children, style }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createCardStyles(theme), [theme]);
+
   return (
-    <RView style={[cardStyles.container, style]}>
+    <RView style={[styles.container, style]}>
       {children}
     </RView>
   );

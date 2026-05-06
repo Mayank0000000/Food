@@ -1,15 +1,16 @@
+import { Theme } from '@/types/theme.types';
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export const filterModalStyles = StyleSheet.create({
+export const createFilterModalStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'flex-end',
   },
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: SCREEN_HEIGHT * 0.7,
@@ -20,16 +21,16 @@ export const filterModalStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: theme.colors.border,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
   },
   clearText: {
     fontSize: 14,
-    color: '#999',
+    color: theme.colors.textSecondary,
   },
   content: {
     flexDirection: 'row',
@@ -37,7 +38,7 @@ export const filterModalStyles = StyleSheet.create({
   },
   sidebar: {
     width: 90,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.background : '#F8F8F8',
     paddingVertical: 20,
     position: 'relative',
   },
@@ -53,15 +54,15 @@ export const filterModalStyles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 3,
-    backgroundColor: '#FF6B35',
+    backgroundColor: theme.colors.primary,
   },
   sidebarText: {
     fontSize: 11,
-    color: '#666',
+    color: theme.colors.textSecondary,
     textAlign: 'center',
   },
   sidebarTextActive: {
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '600',
   },
   mainContent: {
@@ -80,12 +81,12 @@ export const filterModalStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 12,
   },
   selectedOption: {
     fontSize: 14,
-    color: '#FF6B35',
+    color: theme.colors.primary,
     flex: 1,
     textAlign: 'right',
   },
@@ -97,16 +98,16 @@ export const filterModalStyles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#fff',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
   },
   sortOptionCardActive: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFF5F2',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   sortOptionText: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
   },
   optionGrid: {
     flexDirection: 'row',
@@ -122,39 +123,39 @@ export const filterModalStyles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#fff',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
   },
   optionCardActive: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFF5F2',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   optionText: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
   },
   offerOption: {
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#fff',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
   },
   offerOptionActive: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFF5F2',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   offerText: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
   },
   footer: {
     flexDirection: 'row',
     padding: 20,
     gap: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    borderTopColor: theme.colors.border,
   },
   footerButton: {
     flex: 1,

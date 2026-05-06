@@ -2,10 +2,11 @@ import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { orderProgressBannerStyles } from '@/styles/components/order-progress-banner.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createOrderProgressBannerStyles } from '@/styles/components/order-progress-banner.styles';
 import { OrderProgressBannerProps } from '@/types/components/order-progress-banner.types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Animated } from 'react-native';
 
 export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
@@ -13,6 +14,8 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
   onTrackOrder,
 }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const orderProgressBannerStyles = useMemo(() => createOrderProgressBannerStyles(theme), [theme]);
   const [progress] = useState(new Animated.Value(0));
   const [progressPercent, setProgressPercent] = useState(0);
   const [shouldHide, setShouldHide] = useState(false);
@@ -73,7 +76,7 @@ export const OrderProgressBanner: React.FC<OrderProgressBannerProps> = ({
     <RView style={orderProgressBannerStyles.container}>
       <RView style={orderProgressBannerStyles.header}>
         <RView style={orderProgressBannerStyles.iconContainer}>
-          <Ionicons name="bicycle" size={24} color="#FF6B35" />
+          <Ionicons name="bicycle" size={24} color={colors.primary} />
         </RView>
         <RView style={orderProgressBannerStyles.textContainer}>
           <Text style={orderProgressBannerStyles.title}>

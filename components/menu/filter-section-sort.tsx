@@ -1,9 +1,10 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { filterModalStyles } from '@/styles/components/filter-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createFilterModalStyles } from '@/styles/components/filter-modal.styles';
 import { FilterModalState } from '@/types/components/filter-modal.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 interface FilterSectionSortProps {
@@ -12,6 +13,8 @@ interface FilterSectionSortProps {
 }
 
 export const FilterSectionSort: React.FC<FilterSectionSortProps> = ({ filters, onUpdate }) => {
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createFilterModalStyles(theme), [theme]);
   const getSortLabel = () => {
     switch (filters.sortBy) {
       case 'priceLowToHigh': return 'Price: Low to High';
@@ -29,28 +32,28 @@ export const FilterSectionSort: React.FC<FilterSectionSortProps> = ({ filters, o
   ];
 
   return (
-    <RView style={filterModalStyles.section}>
-      <RView style={filterModalStyles.sectionHeader}>
-        <Text variant="subtitle" style={filterModalStyles.sectionTitle}>
+    <RView style={styles.section}>
+      <RView style={styles.sectionHeader}>
+        <Text variant="subtitle" style={styles.sectionTitle}>
           Sort by
         </Text>
-        <Text variant="caption" style={filterModalStyles.selectedOption}>
+        <Text variant="caption" style={styles.selectedOption}>
           {getSortLabel()}
         </Text>
-        <Ionicons name="chevron-down" size={16} color="#FF6B35" />
+        <Ionicons name="chevron-down" size={16} color={colors.primary} />
       </RView>
       
-      <RView style={filterModalStyles.sortOptions}>
+      <RView style={styles.sortOptions}>
         {sortOptions.map((option) => (
           <TouchableOpacity
             key={option.value}
             style={[
-              filterModalStyles.sortOptionCard,
-              filters.sortBy === option.value && filterModalStyles.sortOptionCardActive,
+              styles.sortOptionCard,
+              filters.sortBy === option.value && styles.sortOptionCardActive,
             ]}
             onPress={() => onUpdate({ ...filters, sortBy: option.value })}
           >
-            <Text variant="body" style={filterModalStyles.sortOptionText}>
+            <Text variant="body" style={styles.sortOptionText}>
               {option.label}
             </Text>
           </TouchableOpacity>

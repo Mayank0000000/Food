@@ -2,10 +2,11 @@ import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { seatSelectorStyles } from '@/styles/components/seat-selector.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createSeatSelectorStyles } from '@/styles/components/seat-selector.styles';
 import { Seat } from '@/types/dine.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface SeatSelectorProps {
   seats: Seat[];
@@ -18,6 +19,8 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
   selectedSeatId,
   onSelectSeat,
 }) => {
+  const { theme, colors } = useTheme();
+  const seatSelectorStyles = useMemo(() => createSeatSelectorStyles(theme), [theme]);
   const getSeatIcon = (type: Seat['type']) => {
     switch (type) {
       case 'single':
@@ -106,19 +109,19 @@ export const SeatSelector: React.FC<SeatSelectorProps> = ({
 
       <RView style={seatSelectorStyles.seatTypes}>
         <RView style={seatSelectorStyles.seatTypeItem}>
-          <Ionicons name="person" size={16} color="#666" />
+          <Ionicons name="person" size={16} color={colors.textSecondary} />
           <Text variant="caption" style={seatSelectorStyles.seatTypeText}>
             Single (1-8)
           </Text>
         </RView>
         <RView style={seatSelectorStyles.seatTypeItem}>
-          <Ionicons name="people" size={16} color="#666" />
+          <Ionicons name="people" size={16} color={colors.textSecondary} />
           <Text variant="caption" style={seatSelectorStyles.seatTypeText}>
             Double (9-16)
           </Text>
         </RView>
         <RView style={seatSelectorStyles.seatTypeItem}>
-          <Ionicons name="people-circle" size={16} color="#666" />
+          <Ionicons name="people-circle" size={16} color={colors.textSecondary} />
           <Text variant="caption" style={seatSelectorStyles.seatTypeText}>
             Family (17-20)
           </Text>

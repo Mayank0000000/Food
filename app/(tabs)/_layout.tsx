@@ -1,19 +1,22 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useCMS } from '@/hooks/useCMS';
-import { tabStyles } from '@/styles/tabs.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createTabStyles } from '@/styles/tabs.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 export default function TabLayout() {
   const { t } = useCMS();
   const { isAuthenticated, isLoading } = useAuth('/(auth)/login');
+  const { theme, colors } = useTheme();
+  const tabStyles = useMemo(() => createTabStyles(theme), [theme]);
 
   if (isLoading) {
     return (
       <View style={tabStyles.loadingContainer}>
-        <ActivityIndicator size="large" color="#ff6b35" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -26,8 +29,8 @@ export default function TabLayout() {
     <Tabs
       initialRouteName="home"
       screenOptions={{
-        tabBarActiveTintColor: '#ff6b35',
-        tabBarInactiveTintColor: '#999',
+        tabBarActiveTintColor: colors.tabBarActive,
+        tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarStyle: tabStyles.tabBar,
         tabBarLabelStyle: tabStyles.tabBarLabel,
         headerShown: false,

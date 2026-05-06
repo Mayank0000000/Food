@@ -17,6 +17,10 @@ export const formatOrderDate = (dateString: string): string => {
  * Get status color based on order status
  */
 export const getOrderStatusColor = (status: Order['status']): string => {
+  if (!status) {
+    return '#6B7280';
+  }
+  
   switch (status) {
     case 'delivered':
       return '#22C55E';
@@ -37,6 +41,10 @@ export const getOrderStatusColor = (status: Order['status']): string => {
  * Get status text based on order status
  */
 export const getOrderStatusText = (status: Order['status']): string => {
+  if (!status) {
+    return 'Unknown';
+  }
+  
   switch (status) {
     case 'delivered':
       return 'Delivered';
@@ -63,7 +71,7 @@ export const filterOrdersByQuery = (orders: Order[], query: string): Order[] => 
 
   const lowerQuery = query.toLowerCase();
   return orders.filter((order) =>
-    order.items.some((item) => item.name.toLowerCase().includes(lowerQuery))
+    order.items.some((item) => item.name && item.name.toLowerCase().includes(lowerQuery))
   );
 };
 

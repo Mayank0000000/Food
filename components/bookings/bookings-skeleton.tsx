@@ -1,10 +1,14 @@
 import { Card } from '@/components/ui/card';
 import { RView } from '@/components/ui/rview';
 import { Skeleton } from '@/components/ui/skeleton';
-import { myBookingsStyles } from '@/styles/screens/my-bookings.styles';
-import React from 'react';
+import { useTheme } from '@/hooks/useTheme';
+import { createMyBookingsStyles } from '@/styles/screens/my-bookings.styles';
+import React, { useMemo } from 'react';
 
 export const BookingsSkeleton: React.FC = () => {
+  const { theme } = useTheme();
+  const myBookingsStyles = useMemo(() => createMyBookingsStyles(theme), [theme]);
+  
   return (
     <RView style={myBookingsStyles.listContent}>
       {[1, 2, 3].map((index) => (

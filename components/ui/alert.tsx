@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { alertStyles } from '@/styles/components/alert.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createAlertStyles } from '@/styles/components/alert.styles';
 import { AlertProps } from '@/types/components/alert.types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Modal, Pressable } from 'react-native';
 
 export const Alert: React.FC<AlertProps> = ({
@@ -13,6 +14,9 @@ export const Alert: React.FC<AlertProps> = ({
   buttons = [],
   onDismiss,
 }) => {
+  const { theme } = useTheme();
+  const alertStyles = useMemo(() => createAlertStyles(theme), [theme]);
+
   const handleButtonPress = (onPress?: () => void) => {
     onPress?.();
     onDismiss?.();

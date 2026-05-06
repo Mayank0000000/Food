@@ -1,16 +1,17 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const alertStyles = StyleSheet.create({
+export const createAlertStyles = (theme: Theme) => StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
     width: '85%',
     maxWidth: 400,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -20,13 +21,13 @@ export const alertStyles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1F2937',
+    color: theme.colors.text,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
     fontSize: 14,
-    color: '#6B7280',
+    color: theme.colors.textSecondary,
     marginBottom: 20,
     textAlign: 'center',
     lineHeight: 20,
@@ -42,9 +43,9 @@ export const alertStyles = StyleSheet.create({
     marginRight: 0,
   },
   destructiveButton: {
-    borderColor: '#EF4444',
+    borderColor: theme.colors.error,
   },
   destructiveText: {
-    color: '#EF4444',
+    color: theme.colors.error,
   },
 });

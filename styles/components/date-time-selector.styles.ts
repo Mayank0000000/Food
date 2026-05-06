@@ -1,6 +1,7 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const dateTimeSelectorStyles = StyleSheet.create({
+export const createDateTimeSelectorStyles = (theme: Theme) => StyleSheet.create({
   container: {
     padding: 16,
     marginBottom: 16,
@@ -8,7 +9,7 @@ export const dateTimeSelectorStyles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginBottom: 12,
   },
   selectorsRow: {
@@ -20,16 +21,16 @@ export const dateTimeSelectorStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.card : '#f9f9f9',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: theme.colors.border,
   },
   iconContainer: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFF5F2',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -39,22 +40,22 @@ export const dateTimeSelectorStyles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
-    color: '#999',
+    color: theme.colors.textTertiary,
     marginBottom: 2,
   },
   value: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
   },
   // Modal styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '70%',
@@ -65,12 +66,12 @@ export const dateTimeSelectorStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
   },
   scrollView: {
     maxHeight: 400,
@@ -81,17 +82,17 @@ export const dateTimeSelectorStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    borderBottomColor: theme.colors.borderLight,
   },
   optionItemSelected: {
-    backgroundColor: '#FFF5F2',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   optionText: {
     fontSize: 16,
-    color: '#333',
+    color: theme.colors.text,
   },
   optionTextSelected: {
-    color: '#FF6B35',
+    color: theme.colors.primary,
     fontWeight: '600',
   },
 });

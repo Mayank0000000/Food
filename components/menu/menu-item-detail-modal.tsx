@@ -6,14 +6,15 @@ import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { useToast } from '@/contexts/toast-context';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { reviewService } from '@/services/review.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
-import { menuItemDetailModalStyles } from '@/styles/components/menu-item-detail-modal.styles';
+import { createMenuItemDetailModalStyles } from '@/styles/components/menu-item-detail-modal.styles';
 import { MenuItem, Review } from '@/types/menu.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Modal, ScrollView, TouchableOpacity } from 'react-native';
 
 interface MenuItemDetailModalProps {
@@ -27,6 +28,8 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
   item,
   onClose,
 }) => {
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createMenuItemDetailModalStyles(theme), [theme]);
   const { t } = useCMS();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
@@ -101,83 +104,83 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <RView style={menuItemDetailModalStyles.overlay}>
+      <RView style={styles.overlay}>
         <TouchableOpacity 
-          style={menuItemDetailModalStyles.backdrop}
+          style={styles.backdrop}
           activeOpacity={1}
           onPress={onClose}
         />
-        <RView style={menuItemDetailModalStyles.modalContainer}>
-          <RView style={menuItemDetailModalStyles.header}>
-            <Text variant="title" style={menuItemDetailModalStyles.headerTitle}>
+        <RView style={styles.modalContainer}>
+          <RView style={styles.header}>
+            <Text variant="title" style={styles.headerTitle}>
               {item.name}
             </Text>
             <TouchableOpacity 
-              style={menuItemDetailModalStyles.closeButton}
+              style={styles.closeButton}
               onPress={onClose}
             >
-              <Ionicons name="close" size={28} color="#333" />
+              <Ionicons name="close" size={28} color={colors.text} />
             </TouchableOpacity>
           </RView>
 
           <ScrollView 
-            style={menuItemDetailModalStyles.scrollView}
-            contentContainerStyle={menuItemDetailModalStyles.scrollViewContent}
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
             bounces={true}
           >
             <Image 
               source={{ uri: item.image }}
-              style={menuItemDetailModalStyles.image}
+              style={styles.image}
               contentFit="cover"
             />
 
-            <RView style={menuItemDetailModalStyles.content}>
-              <RView style={menuItemDetailModalStyles.indicators}>
+            <RView style={styles.content}>
+              <RView style={styles.indicators}>
                 <VegIndicator isVeg={item.veg} />
-                <RView style={menuItemDetailModalStyles.spicyBadge}>
-                  <Ionicons name="flame" size={14} color="#FF6B35" />
-                  <Text variant="caption" style={menuItemDetailModalStyles.spicyText}>
+                <RView style={styles.spicyBadge}>
+                  <Ionicons name="flame" size={14} color={colors.primary} />
+                  <Text variant="caption" style={styles.spicyText}>
                     {t('menu.spicy')}
                   </Text>
                 </RView>
               </RView>
 
-              <RView style={menuItemDetailModalStyles.titleRow}>
-                <RView style={menuItemDetailModalStyles.actions}>
-                  <PressableView style={menuItemDetailModalStyles.iconButton} onPress={() => {}}>
-                    <Ionicons name="bookmark-outline" size={24} color="#333" />
+              <RView style={styles.titleRow}>
+                <RView style={styles.actions}>
+                  <PressableView style={styles.iconButton} onPress={() => {}}>
+                    <Ionicons name="bookmark-outline" size={24} color={colors.text} />
                   </PressableView>
-                  <PressableView style={menuItemDetailModalStyles.iconButton} onPress={() => {}}>
-                    <Ionicons name="share-social-outline" size={24} color="#333" />
+                  <PressableView style={styles.iconButton} onPress={() => {}}>
+                    <Ionicons name="share-social-outline" size={24} color={colors.text} />
                   </PressableView>
                 </RView>
               </RView>
 
-              <Text variant="body" style={menuItemDetailModalStyles.description}>
+              <Text variant="body" style={styles.description}>
                 {item.dishInfo}
               </Text>
 
-              <RView style={menuItemDetailModalStyles.ratingContainer}>
-                <Ionicons name="star" size={18} color="#FF6B35" />
-                <Text variant="body" style={menuItemDetailModalStyles.rating}>
+              <RView style={styles.ratingContainer}>
+                <Ionicons name="star" size={18} color={colors.primary} />
+                <Text variant="body" style={styles.rating}>
                   {averageRating}
                 </Text>
-                <Text variant="body" style={menuItemDetailModalStyles.reviews}>
+                <Text variant="body" style={styles.reviews}>
                   {t('menu.reviews', { count: totalReviews.toString() })}
                 </Text>
               </RView>
 
-              <RView style={menuItemDetailModalStyles.prepTimeContainer}>
-                <Ionicons name="time-outline" size={18} color="#666" />
-                <Text variant="body" style={menuItemDetailModalStyles.prepTime}>
+              <RView style={styles.prepTimeContainer}>
+                <Ionicons name="time-outline" size={18} color={colors.textSecondary} />
+                <Text variant="body" style={styles.prepTime}>
                   {t('menu.prepTime', { time: item.prepTime.toString() })}
                 </Text>
               </RView>
 
               {item.discount > 0 && (
-                <RView style={menuItemDetailModalStyles.discountBadge}>
-                  <Text variant="body" style={menuItemDetailModalStyles.discountText}>
+                <RView style={styles.discountBadge}>
+                  <Text variant="body" style={styles.discountText}>
                     {t('menu.discount', { percent: item.discount.toString() })}
                   </Text>
                 </RView>
@@ -192,32 +195,32 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
             </RView>
           </ScrollView>
 
-          <RView style={menuItemDetailModalStyles.footer}>
-            <RView style={menuItemDetailModalStyles.quantityContainer}>
+          <RView style={styles.footer}>
+            <RView style={styles.quantityContainer}>
               <Button
                 variant="outline"
                 size="small"
                 onPress={() => handleQuantityChange(-1)}
-                style={menuItemDetailModalStyles.quantityButton}
+                style={styles.quantityButton}
               >
-                <Ionicons name="remove" size={20} color="#FF6B35" />
+                <Ionicons name="remove" size={20} color={colors.primary} />
               </Button>
-              <Text variant="body" style={menuItemDetailModalStyles.quantity}>
+              <Text variant="body" style={styles.quantity}>
                 {quantity}
               </Text>
               <Button
                 variant="outline"
                 size="small"
                 onPress={() => handleQuantityChange(1)}
-                style={menuItemDetailModalStyles.quantityButton}
+                style={styles.quantityButton}
               >
-                <Ionicons name="add" size={20} color="#FF6B35" />
+                <Ionicons name="add" size={20} color={colors.primary} />
               </Button>
             </RView>
             <Button
               title={t('menu.addItem', { price: (item.price * quantity).toString() })}
               onPress={handleAddToCart}
-              style={menuItemDetailModalStyles.addButton}
+              style={styles.addButton}
               disabled={isLoading}
             />
           </RView>

@@ -1,6 +1,7 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const cartItemStyles = StyleSheet.create({
+export const createCartItemStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     padding: 12,
@@ -25,13 +26,13 @@ export const cartItemStyles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginLeft: 8,
     flex: 1,
   },
   description: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 8,
   },
   footer: {
@@ -51,13 +52,13 @@ export const cartItemStyles = StyleSheet.create({
   quantity: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.text,
     marginHorizontal: 12,
   },
   price: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   removeButton: {
     position: 'absolute',

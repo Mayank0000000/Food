@@ -1,12 +1,15 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { couponBannerStyles } from '@/styles/components/coupon-banner.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCouponBannerStyles } from '@/styles/components/coupon-banner.styles';
 import { CouponBannerProps } from '@/types/coupon.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable } from 'react-native';
 
 export const CouponBanner: React.FC<CouponBannerProps> = ({ coupons, onPress }) => {
+  const { theme, colors } = useTheme();
+  const couponBannerStyles = useMemo(() => createCouponBannerStyles(theme), [theme]);
   const topCoupon = coupons[0];
   
   if (!topCoupon) return null;
@@ -38,7 +41,7 @@ export const CouponBanner: React.FC<CouponBannerProps> = ({ coupons, onPress }) 
         <Ionicons 
           name="chevron-forward" 
           size={20} 
-          color="#666" 
+          color={colors.textSecondary} 
           style={couponBannerStyles.chevron}
         />
       </Pressable>

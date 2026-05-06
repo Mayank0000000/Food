@@ -1,23 +1,24 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const tabStyles = StyleSheet.create({
+export const createTabStyles = (theme: Theme) => StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.background,
   },
   tabBar: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.tabBarBackground,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: theme.colors.border,
     height: 85,
     paddingBottom: 10,
     paddingTop: 10,
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: theme.mode === 'dark' ? 0.3 : 0.1,
     shadowRadius: 8,
     marginTop: -20,
   },

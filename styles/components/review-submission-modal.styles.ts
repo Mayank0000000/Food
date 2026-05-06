@@ -1,13 +1,14 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const reviewSubmissionModalStyles = StyleSheet.create({
+export const createReviewSubmissionModalStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '80%',
@@ -19,7 +20,7 @@ export const reviewSubmissionModalStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   title: {
     fontSize: 20,
@@ -30,7 +31,7 @@ export const reviewSubmissionModalStyles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 24,
   },
   ratingSection: {
@@ -47,12 +48,13 @@ export const reviewSubmissionModalStyles = StyleSheet.create({
   },
   feedbackInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: theme.colors.border,
     borderRadius: 12,
     padding: 12,
     fontSize: 16,
     minHeight: 100,
-    color: '#333',
+    color: theme.colors.text,
+    backgroundColor: theme.colors.inputBackground,
   },
   footer: {
     paddingHorizontal: 20,

@@ -7,20 +7,26 @@ import { RView } from '@/components/ui/rview';
 import { SearchInput } from '@/components/ui/search-input';
 import { MenuListSkeleton } from '@/components/ui/skeleton';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { clearPendingFilters } from '@/store/slices/explorerSlice';
 import { fetchMenu } from '@/store/slices/menuSlice';
-import { explorerStyles } from '@/styles/screens/explorer.styles';
+import { createExplorerStyles } from '@/styles/screens/explorer.styles';
 import { FilterState } from '@/types/components/filter-chips.types';
 import { GroupedMenu, MenuItem } from '@/types/menu.types';
 import { applyMenuFilters, groupMenuByCategory } from '@/utils/menuFilters';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Explorer() {
   const { t, getLanguage } = useCMS();
   const dispatch = useAppDispatch();
+  const { theme } = useTheme();
+  const explorerStyles = useMemo(() => createExplorerStyles(theme), [theme]);
   const { items: menuItems, isLoading } = useAppSelector((state) => state.menu);
+  const { pendingFilters, pendingCategory, pendingSearchQuery } = useAppSelector((state) => state.explorer);
   const currentLanguage = getLanguage();
   
   const [groupedMenu, setGroupedMenu] = useState<GroupedMenu>({});
@@ -36,6 +42,22 @@ export default function Explorer() {
     sortBy: 'relevance',
     minRating: null,
   });
+
+  // Apply pending filters when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (pendingFilters) {
+        setFilters(pendingFilters);
+        dispatch(clearPendingFilters());
+      }
+      if (pendingCategory) {
+        setSelectedCategory(pendingCategory);
+      }
+      if (pendingSearchQuery) {
+        setSearchQuery(pendingSearchQuery);
+      }
+    }, [pendingFilters, pendingCategory, pendingSearchQuery])
+  );
 
   useEffect(() => {
     dispatch(fetchMenu());

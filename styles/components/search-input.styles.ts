@@ -1,10 +1,11 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const searchInputStyles = StyleSheet.create({
+export const createSearchInputStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.mode === 'dark' ? theme.colors.card : '#F5F5F5',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -13,7 +14,7 @@ export const searchInputStyles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: theme.colors.text,
   },
   iconButton: {
     padding: 4,

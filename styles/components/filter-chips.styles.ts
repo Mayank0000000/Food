@@ -1,8 +1,9 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const filterChipsStyles = StyleSheet.create({
+export const createFilterChipsStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     paddingVertical: 12,
   },
   scrollContent: {
@@ -16,31 +17,31 @@ export const filterChipsStyles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#fff',
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.card,
     gap: 6,
   },
   chipActive: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFF5F2',
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.mode === 'dark' ? theme.colors.primary + '20' : '#FFF5F2',
   },
   chipText: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontWeight: '500',
   },
   chipTextActive: {
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   sortMenu: {
     position: 'absolute',
     top: 60,
     right: 20,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.card,
     borderRadius: 12,
     padding: 8,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -56,6 +57,6 @@ export const filterChipsStyles = StyleSheet.create({
   },
   sortOptionText: {
     fontSize: 14,
-    color: '#333',
+    color: theme.colors.text,
   },
 });

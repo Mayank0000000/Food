@@ -9,18 +9,19 @@ import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
 import { DURATION_OPTIONS } from '@/constants/dine.constants';
 import { useCMS } from '@/hooks/useCMS';
+import { useTheme } from '@/hooks/useTheme';
 import { dineService } from '@/services/dine.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart } from '@/store/slices/cartSlice';
-import { dineInStyles } from '@/styles/screens/dine-in.styles';
+import { createDineInStyles } from '@/styles/screens/dine-in.styles';
 import { DineBooking, Seat } from '@/types/dine.types';
 import {
-    calculateBookingEndTime,
-    getBookingSuccessMessage,
-    isValidBookingTime
+  calculateBookingEndTime,
+  getBookingSuccessMessage,
+  isValidBookingTime
 } from '@/utils/dineUtils';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -28,6 +29,8 @@ export default function DineIn() {
   const { t } = useCMS();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { theme } = useTheme();
+  const dineInStyles = useMemo(() => createDineInStyles(theme), [theme]);
   const { cart } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
 

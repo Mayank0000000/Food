@@ -1,9 +1,10 @@
+import { Theme } from '@/types/theme.types';
 import { StyleSheet } from 'react-native';
 
-export const myBookingsStyles = StyleSheet.create({
+export const createMyBookingsStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -11,9 +12,9 @@ export const myBookingsStyles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   backButton: {
     width: 40,
@@ -24,7 +25,7 @@ export const myBookingsStyles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   loadingContainer: {
     flex: 1,
@@ -74,7 +75,7 @@ export const myBookingsStyles = StyleSheet.create({
     marginBottom: 12,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: theme.colors.border,
   },
   detailRow: {
     flexDirection: 'row',
@@ -83,7 +84,7 @@ export const myBookingsStyles = StyleSheet.create({
   },
   detailText: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
   },
   bookingFooter: {
     flexDirection: 'row',
@@ -93,7 +94,7 @@ export const myBookingsStyles = StyleSheet.create({
   totalAmount: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: theme.colors.primary,
   },
   cancelButton: {
     paddingHorizontal: 20,
@@ -102,12 +103,12 @@ export const myBookingsStyles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: theme.colors.border,
   },
   itemsTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 8,
   },
   itemRow: {
@@ -118,12 +119,12 @@ export const myBookingsStyles = StyleSheet.create({
   },
   itemName: {
     fontSize: 12,
-    color: '#666',
+    color: theme.colors.textSecondary,
     flex: 1,
   },
   itemPrice: {
     fontSize: 12,
-    color: '#333',
+    color: theme.colors.text,
     fontWeight: '500',
   },
 });

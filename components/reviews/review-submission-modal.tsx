@@ -4,9 +4,10 @@ import { RView } from '@/components/ui/rview';
 import { StarRating } from '@/components/ui/star-rating';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { reviewSubmissionModalStyles } from '@/styles/components/review-submission-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createReviewSubmissionModalStyles } from '@/styles/components/review-submission-modal.styles';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Alert,
   Modal,
@@ -28,6 +29,8 @@ export const ReviewSubmissionModal: React.FC<ReviewSubmissionModalProps> = ({
   onSubmit,
 }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const reviewSubmissionModalStyles = useMemo(() => createReviewSubmissionModalStyles(theme), [theme]);
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,7 +79,7 @@ export const ReviewSubmissionModal: React.FC<ReviewSubmissionModalProps> = ({
               {t('reviews.rateYourExperience')}
             </Text>
             <PressableView onPress={handleClose}>
-              <Ionicons name="close" size={28} color="#333" />
+              <Ionicons name="close" size={28} color={colors.text} />
             </PressableView>
           </RView>
 
@@ -106,7 +109,7 @@ export const ReviewSubmissionModal: React.FC<ReviewSubmissionModalProps> = ({
               <TextInput
                 style={reviewSubmissionModalStyles.feedbackInput}
                 placeholder={t('reviews.feedbackPlaceholder')}
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textTertiary}
                 value={feedback}
                 onChangeText={setFeedback}
                 multiline

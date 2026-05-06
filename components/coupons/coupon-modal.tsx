@@ -1,10 +1,11 @@
 import { CouponCard } from '@/components/coupons/coupon-card';
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { couponModalStyles } from '@/styles/components/coupon-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createCouponModalStyles } from '@/styles/components/coupon-modal.styles';
 import { CouponModalProps } from '@/types/coupon.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Modal, ScrollView, TouchableOpacity } from 'react-native';
 
 export const CouponModal: React.FC<CouponModalProps> = ({
@@ -14,6 +15,8 @@ export const CouponModal: React.FC<CouponModalProps> = ({
   onApply,
   appliedCouponId,
 }) => {
+  const { theme, colors } = useTheme();
+  const couponModalStyles = useMemo(() => createCouponModalStyles(theme), [theme]);
   return (
     <Modal
       visible={visible}
@@ -31,7 +34,7 @@ export const CouponModal: React.FC<CouponModalProps> = ({
           <RView style={couponModalStyles.header}>
             <Text style={couponModalStyles.title}>Available Coupons</Text>
             <TouchableOpacity style={couponModalStyles.closeButton} onPress={onClose}>
-              <Ionicons name="close" size={24} color="#333" />
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </RView>
 
@@ -43,7 +46,7 @@ export const CouponModal: React.FC<CouponModalProps> = ({
           >
             {coupons.length === 0 ? (
               <RView style={couponModalStyles.emptyContainer}>
-                <Ionicons name="pricetag-outline" size={60} color="#ccc" />
+                <Ionicons name="pricetag-outline" size={60} color={colors.border} />
                 <Text style={couponModalStyles.emptyText}>
                   No coupons available
                 </Text>

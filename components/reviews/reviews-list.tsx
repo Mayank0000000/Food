@@ -2,10 +2,11 @@ import { RView } from '@/components/ui/rview';
 import { StarRating } from '@/components/ui/star-rating';
 import { Text } from '@/components/ui/text';
 import { useCMS } from '@/hooks/useCMS';
-import { reviewsListStyles } from '@/styles/components/reviews-list.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createReviewsListStyles } from '@/styles/components/reviews-list.styles';
 import { Review } from '@/types/menu.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface ReviewsListProps {
   reviews: Review[];
@@ -19,6 +20,8 @@ export const ReviewsList: React.FC<ReviewsListProps> = ({
   totalReviews,
 }) => {
   const { t } = useCMS();
+  const { theme, colors } = useTheme();
+  const reviewsListStyles = useMemo(() => createReviewsListStyles(theme), [theme]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -39,7 +42,7 @@ export const ReviewsList: React.FC<ReviewsListProps> = ({
   if (reviews.length === 0) {
     return (
       <RView style={reviewsListStyles.emptyContainer}>
-        <Ionicons name="chatbox-outline" size={48} color="#ccc" />
+        <Ionicons name="chatbox-outline" size={48} color={colors.border} />
         <Text variant="body" style={reviewsListStyles.emptyText}>
           {t('reviews.noReviews')}
         </Text>

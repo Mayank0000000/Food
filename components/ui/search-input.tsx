@@ -1,8 +1,9 @@
 import { RView } from '@/components/ui/rview';
-import { searchInputStyles } from '@/styles/components/search-input.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createSearchInputStyles } from '@/styles/components/search-input.styles';
 import { SearchInputProps } from '@/types/components/search-input.types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TextInput, TouchableOpacity } from 'react-native';
 
 export const SearchInput: React.FC<SearchInputProps> = ({
@@ -13,30 +14,33 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   style,
   ...props
 }) => {
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createSearchInputStyles(theme), [theme]);
+
   const handleClear = () => {
     onChangeText('');
     onClear?.();
   };
 
   return (
-    <RView style={[searchInputStyles.container, style]}>
-      <Ionicons name="search-outline" size={20} color="#999" />
+    <RView style={[styles.container, style]}>
+      <Ionicons name="search-outline" size={20} color={colors.textSecondary} />
       
       <TextInput
-        style={searchInputStyles.input}
+        style={styles.input}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#999"
+        placeholderTextColor={colors.textTertiary}
         {...props}
       />
       
       {value.length > 0 && (
         <TouchableOpacity 
-          style={searchInputStyles.iconButton}
+          style={styles.iconButton}
           onPress={handleClear}
         >
-          <Ionicons name="close-circle" size={20} color="#999" />
+          <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       )}
     </RView>

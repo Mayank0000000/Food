@@ -1,11 +1,12 @@
+import { Theme } from '@/types/theme.types';
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export const couponModalStyles = StyleSheet.create({
+export const createCouponModalStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
     justifyContent: 'flex-end',
   },
   backdrop: {
@@ -14,10 +15,10 @@ export const couponModalStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.overlay,
   },
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: SCREEN_HEIGHT * 0.75,
@@ -28,13 +29,13 @@ export const couponModalStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
-    backgroundColor: '#fff',
+    borderBottomColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
   },
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: theme.colors.text,
   },
   closeButton: {
     padding: 4,
@@ -53,7 +54,7 @@ export const couponModalStyles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#999',
+    color: theme.colors.textSecondary,
     marginTop: 12,
   },
 });

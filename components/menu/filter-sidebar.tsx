@@ -1,8 +1,9 @@
 import { RView } from '@/components/ui/rview';
 import { Text } from '@/components/ui/text';
-import { filterModalStyles } from '@/styles/components/filter-modal.styles';
+import { useTheme } from '@/hooks/useTheme';
+import { createFilterModalStyles } from '@/styles/components/filter-modal.styles';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 type FilterSection = 'sortBy' | 'rating' | 'offers' | 'foodType';
@@ -20,27 +21,30 @@ const sidebarItems = [
 ];
 
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({ activeSection, onSectionChange }) => {
+  const { theme, colors } = useTheme();
+  const styles = useMemo(() => createFilterModalStyles(theme), [theme]);
+
   return (
-    <RView style={filterModalStyles.sidebar}>
+    <RView style={styles.sidebar}>
       {sidebarItems.map((item) => {
         const isActive = activeSection === item.id;
         return (
           <TouchableOpacity 
             key={item.id}
-            style={filterModalStyles.sidebarItem}
+            style={styles.sidebarItem}
             onPress={() => onSectionChange(item.id)}
           >
-            {isActive && <RView style={filterModalStyles.activeIndicator} />}
+            {isActive && <RView style={styles.activeIndicator} />}
             <Ionicons 
               name={item.icon as any}
               size={20} 
-              color={isActive ? '#FF6B35' : '#999'} 
+              color={isActive ? colors.primary : colors.textSecondary} 
             />
             <Text 
               variant="caption" 
               style={[
-                filterModalStyles.sidebarText,
-                isActive && filterModalStyles.sidebarTextActive
+                styles.sidebarText,
+                isActive && styles.sidebarTextActive
               ]}
             >
               {item.label}
