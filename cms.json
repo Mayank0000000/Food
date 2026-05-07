@@ -233,6 +233,47 @@
       "paymentMethods": "Payment Methods",
       "addresses": "Addresses"
     },
+    "editProfile": {
+      "title": "Edit Profile",
+      "personalInfo": "Personal Information",
+      "nameLabel": "NAME",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "EMAIL",
+      "emailPlaceholder": "Enter your email",
+      "phoneLabel": "PHONE",
+      "phonePlaceholder": "Enter your phone number",
+      "changePassword": "Change Password",
+      "currentPasswordLabel": "CURRENT PASSWORD",
+      "currentPasswordPlaceholder": "Enter current password",
+      "newPasswordLabel": "NEW PASSWORD",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPasswordLabel": "CONFIRM PASSWORD",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "validation": {
+        "nameRequired": "Name is required",
+        "nameMinLength": "Name must be at least 2 characters",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordRequired": "New password is required",
+        "newPasswordMinLength": "Password must be at least 6 characters",
+        "passwordsDoNotMatch": "Passwords do not match"
+      },
+      "alerts": {
+        "successTitle": "Success",
+        "profileUpdated": "Profile updated successfully!",
+        "passwordChanged": "Password changed successfully!",
+        "errorTitle": "Error",
+        "updateFailed": "Failed to update profile. Please try again.",
+        "invalidPassword": "Current password is incorrect",
+        "discardTitle": "Discard Changes?",
+        "discardMessage": "You have unsaved changes. Are you sure you want to discard them?",
+        "discard": "Discard",
+        "keepEditing": "Keep Editing"
+      }
+    },
     "biometric": {
       "login": "{{type}} Login",
       "notAvailable": "Not available on this device",

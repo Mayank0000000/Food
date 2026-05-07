@@ -139,7 +139,7 @@ export default function Account() {
       icon: 'person-outline',
       title: t('account.menuItems.editProfile'),
       onPress: () => {
-        showComingSoon(t('account.menuItems.editProfile'));
+        router.push('/edit-profile');
       },
     },
     {

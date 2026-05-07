@@ -8,7 +8,7 @@ export const createInputStyles = (theme: Theme) => StyleSheet.create({
   label: {
     fontSize: 12,
     color: theme.colors.textSecondary,
-    marginBottom: 8,
+    marginBottom: 12,
     fontWeight: '600',
   },
   input: {

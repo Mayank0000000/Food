@@ -5,7 +5,7 @@ export const passwordInputStyles = StyleSheet.create({
     marginBottom: 20,
   },
   labelContainer: {
-    marginBottom: 8,
+    marginBottom: 12,
   },
   label: {
     fontSize: 12,

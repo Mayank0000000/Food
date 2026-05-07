@@ -3,9 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
+  phone?: string;
 }
 
 interface AuthState {
@@ -78,6 +79,11 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+      // Also update AsyncStorage
+      AsyncStorage.setItem('user', JSON.stringify(action.payload));
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
@@ -130,5 +136,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, updateUser } = authSlice.actions;
 export default authSlice.reducer;
