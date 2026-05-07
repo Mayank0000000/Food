@@ -34,7 +34,7 @@ const CHAT_STORAGE_KEY = '@chat_messages';
 export default function ChatScreen() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { theme, colors } = useTheme();
+  const { theme, colors, setTheme } = useTheme();
   const chatScreenStyles = useMemo(() => createChatScreenStyles(theme), [theme]);
   const { messages, isLoading } = useAppSelector((state) => state.chat);
   const { user } = useAppSelector((state) => state.auth);
@@ -107,12 +107,26 @@ export default function ChatScreen() {
     // Send to chatbot
     const result = await dispatch(sendMessage({ message: messageText, userId: user?.id.toString() }));
     
+    // Handle theme action if present
+    if (result.payload && typeof result.payload === 'object' && 'themeAction' in result.payload) {
+      const themeAction = (result.payload as any).themeAction;
+      if (themeAction) {
+        handleThemeChange(themeAction);
+      }
+    }
+    
     // Handle navigation action if present
     if (result.payload && typeof result.payload === 'object' && 'navigationAction' in result.payload) {
       const navigationAction = (result.payload as any).navigationAction;
       if (navigationAction) {
         handleNavigation(navigationAction);
       }
+    }
+  };
+
+  const handleThemeChange = (action: any) => {
+    if (action.type === 'setTheme' && action.mode) {
+      setTheme(action.mode);
     }
   };
 

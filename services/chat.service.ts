@@ -185,6 +185,36 @@ const localIntents: LocalIntent[] = [
     }),
     priority: 2,
   },
+  
+  // THEME SWITCHING
+  {
+    pattern: /(switch|change|toggle|set|enable|turn on|go to|use)\s+(to\s+)?(dark|light)\s+(mode|theme)/i,
+    handler: (query) => {
+      const isDark = /dark/i.test(query);
+      return {
+        message: `Switching to ${isDark ? 'dark' : 'light'} mode! ✨`,
+        themeAction: {
+          type: 'setTheme',
+          mode: isDark ? 'dark' : 'light',
+        },
+      };
+    },
+    priority: 1,
+  },
+  {
+    pattern: /^(dark|light)\s+(mode|theme)$/i,
+    handler: (query) => {
+      const isDark = /dark/i.test(query);
+      return {
+        message: `Switching to ${isDark ? 'dark' : 'light'} mode! ✨`,
+        themeAction: {
+          type: 'setTheme',
+          mode: isDark ? 'dark' : 'light',
+        },
+      };
+    },
+    priority: 1,
+  },
 ];
 
 class ChatService {
@@ -423,6 +453,7 @@ ${context ? `\nContext: ${context}` : ''}`;
           message: localResponse.message,
           navigationAction: localResponse.navigationAction,
           menuItems: localResponse.menuItems,
+          themeAction: localResponse.themeAction,
         };
       }
 

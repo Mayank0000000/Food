@@ -3,6 +3,8 @@ import { CouponBanner } from '@/components/coupons/coupon-banner';
 import { CouponModal } from '@/components/coupons/coupon-modal';
 import { DynamicBanners } from '@/components/home/dynamic-banners';
 import { PerfectPairings } from '@/components/home/perfect-pairings';
+import { TopRated } from '@/components/home/top-rated';
+import { MenuItemDetailModal } from '@/components/menu/menu-item-detail-modal';
 import { OrderProgressBanner } from '@/components/order/order-progress-banner';
 import { Carousel } from '@/components/ui/carousel';
 import { RView } from '@/components/ui/rview';
@@ -16,6 +18,7 @@ import { fetchMenu } from '@/store/slices/menuSlice';
 import { fetchActiveOrders } from '@/store/slices/orderSlice';
 import { createHomeStyles } from '@/styles/screens/home.styles';
 import { Banner } from '@/types/banner.types';
+import { MenuItem } from '@/types/menu.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -43,6 +46,8 @@ export default function Home() {
   const { user } = useAppSelector((state) => state.auth);
   const [isCouponModalVisible, setIsCouponModalVisible] = useState(false);
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(null);
+  const [isMenuItemModalVisible, setIsMenuItemModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(fetchMenu());
@@ -84,6 +89,16 @@ export default function Home() {
     router.push(`/order-tracking?orderId=${orderId}`);
   };
 
+  const handleTopRatedItemPress = (item: MenuItem) => {
+    setSelectedMenuItem(item);
+    setIsMenuItemModalVisible(true);
+  };
+
+  const handleCloseMenuItemModal = () => {
+    setIsMenuItemModalVisible(false);
+    setSelectedMenuItem(null);
+  };
+
   // Filter out orders that are 100% complete (past estimated delivery time)
   const activeOrdersToShow = activeOrders?.filter((order) => {
     const estimatedTime = new Date(order.estimatedDeliveryTime).getTime();
@@ -98,7 +113,6 @@ export default function Home() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Carousel images={CAROUSEL_IMAGES} height={250} autoPlay={true} />
 
-        {/* Show progress banner for each active order that hasn't been delivered yet */}
         {activeOrdersToShow.length > 0 && activeOrdersToShow.map((order) => (
           <OrderProgressBanner 
             key={order.id}
@@ -106,11 +120,6 @@ export default function Home() {
             onTrackOrder={() => handleTrackOrder(order.id)} 
           />
         ))}
-
-        {/* Dynamic Banners Section */}
-        {banners.length > 0 && (
-          <DynamicBanners banners={banners} />
-        )}
 
         <RView style={homeStyles.infoCard}>
           <RView style={homeStyles.header}>
@@ -136,6 +145,7 @@ export default function Home() {
               </Text>
             </RView>
           </RView>
+
           <RView style={homeStyles.detailsRow}>
             <RView style={homeStyles.detailItem}>
               <Ionicons name="location-outline" size={16} color="#666" />
@@ -173,6 +183,14 @@ export default function Home() {
           coupons={AVAILABLE_COUPONS}
         />
 
+        {/* Top Rated Section */}
+        <TopRated 
+          items={menuItems} 
+          isLoading={isLoading}
+          onItemPress={handleTopRatedItemPress}
+        />
+
+        {/* Perfect Pairings Section */}
         <PerfectPairings items={perfectPairings} isLoading={isLoading} />
 
         <RView style={homeStyles.deliveryOffer}>
@@ -181,7 +199,20 @@ export default function Home() {
             {t('home.freeDeliveryText')}<Text style={homeStyles.goldText}>{t('home.goldText')}</Text>
           </Text>
         </RView>
+
+        {banners.length > 0 && (
+          <DynamicBanners banners={banners} />
+        )}
       </ScrollView>
+
+      {/* Menu Item Detail Modal */}
+      {selectedMenuItem && (
+        <MenuItemDetailModal
+          item={selectedMenuItem}
+          visible={isMenuItemModalVisible}
+          onClose={handleCloseMenuItemModal}
+        />
+      )}
 
       <FloatingChatButton />
     </SafeAreaView>

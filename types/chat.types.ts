@@ -23,11 +23,17 @@ export interface ChatState {
   sessionId: string | null;
 }
 
+export interface ThemeAction {
+  type: 'setTheme';
+  mode: 'light' | 'dark';
+}
+
 export interface AIResponse {
   message: string;
   suggestions?: string[];
   navigationAction?: NavigationAction;
   menuItems?: string[]; // Menu item IDs to display
+  themeAction?: ThemeAction;
 }
 
 export interface NavigationAction {
@@ -55,4 +61,5 @@ export interface LocalIntentResponse {
   message: string;
   navigationAction?: NavigationAction;
   menuItems?: string[]; // Menu item IDs to display
+  themeAction?: ThemeAction;
 }

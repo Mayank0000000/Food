@@ -107,7 +107,15 @@ export default function Explorer() {
           <SearchInput
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder={t('explorer.searchPlaceholder')}
+            placeholders={[
+              t('explorer.searchPlaceholder'),
+              'Search "Biryani"...',
+              'Search "Pizza"...',
+              'Search "Burger"...',
+              'Search "Pasta"...',
+              'Search "Desserts"...',
+            ]}
+            placeholderInterval={3000}
           />
         </RView>
         <MenuListSkeleton count={6} />
@@ -121,7 +129,15 @@ export default function Explorer() {
         <SearchInput
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder={t('explorer.searchPlaceholder')}
+          placeholders={[
+            t('explorer.searchPlaceholder'),
+            'Search "Biryani"...',
+            'Search "Pizza"...',
+            'Search "Burger"...',
+            'Search "Pasta"...',
+            'Search "Desserts"...',
+          ]}
+          placeholderInterval={3000}
         />
       </RView>
 

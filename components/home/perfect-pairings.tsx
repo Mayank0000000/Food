@@ -33,9 +33,6 @@ export const PerfectPairings: React.FC<PerfectPairingsProps> = ({ items, isLoadi
             Perfect pairings for you
           </Text>
         </RView>
-        <TouchableOpacity>
-          <Ionicons name="chevron-up" size={20} color={colors.text} />
-        </TouchableOpacity>
       </RView>
 
       {isLoading ? (
@@ -47,13 +44,13 @@ export const PerfectPairings: React.FC<PerfectPairingsProps> = ({ items, isLoadi
           contentContainerStyle={styles.scroll}
         >
           {items.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.card}>
+            <RView key={item.id} style={styles.card}>
               <Image
                 source={{ uri: item.image }}
                 style={styles.image}
                 contentFit="cover"
               />
-            </TouchableOpacity>
+            </RView>
           ))}
           <TouchableOpacity style={styles.menuButton} onPress={handleMenuClick}>
             <Ionicons name="restaurant" size={24} color="#fff" />
