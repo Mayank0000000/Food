@@ -6,6 +6,17 @@ export interface LocationPermissionResult {
   error?: string;
 }
 
+export interface ReverseGeocodedAddress {
+  street?: string;
+  city?: string;
+  region?: string;
+  postalCode?: string;
+  country?: string;
+  name?: string;
+  district?: string;
+  subregion?: string;
+}
+
 /**
  * Request location permission and get current location
  */
@@ -35,6 +46,40 @@ export const requestLocationPermission = async (): Promise<LocationPermissionRes
       granted: false,
       error: error instanceof Error ? error.message : 'Failed to get location',
     };
+  }
+};
+
+/**
+ * Reverse geocode coordinates to get address details
+ */
+export const reverseGeocode = async (
+  latitude: number,
+  longitude: number
+): Promise<ReverseGeocodedAddress | null> => {
+  try {
+    const results = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
+
+    if (results && results.length > 0) {
+      const result = results[0];
+      return {
+        street: result.street || result.name,
+        city: result.city || result.district || result.subregion,
+        region: result.region,
+        postalCode: result.postalCode,
+        country: result.country,
+        name: result.name,
+        district: result.district,
+        subregion: result.subregion,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Reverse geocoding error:', error);
+    return null;
   }
 };
 

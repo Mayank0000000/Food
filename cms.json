@@ -53,7 +53,9 @@
     "perfectPairingsTitle": "Perfect pairings for you",
     "menuButton": "Menu",
     "freeDeliveryText": "Get FREE delivery above ₹49 with ",
-    "goldText": "GOLD"
+    "goldText": "GOLD",
+    "topRatedTitle": "Top Rated Dishes",
+    "viewAll": "View All"
   },
   "explorer": {
     "searchPlaceholder": "Search dishes...",
@@ -231,7 +233,12 @@
       "editProfile": "Edit Profile",
       "notifications": "Notifications",
       "paymentMethods": "Payment Methods",
-      "addresses": "Addresses"
+      "addresses": "Addresses",
+      "bookmarks": "Bookmarks",
+      "bookmarksSubtitle": "Your favorite dishes",
+      "customerSupport": "Customer Support",
+      "customerSupportSubtitle": "Chat with our AI assistant",
+      "language": "Language"
     },
     "editProfile": {
       "title": "Edit Profile",
@@ -373,6 +380,27 @@
     "addAddress": "Add Address",
     "deliveryInstructions": "Delivery Instructions",
     "instructionsPlaceholder": "Add delivery instructions (optional)"
+  },
+  "addresses": {
+    "title": "My Addresses",
+    "addNewAddress": "Add New Address",
+    "setAsDefault": "Set as Default",
+    "default": "Default",
+    "landmark": "Landmark",
+    "noAddresses": "No Addresses",
+    "noAddressesSubtitle": "Add your delivery addresses for faster checkout",
+    "deleteAddress": "Delete Address",
+    "deleteAddressConfirm": "Are you sure you want to delete",
+    "addressTypes": {
+      "home": "Home",
+      "work": "Work",
+      "other": "Other"
+    }
+  },
+  "bookmarks": {
+    "title": "Bookmarks",
+    "noBookmarks": "No Bookmarks Yet",
+    "noBookmarksSubtitle": "Save your favorite dishes to quickly find them later"
   },
   "coupons": {
     "title": "Apply Coupon",

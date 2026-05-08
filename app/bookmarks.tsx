@@ -79,7 +79,7 @@ export default function Bookmarks() {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
-        <ScreenHeader title="Bookmarks" showBackButton />
+        <ScreenHeader title={t('bookmarks.title')} showBackButton />
         <RView style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </RView>
@@ -89,7 +89,7 @@ export default function Bookmarks() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScreenHeader title="Bookmarks" showBackButton />
+      <ScreenHeader title={t('bookmarks.title')} showBackButton />
       
       <FlatList
         data={bookmarks}
@@ -111,8 +111,8 @@ export default function Bookmarks() {
             icon="bookmark-outline"
             iconSize={80}
             iconColor={colors.textTertiary}
-            title="No Bookmarks Yet"
-            subtitle="Save your favorite dishes to quickly find them later"
+            title={t('bookmarks.noBookmarks')}
+            subtitle={t('bookmarks.noBookmarksSubtitle')}
           />
         }
         refreshControl={

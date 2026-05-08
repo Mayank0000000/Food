@@ -43,16 +43,16 @@ export const getAccountMenuItems = ({
     },
     {
       icon: 'bookmark-outline',
-      title: 'Bookmarks',
-      subtitle: 'Your favorite dishes',
+      title: t('account.menuItems.bookmarks'),
+      subtitle: t('account.menuItems.bookmarksSubtitle'),
       onPress: () => {
         router.push('/bookmarks');
       },
     },
     {
       icon: 'chatbubbles-outline',
-      title: 'Customer Support',
-      subtitle: 'Chat with our AI assistant',
+      title: t('account.menuItems.customerSupport'),
+      subtitle: t('account.menuItems.customerSupportSubtitle'),
       onPress: () => {
         router.push('/chat');
       },
@@ -72,9 +72,17 @@ export const getAccountMenuItems = ({
         router.push('/notifications');
       },
     },
+
+    {
+      icon: 'location-outline',
+      title: t('account.menuItems.addresses'),
+      onPress: () => {
+        router.push('/addresses');
+      },
+    },
     {
       icon: 'language-outline',
-      title: 'Language',
+      title: t('account.menuItems.language'),
       subtitle: currentLanguageName,
       onPress: onLanguagePress,
     },

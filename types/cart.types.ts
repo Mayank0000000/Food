@@ -21,3 +21,11 @@ export interface CartState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface CartSummary {
+  itemTotal: number;
+  deliveryFee: number;
+  taxes: number;
+  discount: number;
+  finalTotal: number;
+}

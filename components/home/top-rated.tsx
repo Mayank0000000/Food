@@ -2,6 +2,7 @@ import { VegIndicator } from '@/components/menu/veg-indicator';
 import { RView } from '@/components/ui/rview';
 import { PairingSkeleton } from '@/components/ui/skeleton';
 import { Text } from '@/components/ui/text';
+import { useCMS } from '@/hooks/useCMS';
 import { useTheme } from '@/hooks/useTheme';
 import { reviewService } from '@/services/review.service';
 import { createTopRatedStyles } from '@/styles/components/top-rated.styles';
@@ -24,6 +25,7 @@ interface MenuItemWithRating extends MenuItem {
 }
 
 export const TopRated: React.FC<TopRatedProps> = ({ items, isLoading, onItemPress }) => {
+  const { t } = useCMS();
   const router = useRouter();
   const { theme, colors } = useTheme();
   const styles = useMemo(() => createTopRatedStyles(theme), [theme]);
@@ -99,12 +101,12 @@ export const TopRated: React.FC<TopRatedProps> = ({ items, isLoading, onItemPres
         <RView style={styles.titleContainer}>
           <Ionicons name="star" size={22} color={colors.warning} />
           <Text variant="subtitle" style={styles.titleText}>
-            Top Rated Dishes
+            {t('home.topRatedTitle')}
           </Text>
         </RView>
         <TouchableOpacity onPress={handleViewAll} style={styles.viewAllButton}>
           <Text variant="caption" style={styles.viewAllText}>
-            View All
+            {t('home.viewAll')}
           </Text>
           <Ionicons name="chevron-forward" size={16} color={colors.primary} />
         </TouchableOpacity>

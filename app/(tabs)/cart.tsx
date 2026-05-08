@@ -1,3 +1,4 @@
+import { BillSummary } from '@/components/cart/bill-summary';
 import { CartItemComponent } from '@/components/cart/cart-item';
 import { CouponBanner } from '@/components/coupons/coupon-banner';
 import { CouponModal } from '@/components/coupons/coupon-modal';
@@ -280,74 +281,15 @@ export default function Cart() {
         onConfirm={handlePaymentConfirm}
       />
 
-     <RView style={cartStyles.billContainer}>
-        <Text variant="subtitle" style={cartStyles.billTitle}>
-          {t('cart.billSummary')}
-        </Text>
-        
-        <RView style={cartStyles.billRow}>
-          <Text variant="body" style={cartStyles.billLabel}>
-            {t('cart.itemTotal')}
-          </Text>
-          <Text variant="body" style={cartStyles.billValue}>
-            ₹{cartSummary?.itemTotal}
-          </Text>
-        </RView>
-
-        <RView style={cartStyles.billRow}>
-          <Text variant="body" style={cartStyles.billLabel}>
-            {t('cart.deliveryFee')}
-          </Text>
-          <Text variant="body" style={cartStyles.billValue}>
-            ₹{cartSummary?.deliveryFee}
-          </Text>
-        </RView>
-
-        <RView style={cartStyles.billRow}>
-          <Text variant="body" style={cartStyles.billLabel}>
-            {t('cart.gst')}
-          </Text>
-          <Text variant="body" style={cartStyles.billValue}>
-            ₹{cartSummary?.taxes}
-          </Text>
-        </RView>
-
-        {cartSummary && cartSummary.discount > 0 && (
-          <RView style={cartStyles.billRow}>
-            <Text variant="body" style={[cartStyles.billLabel, cartStyles.discountLabel]}>
-              {t('cart.discount')} ({appliedCoupon?.code})
-            </Text>
-            <Text variant="body" style={[cartStyles.billValue, cartStyles.discountValue]}>
-              -₹{Math.round(cartSummary.discount)}
-            </Text>
-          </RView>
-        )}
-
-        <RView style={[cartStyles.billRow, cartStyles.totalRow]}>
-          <Text variant="subtitle" style={cartStyles.totalLabel}>
-            {t('cart.toPay')}
-          </Text>
-          <Text variant="subtitle" style={cartStyles.totalValue}>
-            ₹{cartSummary?.finalTotal}
-          </Text>
-        </RView>
-
-        <RView style={cartStyles.ctaContainer}>
-          <Button
-            title={t('cart.dineInButton')}
-            onPress={handleDineIn}
-            variant="outline"
-            style={cartStyles.ctaButton}
-            disabled={isOrderLoading}
-          />
-          <Button
-            title={t('cart.orderButton')}
-            onPress={handleOrder}
-            style={cartStyles.ctaButton}
-            loading={isOrderLoading}
-          />
-        </RView>
-      </RView>
+      {cartSummary && (
+        <BillSummary
+          cartSummary={cartSummary}
+          appliedCouponCode={appliedCoupon?.code}
+          onDineIn={handleDineIn}
+          onOrder={handleOrder}
+          isOrderLoading={isOrderLoading}
+        />
+      )}
     </SafeAreaView>
   );
 }

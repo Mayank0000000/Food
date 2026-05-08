@@ -108,6 +108,8 @@ export default function Account() {
     return lang?.nativeName || 'English';
   };
 
+  const currentLanguage = getLanguage(); // Get current language for dependency
+
   const menuItems = useMemo(() => getAccountMenuItems({
     t,
     router,
@@ -115,7 +117,7 @@ export default function Account() {
     unreadNotificationsCount: unreadNotifications,
     currentLanguageName: getCurrentLanguageName(),
     onLanguagePress: () => setShowLanguageSelector(true),
-  }), [activeBookings.length, unreadNotifications, t]);
+  }), [activeBookings.length, unreadNotifications, currentLanguage]); // Use currentLanguage instead of t
 
   const getInitial = (name: string) => {
     return name ? name.charAt(0).toUpperCase() : 'U';

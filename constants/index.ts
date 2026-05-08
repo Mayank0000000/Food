@@ -8,3 +8,12 @@ export const CATEGORY_IMAGES: { [key: string]: string } = {
   'breakfast': 'https://images.pexels.com/photos/101533/pexels-photo-101533.jpeg',
   'bread': 'https://images.pexels.com/photos/209206/pexels-photo-209206.jpeg',
 };
+
+export const CAROUSEL_IMAGES = [
+  'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',
+  'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg',
+  'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg',
+  'https://images.pexels.com/photos/1633578/pexels-photo-1633578.jpeg',
+  'https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg',
+  'https://images.pexels.com/photos/1199957/pexels-photo-1199957.jpeg',
+];

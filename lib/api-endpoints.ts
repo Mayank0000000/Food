@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
     NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
     FEEDBACK: ENV.FEEDBACK_FILE_PATH || 'data/feedback.json',
     BOOKMARKS: ENV.BOOKMARKS_FILE_PATH || 'data/bookmarks.json',
+    ADDRESSES: ENV.ADDRESSES_FILE_PATH || 'data/address.json',
     // Language files
     LANGUAGES: {
       ENGLISH: 'data/english.json',
