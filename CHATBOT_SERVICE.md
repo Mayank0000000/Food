@@ -16,7 +16,7 @@ The service uses a two-tier architecture:
    - Navigation actions and app control
    - Zero latency, works offline
 
-2. **AI-Powered Responses** (Fallback)
+2. **AI-Powered Responses** (Fallback) 
    - Groq API with Llama 3.3 70B model
    - Context-aware responses using order history
    - Menu-aware recommendations
