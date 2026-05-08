@@ -1,50 +1,188 @@
-# Welcome to your Expo app 👋
+# FooD 🍔
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, feature-rich food delivery and restaurant booking mobile application built with React Native and Expo.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Authentication**: Secure login/signup with biometric authentication support
+- **Menu Explorer**: Browse restaurant menu with categories, filters, and search
+- **Order Management**: Place orders, track delivery in real-time, and view order history
+- **Dine-In Booking**: Reserve tables with date/time selection
+- **AI Chat Assistant**: Get food recommendations and support via AI-powered chat
+- **Multi-language Support**: Localized content for different languages
+- **Location Services**: Real-time delivery tracking with maps integration
+- **Notifications**: Push notifications for order updates and promotions
+- **Bookmarks**: Save favorite menu items
+- **Address Management**: Store and manage multiple delivery addresses
+- **Profile Management**: Edit profile, manage settings, and preferences
+- **Deep Linking**: Support for app navigation via URLs
 
+## Tech Stack
+
+- **Framework**: React Native with Expo
+- **Navigation**: Expo Router (file-based routing)
+- **State Management**: Redux Toolkit
+- **UI Components**: Custom components with React Native Reanimated
+- **Maps**: Expo Maps & React Native Maps
+- **Authentication**: Expo Local Authentication (biometric)
+- **Notifications**: Expo Notifications
+- **Chat**: React Native Gifted Chat
+- **Storage**: AsyncStorage
+- **API Integration**: Axios
+- **AI Services**: Groq
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI
+- iOS Simulator (Mac only) or Android Emulator
+- Expo Go app (for testing on physical devices)
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd food
+   ```
+
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+3. Set up environment variables:
    ```bash
-   npx expo start
+   cp .env.example .env
    ```
 
-In the output, you'll find options to open the app in a
+4. Configure your `.env` file with required API keys:
+   - **GitHub Token**: For data storage (create at https://github.com/settings/tokens)
+   - **OpenRouteService API Key**: For maps and directions (get at https://openrouteservice.org/dev/#/signup)
+   - **AI API Keys**: Choose one or more:
+     - Groq API (https://console.groq.com/keys) - RECOMMENDED, FREE & Fast
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Running the App
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+Start the development server:
 ```bash
-npm run reset-project
+npm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then choose your platform:
+- Press `i` for iOS simulator
+- Press `a` for Android emulator
+- Scan QR code with Expo Go app for physical device
 
-## Learn more
+### Platform-specific commands:
+```bash
+npm run ios      # Run on iOS
+npm run android  # Run on Android
+npm run web      # Run on web browser
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Project Structure
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+├── app/                    # File-based routing screens
+│   ├── (auth)/            # Authentication screens
+│   ├── (tabs)/            # Main tab navigation screens
+│   └── ...                # Other screens (chat, tracking, etc.)
+├── components/            # Reusable UI components
+│   ├── auth/             # Authentication components
+│   ├── home/             # Home screen components
+│   ├── menu/             # Menu-related components
+│   ├── orders/           # Order components
+│   ├── settings/         # Settings components
+│   └── ui/               # Generic UI components
+├── services/             # API and service integrations
+├── store/                # Redux store and slices
+├── hooks/                # Custom React hooks
+├── contexts/             # React contexts
+├── utils/                # Utility functions
+├── styles/               # Style definitions
+├── types/                # TypeScript type definitions
+├── constants/            # App constants
+├── config/               # Configuration files
+└── assets/               # Images, fonts, and other assets
+```
 
-## Join the community
+## Key Features Implementation
 
-Join our community of developers creating universal apps.
+### Authentication
+- Email/password authentication
+- Biometric authentication (fingerprint/face ID)
+- Secure token storage
+- Example users available in `example-users.json`
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Data Storage
+- GitHub-based backend for data persistence
+- JSON files stored in GitHub repository
+- Real-time data synchronization
+
+### AI Chat
+- Multiple AI provider support (Groq)
+- Context-aware food recommendations
+- Natural language order assistance
+
+### Order Tracking
+- Real-time delivery tracking
+- Map integration with route visualization
+- Push notifications for order status updates
+
+### Localization
+- Multi-language support
+- Dynamic content translation
+- Language selector in settings
+
+## Configuration
+
+### Deep Linking
+The app supports deep linking with the `food://` scheme. Configure your links in `app.json`.
+
+### Notifications
+Push notifications are configured for order updates and promotions. Permissions are requested on first launch.
+
+### Location Services
+Location permissions are required for delivery tracking and address management.
+
+## Development
+
+### Linting
+```bash
+npm run lint
+```
+
+### Type Checking
+The project uses TypeScript with typed routes enabled.
+
+## Building for Production
+
+### Android
+```bash
+eas build --platform android
+```
+
+### iOS
+```bash
+eas build --platform ios
+```
+
+## Environment Variables
+
+See `.env.example` for all required environment variables. Key configurations:
+
+- **GitHub Integration**: For data storage backend
+- **Maps API**: For location and routing features
+- **AI Services**: For chat assistant functionality
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+
