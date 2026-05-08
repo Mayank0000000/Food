@@ -114,8 +114,8 @@ class ApiClient {
           apiError.message = 'Network error. Please check your internet connection.';
         }
 
-        // Only log unexpected errors — 409 conflicts are handled by retry logic upstream
-        if (apiError.status !== 409) {
+        // Only log unexpected errors — 409 conflicts and 404 not found are handled by retry logic upstream
+        if (apiError.status !== 409 && apiError.status !== 404) {
           console.error('❌ API Error:', apiError);
         }
         return Promise.reject(apiError);

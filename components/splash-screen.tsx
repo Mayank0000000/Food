@@ -1,5 +1,6 @@
 import { biometricService } from '@/services/biometric.service';
 import { cmsService } from '@/services/cms.service';
+import { notificationService } from '@/services/notification.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { checkAuth } from '@/store/slices/authSlice';
 import { getLanguage } from '@/utils/language-storage';
@@ -12,7 +13,6 @@ import { RView } from './ui/rview';
 export default function SplashScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -42,6 +42,12 @@ export default function SplashScreen() {
         } else {
           router.replace('/(auth)/login');
         }
+        
+        // Mark app as ready for notification navigation
+        // Add a delay to ensure navigation is complete
+        setTimeout(() => {
+          notificationService.setAppReady();
+        }, 1000); // Increased to 1 second to ensure navigation completes
       }, 1500);
     };
 

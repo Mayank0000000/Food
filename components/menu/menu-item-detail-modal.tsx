@@ -12,10 +12,11 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
 import { createMenuItemDetailModalStyles } from '@/styles/components/menu-item-detail-modal.styles';
 import { MenuItem, Review } from '@/types/menu.types';
+import { checkBookmarkStatus, toggleBookmark } from '@/utils/bookmark.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import { Modal, ScrollView, TouchableOpacity } from 'react-native';
 
 interface MenuItemDetailModalProps {
   visible: boolean;
@@ -39,10 +40,13 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState('0.0');
   const [totalReviews, setTotalReviews] = useState(0);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarking, setIsBookmarking] = useState(false);
 
   useEffect(() => {
     if (visible && item) {
       loadReviews();
+      loadBookmarkStatus();
     }
   }, [visible, item]);
 
@@ -63,11 +67,32 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
     }
   };
 
+  const loadBookmarkStatus = async () => {
+    if (!item || !user) return;
+    
+    const bookmarked = await checkBookmarkStatus(user.id.toString(), item.id);
+    setIsBookmarked(bookmarked);
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (!item) return;
+
+    try {
+      setIsBookmarking(true);
+      const newBookmarkStatus = await toggleBookmark(user?.id.toString(), item);
+      setIsBookmarked(newBookmarkStatus);
+    } catch (error) {
+      // Error already logged in utils
+    } finally {
+      setIsBookmarking(false);
+    }
+  };
+
   if (!item) return null;
 
   const handleAddToCart = async () => {
     if (!user) {
-      Alert.alert('Error', 'Please login to add items to cart');
+      console.log('Please login to add items to cart');
       return;
     }
  
@@ -85,7 +110,7 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
       
       onClose();
     } catch (error) {
-      Alert.alert('Error', 'Failed to add item to cart: ' + error);
+      console.error('Failed to add item to cart:', error);
     }
   };
 
@@ -148,8 +173,16 @@ export const MenuItemDetailModal: React.FC<MenuItemDetailModalProps> = ({
 
               <RView style={styles.titleRow}>
                 <RView style={styles.actions}>
-                  <PressableView style={styles.iconButton} onPress={() => {}}>
-                    <Ionicons name="bookmark-outline" size={24} color={colors.text} />
+                  <PressableView 
+                    style={styles.iconButton} 
+                    onPress={handleBookmarkToggle}
+                    disabled={isBookmarking}
+                  >
+                    <Ionicons 
+                      name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+                      size={24} 
+                      color={isBookmarked ? colors.primary : colors.text} 
+                    />
                   </PressableView>
                   <PressableView style={styles.iconButton} onPress={() => {}}>
                     <Ionicons name="share-social-outline" size={24} color={colors.text} />

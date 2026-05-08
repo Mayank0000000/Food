@@ -4,7 +4,7 @@ import { NotificationConfig, NotificationData, NotificationType } from '@/types/
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-// Configure default notification behavior
+// default notification behavior
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -19,6 +19,8 @@ class NotificationService {
   private notificationListener: Notifications.Subscription | null = null;
   private responseListener: Notifications.Subscription | null = null;
   private currentUserId: string | null = null;
+  private pendingNotificationResponse: Notifications.NotificationResponse | null = null;
+  private isAppReady: boolean = false;
 
   /**
    * Initialize notification service
@@ -29,6 +31,9 @@ class NotificationService {
     }
     await this.requestPermissions();
     this.setupListeners();
+    
+    // Handle notification that opened the app (when app was closed)
+    await this.handleInitialNotification();
     
     if (Platform.OS === 'android') {
       await this.setupAndroidChannels();
@@ -100,6 +105,14 @@ class NotificationService {
       sound: 'default',
       showBadge: false,
     });
+
+    // Cart reminders channel
+    await Notifications.setNotificationChannelAsync('cart', {
+      name: 'Cart Reminders',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      sound: 'default',
+      showBadge: true,
+    });
   }
 
   /**
@@ -124,13 +137,57 @@ class NotificationService {
   }
 
   /**
+   * Handle notification that opened the app from closed state
+   */
+  private async handleInitialNotification() {
+    try {
+      const response = await Notifications.getLastNotificationResponseAsync();
+      
+      if (response) {
+        console.log('📱 App opened from notification, storing for later:', response.notification.request.content.data);
+        
+        // Store the notification response to handle after app is ready
+        this.pendingNotificationResponse = response;
+      }
+    } catch (error) {
+      console.error('Error handling initial notification:', error);
+    }
+  }
+
+  /**
+   * Mark app as ready and handle any pending notifications
+   * Call this after the app has completed initialization (after splash screen)
+   */
+  async setAppReady() {
+    console.log('📱 App is ready for navigation');
+    this.isAppReady = true;
+    
+    // Handle any pending notification
+    if (this.pendingNotificationResponse) {
+      console.log('📱 Processing pending notification');
+      await this.handleNotificationResponse(this.pendingNotificationResponse);
+      this.pendingNotificationResponse = null;
+    }
+  }
+
+  /**
    * Handle notification tap/response
    */
-  private handleNotificationResponse(response: Notifications.NotificationResponse) {
+  private async handleNotificationResponse(response: Notifications.NotificationResponse) {
     const data = response.notification.request.content.data;
+    
+    // If app is not ready yet, store for later
+    if (!this.isAppReady) {
+      console.log('📱 App not ready, storing notification for later');
+      this.pendingNotificationResponse = response;
+      return;
+    }
     
     // Navigate based on notification type
     if (data.type) {
+      // Import router dynamically to avoid circular dependencies
+      const { router } = await import('expo-router');
+      
       switch (data.type) {
         case NotificationType.ORDER_PLACED:
         case NotificationType.ORDER_CONFIRMED:
@@ -138,10 +195,10 @@ class NotificationService {
         case NotificationType.ORDER_OUT_FOR_DELIVERY:
         case NotificationType.ORDER_DELIVERED:
         case NotificationType.ORDER_CANCELLED:
-          // Navigate to order tracking or order details
+          // Navigate to order tracking with orderId
           if (data.orderId) {
-            console.log('Navigate to order:', data.orderId);
-            // router.push(`/order-tracking?orderId=${data.orderId}`);
+            console.log('📱 Navigating to order tracking:', data.orderId);
+            router.push(`/order-tracking?orderId=${data.orderId}`);
           }
           break;
         
@@ -149,8 +206,20 @@ class NotificationService {
         case NotificationType.BOOKING_REMINDER:
         case NotificationType.BOOKING_CANCELLED:
           // Navigate to bookings
-          console.log('Navigate to bookings');
-          // router.push('/my-bookings');
+          console.log('📱 Navigating to bookings');
+          router.push('/my-bookings');
+          break;
+        
+        case NotificationType.CART_REMINDER:
+          // Navigate to cart (use replace to override splash screen navigation)
+          console.log('📱 Navigating to cart');
+          router.replace('/(tabs)/cart');
+          break;
+        
+        case NotificationType.PROMOTION:
+          // Navigate to home or promotions section
+          console.log('📱 Navigating to home');
+          router.push('/(tabs)/home');
           break;
       }
     }
@@ -300,6 +369,10 @@ class NotificationService {
       type === NotificationType.BOOKING_CANCELLED
     ) {
       return 'bookings';
+    }
+
+    if (type === NotificationType.CART_REMINDER) {
+      return 'cart';
     }
 
     return 'promotions';
@@ -486,6 +559,64 @@ class NotificationService {
       body: `Your booking for Seat ${seatNumber} has been cancelled.`,
       data: { bookingId },
     });
+  }
+
+  /**
+   * Schedule cart reminder notification
+   * Sends a notification after specified seconds if user has items in cart
+   */
+  async scheduleCartReminder(itemCount: number, itemNames: string[], delaySeconds: number = 5) {
+    console.log(`🛒 Scheduling cart reminder for ${itemCount} items in ${delaySeconds} seconds`);
+    
+    try {
+      // Cancel any existing cart reminders first
+      await this.cancelCartReminders();
+      
+      // Create a friendly message based on item count
+      let body: string;
+      if (itemCount === 1) {
+        body = `You have ${itemNames[0]} in your cart. Complete your order now!`;
+      } else if (itemCount === 2) {
+        body = `You have ${itemNames[0]} and ${itemNames[1]} in your cart. Don't forget to checkout!`;
+      } else {
+        body = `You have ${itemCount} items in your cart including ${itemNames[0]}. Complete your order!`;
+      }
+      
+      const notificationId = await this.scheduleNotification(
+        {
+          type: NotificationType.CART_REMINDER,
+          title: '🛍️ Items in Your Cart',
+          body,
+          data: { itemCount, itemNames },
+        },
+        delaySeconds
+      );
+      
+      console.log('✅ Cart reminder scheduled, ID:', notificationId);
+      return notificationId;
+    } catch (error) {
+      console.error('❌ Error scheduling cart reminder:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Cancel all cart reminder notifications
+   */
+  async cancelCartReminders() {
+    try {
+      const scheduled = await this.getScheduledNotifications();
+      
+      for (const notification of scheduled) {
+        const data = notification.content.data as any;
+        if (data?.type === NotificationType.CART_REMINDER) {
+          await this.cancelNotification(notification.identifier);
+          console.log('🗑️ Cancelled cart reminder:', notification.identifier);
+        }
+      }
+    } catch (error) {
+      console.error('Error canceling cart reminders:', error);
+    }
   }
 }
 

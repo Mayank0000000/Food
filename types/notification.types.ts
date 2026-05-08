@@ -10,6 +10,7 @@ export enum NotificationType {
   BOOKING_REMINDER = 'booking_reminder',
   BOOKING_CANCELLED = 'booking_cancelled',
   PROMOTION = 'promotion',
+  CART_REMINDER = 'cart_reminder',
 }
 
 export interface NotificationData {

@@ -5,6 +5,7 @@ export const createMenuItemCardStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginBottom: 16,
+    position: 'relative',
   },
   image: {
     width: 120,
@@ -70,5 +71,24 @@ export const createMenuItemCardStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: theme.colors.text,
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: 20,
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });

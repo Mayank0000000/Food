@@ -10,9 +10,15 @@ import { MenuItemCardProps } from '@/types/components/menu-item-card.types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { useEffect, useMemo, useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
-export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => {
-  const { theme } = useTheme();
+export const MenuItemCard: React.FC<MenuItemCardProps> = ({ 
+  item, 
+  onPress, 
+  onRemove, 
+  showRemoveButton = false 
+}) => {
+  const { theme, colors } = useTheme();
   const styles = useMemo(() => createMenuItemCardStyles(theme), [theme]);
   const [averageRating, setAverageRating] = useState('0.0');
   const [totalReviews, setTotalReviews] = useState(0);
@@ -72,6 +78,17 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onPress }) => 
             </Text>
           </RView>
         </RView>
+
+        {/* Remove Button - Only shown when showRemoveButton is true */}
+        {showRemoveButton && onRemove && (
+          <TouchableOpacity 
+            style={styles.removeButton}
+            onPress={onRemove}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="trash-outline" size={20} color={colors.error} />
+          </TouchableOpacity>
+        )}
       </Card>
     </PressableView>
   );

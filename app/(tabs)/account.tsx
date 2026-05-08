@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import { createAccountStyles } from '@/styles/screens/account.styles';
 import { DineBooking } from '@/types/dine.types';
+import { getAccountMenuItems } from '@/utils/account-menu.utils';
 import { getBiometricStatus, toggleBiometric } from '@/utils/biometric';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -37,8 +38,7 @@ export default function Account() {
 
   // Alert states
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-  const [showComingSoonAlert, setShowComingSoonAlert] = useState(false);
-  const [comingSoonMessage, setComingSoonMessage] = useState('');
+
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   useFocusEffect(
@@ -99,10 +99,7 @@ export default function Account() {
     router.replace('/(auth)/login');
   };
 
-  const showComingSoon = (feature: string) => {
-    setComingSoonMessage(t('account.alerts.comingSoonMessage', { feature }));
-    setShowComingSoonAlert(true);
-  };
+
 
   const getCurrentLanguageName = () => {
     const currentLang = getLanguage();
@@ -111,68 +108,14 @@ export default function Account() {
     return lang?.nativeName || 'English';
   };
 
-  const menuItems = [
-    {
-      icon: 'receipt-outline',
-      title: t('account.menuItems.myOrders'),
-      onPress: () => {
-        router.push('/my-orders');
-      },
-    },
-    {
-      icon: 'restaurant-outline',
-      title: t('account.menuItems.myBookings'),
-      badge: activeBookings.length > 0 ? activeBookings.length : undefined,
-      onPress: () => {
-        router.push('/my-bookings');
-      },
-    },
-    {
-      icon: 'chatbubbles-outline',
-      title: 'Customer Support',
-      subtitle: 'Chat with our AI assistant',
-      onPress: () => {
-        router.push('/chat');
-      },
-    },
-    {
-      icon: 'person-outline',
-      title: t('account.menuItems.editProfile'),
-      onPress: () => {
-        router.push('/edit-profile');
-      },
-    },
-    {
-      icon: 'notifications-outline',
-      title: t('account.menuItems.notifications'),
-      badge: unreadNotifications > 0 ? unreadNotifications : undefined,
-      onPress: () => {
-        router.push('/notifications');
-      },
-    },
-    {
-      icon: 'card-outline',
-      title: t('account.menuItems.paymentMethods'),
-      onPress: () => {
-        showComingSoon(t('account.menuItems.paymentMethods'));
-      },
-    },
-    {
-      icon: 'location-outline',
-      title: t('account.menuItems.addresses'),
-      onPress: () => {
-        showComingSoon(t('account.menuItems.addresses'));
-      },
-    },
-    {
-      icon: 'language-outline',
-      title: 'Language',
-      subtitle: getCurrentLanguageName(),
-      onPress: () => {
-        setShowLanguageSelector(true);
-      },
-    },
-  ];
+  const menuItems = useMemo(() => getAccountMenuItems({
+    t,
+    router,
+    activeBookingsCount: activeBookings.length,
+    unreadNotificationsCount: unreadNotifications,
+    currentLanguageName: getCurrentLanguageName(),
+    onLanguagePress: () => setShowLanguageSelector(true),
+  }), [activeBookings.length, unreadNotifications, t]);
 
   const getInitial = (name: string) => {
     return name ? name.charAt(0).toUpperCase() : 'U';
@@ -273,19 +216,6 @@ export default function Account() {
         onDismiss={() => setShowLogoutAlert(false)}
       />
 
-      {/* Coming Soon Alert */}
-      <CustomAlert
-        visible={showComingSoonAlert}
-        title={t('account.alerts.comingSoonTitle')}
-        message={comingSoonMessage}
-        buttons={[
-          {
-            text: t('common.ok'),
-            onPress: () => setShowComingSoonAlert(false),
-          },
-        ]}
-        onDismiss={() => setShowComingSoonAlert(false)}
-      />
 
       {/* Language Selector */}
       <LanguageSelector

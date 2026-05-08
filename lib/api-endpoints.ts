@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
     DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
     NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
     FEEDBACK: ENV.FEEDBACK_FILE_PATH || 'data/feedback.json',
+    BOOKMARKS: ENV.BOOKMARKS_FILE_PATH || 'data/bookmarks.json',
     // Language files
     LANGUAGES: {
       ENGLISH: 'data/english.json',
@@ -37,6 +38,7 @@ export const API_ENDPOINTS = {
   BOOKINGS: ENV.BOOKINGS_FILE_PATH || 'data/bookings.json',
   DINE: ENV.DINE_FILE_PATH || 'data/dine.json',
   NOTIFICATIONS: ENV.NOTIFICATIONS_FILE_PATH || 'data/notifications.json',
+  BOOKMARKS: ENV.BOOKMARKS_FILE_PATH || 'data/bookmarks.json',
 
   // GitHub file operations
   getFileUrl: (filePath: string) => 

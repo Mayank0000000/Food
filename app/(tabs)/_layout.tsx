@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useCMS } from '@/hooks/useCMS';
 import { useTheme } from '@/hooks/useTheme';
+import { useAppSelector } from '@/store/hooks';
 import { createTabStyles } from '@/styles/tabs.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
@@ -12,6 +13,9 @@ export default function TabLayout() {
   const { isAuthenticated, isLoading } = useAuth('/(auth)/login');
   const { theme, colors } = useTheme();
   const tabStyles = useMemo(() => createTabStyles(theme), [theme]);
+  
+  // Get cart item count from Redux store
+  const cartItemCount = useAppSelector((state) => state.cart.cart?.totalItems || 0);
 
   if (isLoading) {
     return (
@@ -33,6 +37,16 @@ export default function TabLayout() {
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarStyle: tabStyles.tabBar,
         tabBarLabelStyle: tabStyles.tabBarLabel,
+        tabBarBadgeStyle: {
+          backgroundColor: colors.primary,
+          color: '#FFFFFF',
+          fontSize: 10,
+          fontWeight: 'bold',
+          minWidth: 18,
+          height: 18,
+          borderRadius: 9,
+          marginLeft: 4,
+        },
         headerShown: false,
       }}
     >
@@ -66,6 +80,7 @@ export default function TabLayout() {
         name="cart"
         options={{
           title: t('tabs.cart'),
+          tabBarBadge: cartItemCount > 0 ? cartItemCount : undefined,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons 
               name={focused ? "bag" : "bag-outline"} 
