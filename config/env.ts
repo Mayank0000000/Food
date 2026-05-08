@@ -21,9 +21,7 @@ export const ENV = {
   // OpenRouteService API Key
   OPENROUTE_API_KEY: process.env.EXPO_PUBLIC_OPENROUTE_API_KEY,
   
-  // AI API Keys
-  GEMINI_API_KEY: process.env.EXPO_PUBLIC_GEMINI_API_KEY,
-  HUGGINGFACE_API_KEY: process.env.EXPO_PUBLIC_HUGGINGFACE_API_KEY,
+  // Groq API Key
   GROQ_API_KEY: process.env.EXPO_PUBLIC_GROQ_API_KEY,
 };
 

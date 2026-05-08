@@ -220,24 +220,11 @@ const localIntents: LocalIntent[] = [
 class ChatService {
   private apiKey: string;
   private apiUrl: string;
-  private provider: 'gemini' | 'groq' | 'none';
 
   constructor() {
-    // Check which API key is available (prioritize Groq as it's more reliable)
-    if (ENV.GROQ_API_KEY) {
-      this.provider = 'groq';
-      this.apiKey = ENV.GROQ_API_KEY;
-      this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-    } else if (ENV.GEMINI_API_KEY) {
-      this.provider = 'gemini';
-      this.apiKey = ENV.GEMINI_API_KEY;
-      this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-    } else {
-      // No AI provider configured - will use local intents only
-      this.provider = 'none';
-      this.apiKey = '';
-      this.apiUrl = '';
-    }
+    // Use Groq API
+    this.apiKey = ENV.GROQ_API_KEY || '';
+    this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
   }
 
   /**
@@ -257,19 +244,15 @@ class ChatService {
   }
 
   /**
-   * Send message to AI (Groq or Gemini)
+   * Send message to Groq AI
    */
   private async sendToAI(message: string, context?: string, conversationHistory?: Array<{role: string, content: string}>): Promise<string> {
-    if (this.provider === 'none' || !this.apiKey) {
+    if (!this.apiKey) {
       // Provide helpful fallback responses without AI
       return this.getFallbackResponse(message);
     }
 
-    if (this.provider === 'groq') {
-      return this.sendToGroq(message, context, conversationHistory);
-    } else {
-      return this.sendToGemini(message, context, conversationHistory);
-    }
+    return this.sendToGroq(message, context, conversationHistory);
   }
 
   /**
@@ -352,86 +335,6 @@ ${context ? `\nContext: ${context}` : ''}`;
       return aiMessage.trim();
     } catch (error: any) {
       console.error('Groq API Error:', error.message);
-      return this.getFallbackResponse(message);
-    }
-  }
-
-  /**
-   * Send to Gemini API
-   */
-  private async sendToGemini(message: string, context?: string, conversationHistory?: Array<{role: string, content: string}>): Promise<string> {
-    const systemPrompt = `You are a helpful customer support assistant for a restaurant mobile app. 
-Your role is to:
-- Answer questions about the restaurant, menu, and services
-- Be friendly, concise, and helpful
-- Keep responses under 100 words
-- ONLY recommend or mention items that are in the provided menu list
-- If asked about items NOT in the menu, clearly say "We don't have that item" or "That's not available"
-- If asked about app features, guide users appropriately
-${context ? `\nContext: ${context}` : ''}`;
-
-    try {
-      // Build conversation text with history
-      let conversationText = systemPrompt;
-      
-      // Add conversation history (last 6 messages)
-      if (conversationHistory && conversationHistory.length > 0) {
-        const recentHistory = conversationHistory.slice(-6);
-        conversationText += '\n\n=== Previous Conversation ===\n';
-        recentHistory.forEach(msg => {
-          const label = msg.role === 'user' ? 'User' : 'Assistant';
-          conversationText += `${label}: ${msg.content}\n`;
-        });
-        conversationText += '=== End Previous Conversation ===\n';
-      }
-      
-      conversationText += `\n\nUser: ${message}`;
-
-      const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: conversationText,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 200,
-          },
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle quota exceeded error
-        if (data.error?.code === 429) {
-          console.log('Gemini quota exceeded, using fallback response');
-          return this.getFallbackResponse(message);
-        }
-        
-        // Handle other errors
-        throw new Error(data.error?.message || 'Failed to get AI response');
-      }
-
-      const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!aiMessage) {
-        throw new Error('Invalid AI response format');
-      }
-
-      return aiMessage.trim();
-    } catch (error: any) {
-      console.error('Gemini API Error:', error.message);
-      // Return fallback response instead of throwing error
       return this.getFallbackResponse(message);
     }
   }
