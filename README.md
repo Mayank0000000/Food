@@ -149,13 +149,54 @@ Location permissions are required for delivery tracking and address management.
 
 ## Development
 
-### Linting
+### Code Quality Tools
+
+The project uses ESLint, Prettier, and TypeScript for code quality and consistency.
+
+#### Linting
 ```bash
+# Check for linting issues
 npm run lint
+
+# Auto-fix linting issues
+npm run lint:fix
+
+# Strict mode (CI) - fails on warnings
+npm run lint:check
 ```
 
-### Type Checking
-The project uses TypeScript with typed routes enabled.
+#### Formatting
+```bash
+# Format all files with Prettier
+npm run format
+
+# Check if files are formatted
+npm run format:check
+```
+
+#### Type Checking
+```bash
+# Run TypeScript type checking
+npm run type-check
+```
+
+### VS Code Setup
+
+For the best development experience, install these extensions:
+- **ESLint** (`dbaeumer.vscode-eslint`) - Real-time linting
+- **Prettier** (`esbenp.prettier-vscode`) - Code formatting
+
+The project includes VS Code settings for automatic formatting and linting on save.
+
+### Code Style Guide
+
+- **Indentation**: 2 spaces
+- **Quotes**: Single quotes
+- **Semicolons**: Required
+- **Line Length**: 120 characters max
+- **Trailing Commas**: Required in multi-line
+
+See `docs/ESLINT_SETUP.md` for complete ESLint documentation.
 
 ## Building for Production
 

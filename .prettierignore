@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.expo/
+.expo-shared/
+
+# Platform specific
+android/
+ios/
+
+# Config files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache
+.cache/
+*.log
+
+# Environment
+.env
+.env.*
+
+# Documentation
+docs/
+*.md
