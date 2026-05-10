@@ -20,12 +20,10 @@ export const getAddressFromLocation = async (
   longitude: number,
   addressCount: number
 ): Promise<AddressFormData> => {
-  console.log('📍 Current location:', { latitude, longitude });
 
   // Get address details using reverse geocoding
   let geocodedAddress: GeocodedAddress | null = null;
   try {
-    console.log('🔍 Starting reverse geocoding...');
     const results = await Location.reverseGeocodeAsync({
       latitude,
       longitude,
@@ -34,16 +32,15 @@ export const getAddressFromLocation = async (
     if (results && results.length > 0) {
       const result = results[0];
       geocodedAddress = {
-        street: result.street || result.name,
-        city: result.city || result.district || result.subregion,
-        region: result.region,
-        postalCode: result.postalCode,
-        country: result.country,
-        name: result.name,
-        district: result.district,
-        subregion: result.subregion,
+        street: result.street ?? result.name ?? undefined,
+        city: result.city ?? result.district ?? result.subregion ?? undefined,
+        region: result.region ?? undefined,
+        postalCode: result.postalCode ?? undefined,
+        country: result.country ?? undefined,
+        name: result.name ?? undefined,
+        district: result.district ?? undefined,
+        subregion: result.subregion ?? undefined,
       };
-      console.log('✅ Reverse geocoding result:', geocodedAddress);
     }
   } catch (geocodeError) {
     console.error('❌ Reverse geocoding failed:', geocodeError);
@@ -66,11 +63,8 @@ export const getAddressFromLocation = async (
       city: city,
       state: state,
       pincode: postalCode,
-      latitude,
-      longitude,
       isDefault: addressCount === 0, // First address is default
     };
-    console.log('✅ Using geocoded address:', addressData);
   } else {
     // Fallback if geocoding fails
     addressData = {
@@ -80,8 +74,6 @@ export const getAddressFromLocation = async (
       city: 'Current Location',
       state: 'State',
       pincode: '000000',
-      latitude,
-      longitude,
       isDefault: addressCount === 0,
     };
     console.log('⚠️ Using fallback address (geocoding failed):', addressData);

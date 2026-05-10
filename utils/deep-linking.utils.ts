@@ -18,7 +18,6 @@ export function parseDeepLink(url: string) {
  * Handle incoming deep link URL
  */
 export function handleDeepLink(url: string) {
-  console.log('🔗 Handling deep link:', url);
   
   const { path, queryParams } = parseDeepLink(url);
   
@@ -31,7 +30,6 @@ export function handleDeepLink(url: string) {
   switch (path) {
     case 'order-tracking':
       if (queryParams?.orderId) {
-        console.log('📱 Navigating to order tracking:', queryParams.orderId);
         router.push(`/order-tracking?orderId=${queryParams.orderId}`);
       } else {
         console.warn('⚠️ No orderId in order-tracking deep link');
@@ -39,32 +37,26 @@ export function handleDeepLink(url: string) {
       break;
 
     case 'cart':
-      console.log('📱 Navigating to cart');
       router.push('/(tabs)/cart');
       break;
 
     case 'my-orders':
-      console.log('📱 Navigating to my orders');
       router.push('/my-orders');
       break;
 
     case 'my-bookings':
-      console.log('📱 Navigating to my bookings');
       router.push('/my-bookings');
       break;
 
     case 'notifications':
-      console.log('📱 Navigating to notifications');
       router.push('/notifications');
       break;
 
     case 'home':
-      console.log('📱 Navigating to home');
       router.push('/(tabs)/home');
       break;
 
     default:
-      console.log('📱 Navigating to path:', path);
       router.push(path as any);
   }
 }
@@ -81,7 +73,6 @@ export function initializeDeepLinking() {
   // Handle deep link when app is opened from closed state
   Linking.getInitialURL().then((url) => {
     if (url) {
-      console.log('🔗 Initial URL:', url);
       // Add a small delay to ensure app is ready
       setTimeout(() => {
         handleDeepLink(url);

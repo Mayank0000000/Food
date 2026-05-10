@@ -13,7 +13,6 @@ class BookmarkService {
     try {
       const bookmarks = await githubService.getFile(this.BOOKMARKS_FILE);
       if (!bookmarks || bookmarks.length === 0) {
-        console.log('📚 No bookmarks found, starting fresh');
         return [];
       }
       return bookmarks;
@@ -33,7 +32,6 @@ class BookmarkService {
         bookmarks,
         'Update bookmarks'
       );
-      console.log('✅ Bookmarks saved to GitHub');
     } catch (error) {
       console.error('Error saving bookmarks to GitHub:', error);
       throw error;
@@ -93,7 +91,6 @@ class BookmarkService {
       allBookmarks.push(newBookmark);
       await this.saveAllBookmarks(allBookmarks);
       
-      console.log('✅ Bookmark added:', menuItem.name);
       return newBookmark;
     } catch (error) {
       console.error('Error adding bookmark:', error);
@@ -112,7 +109,6 @@ class BookmarkService {
       );
       
       await this.saveAllBookmarks(filtered);
-      console.log('✅ Bookmark removed');
     } catch (error) {
       console.error('Error removing bookmark:', error);
       throw error;
@@ -148,7 +144,6 @@ class BookmarkService {
       const filtered = allBookmarks.filter(b => b.userId !== userId);
       
       await this.saveAllBookmarks(filtered);
-      console.log('✅ All bookmarks cleared for user');
     } catch (error) {
       console.error('Error clearing bookmarks:', error);
       throw error;

@@ -39,7 +39,6 @@ class NotificationHistoryService {
           `Add notification ${notificationId}`
         );
 
-        console.log('✅ Notification saved:', notificationId);
         return newNotification;
       } catch (error: any) {
         lastError = error;
@@ -109,7 +108,6 @@ class NotificationHistoryService {
           `Mark notification ${notificationId} as read`
         );
 
-        console.log('✅ Notification marked as read:', notificationId);
         return;
       } catch (error: any) {
         lastError = error;
@@ -157,7 +155,6 @@ class NotificationHistoryService {
           updatedNotifications,
           `Mark all notifications as read for user ${userId}`
         );
-        console.log('✅ All notifications marked as read for user:', userId);
       }
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
@@ -198,7 +195,6 @@ class NotificationHistoryService {
         `Delete notification ${notificationId}`
       );
 
-      console.log('✅ Notification deleted:', notificationId);
     } catch (error) {
       console.error('Failed to delete notification:', error);
       throw error;

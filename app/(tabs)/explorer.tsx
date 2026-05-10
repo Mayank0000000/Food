@@ -1,3 +1,9 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useFocusEffect } from 'expo-router';
+
 import { CategoryTabs } from '@/components/menu/category-tabs';
 import { FilterChips } from '@/components/menu/filter-chips';
 import { FilterModal } from '@/components/menu/filter-modal';
@@ -15,10 +21,7 @@ import { createExplorerStyles } from '@/styles/screens/explorer.styles';
 import { FilterState } from '@/types/components/filter-chips.types';
 import { GroupedMenu, MenuItem } from '@/types/menu.types';
 import { applyMenuFilters, groupMenuByCategory } from '@/utils/menuFilters';
-import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SEARCH_PLACEHOLDER_INTERVAL, SEARCH_SUGGESTIONS } from '@/constants';
 
 export default function Explorer() {
   const { t, getLanguage } = useCMS();
@@ -107,15 +110,8 @@ export default function Explorer() {
           <SearchInput
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholders={[
-              t('explorer.searchPlaceholder'),
-              'Search "Biryani"...',
-              'Search "Pizza"...',
-              'Search "Burger"...',
-              'Search "Pasta"...',
-              'Search "Desserts"...',
-            ]}
-            placeholderInterval={3000}
+            placeholders={[t('explorer.searchPlaceholder'), ...SEARCH_SUGGESTIONS]}
+            placeholderInterval={SEARCH_PLACEHOLDER_INTERVAL}
           />
         </RView>
         <MenuListSkeleton count={6} />
@@ -129,15 +125,8 @@ export default function Explorer() {
         <SearchInput
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholders={[
-            t('explorer.searchPlaceholder'),
-            'Search "Biryani"...',
-            'Search "Pizza"...',
-            'Search "Burger"...',
-            'Search "Pasta"...',
-            'Search "Desserts"...',
-          ]}
-          placeholderInterval={3000}
+          placeholders={[t('explorer.searchPlaceholder'), ...SEARCH_SUGGESTIONS]}
+          placeholderInterval={SEARCH_PLACEHOLDER_INTERVAL}
         />
       </RView>
 

@@ -1,3 +1,11 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+
 import { ChatInput } from '@/components/chat/chat-input';
 import { MessageBubble } from '@/components/chat/message-bubble';
 import { QuickReplies } from '@/components/chat/quick-replies';
@@ -22,12 +30,7 @@ import {
 } from '@/store/slices/explorerSlice';
 import { createChatScreenStyles } from '@/styles/screens/chat.styles';
 import { ChatMessage, QuickReply } from '@/types/chat.types';
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { handleChatNavigation } from '@/utils/chat-navigation.utils';
 
 const CHAT_STORAGE_KEY = '@chat_messages';
 
@@ -106,7 +109,7 @@ export default function ChatScreen() {
 
     // Send to chatbot
     const result = await dispatch(sendMessage({ message: messageText, userId: user?.id.toString() }));
-    
+
     // Handle theme action if present
     if (result.payload && typeof result.payload === 'object' && 'themeAction' in result.payload) {
       const themeAction = (result.payload as any).themeAction;
@@ -114,12 +117,16 @@ export default function ChatScreen() {
         handleThemeChange(themeAction);
       }
     }
-    
+
     // Handle navigation action if present
     if (result.payload && typeof result.payload === 'object' && 'navigationAction' in result.payload) {
       const navigationAction = (result.payload as any).navigationAction;
       if (navigationAction) {
-        handleNavigation(navigationAction);
+        handleChatNavigation(navigationAction, router, dispatch, {
+          setPendingFilters,
+          setPendingCategory,
+          setPendingSearchQuery,
+        });
       }
     }
   };
@@ -128,40 +135,6 @@ export default function ChatScreen() {
     if (action.type === 'setTheme' && action.mode) {
       setTheme(action.mode);
     }
-  };
-
-  const handleNavigation = (action: any) => {
-    setTimeout(() => {
-      switch (action.type) {
-        case 'explorer':
-          // Set filters in Redux before navigating
-          if (action.params?.filters) {
-            dispatch(setPendingFilters(action.params.filters));
-          }
-          if (action.params?.category) {
-            dispatch(setPendingCategory(action.params.category));
-          }
-          if (action.params?.searchQuery) {
-            dispatch(setPendingSearchQuery(action.params.searchQuery));
-          }
-          router.push('/(tabs)/explorer');
-          break;
-        case 'orders':
-          router.push('/my-orders');
-          break;
-        case 'bookings':
-          router.push('/my-bookings');
-          break;
-        case 'dine-in':
-          router.push('/dine-in');
-          break;
-        case 'order-tracking':
-          if (action.params?.orderId) {
-            router.push(`/order-tracking?orderId=${action.params.orderId}`);
-          }
-          break;
-      }
-    }, 1000); // Small delay so user can see the message
   };
 
   const handleQuickReply = (reply: QuickReply) => {

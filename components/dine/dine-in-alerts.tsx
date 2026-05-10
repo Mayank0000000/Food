@@ -1,29 +1,9 @@
-import { Alert } from '@/components/ui/alert';
-import { useCMS } from '@/hooks/useCMS';
-import { getBookingConfirmationMessage } from '@/utils/dineUtils';
 import React from 'react';
 
-interface DineInAlertsProps {
-  // Error alert
-  showErrorAlert: boolean;
-  errorTitle: string;
-  errorMessage: string;
-  onDismissError: () => void;
-
-  // Confirmation alert
-  showConfirmAlert: boolean;
-  selectedSeatNumber: number | null;
-  selectedDateTime: Date;
-  duration: number;
-  onConfirmBooking: () => void;
-  onDismissConfirm: () => void;
-
-  // Success alert
-  showSuccessAlert: boolean;
-  successMessage: string;
-  onSuccessConfirm: () => void;
-  onDismissSuccess: () => void;
-}
+import { Alert } from '@/components/ui/alert';
+import { useCMS } from '@/hooks/useCMS';
+import { DineInAlertsProps } from '@/types/dine.types';
+import { getBookingConfirmationMessage } from '@/utils/dineUtils';
 
 export const DineInAlerts: React.FC<DineInAlertsProps> = ({
   showErrorAlert,

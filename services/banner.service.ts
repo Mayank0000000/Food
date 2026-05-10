@@ -10,23 +10,18 @@ class BannerService {
    */
   async getActiveBanners(): Promise<Banner[]> {
     try {
-      console.log('📡 Fetching banners from API...');
       const banners: Banner[] = (await githubService.getFile(this.BANNERS_FILE)) || [];
-      console.log('📦 Raw banners from API:', banners.length, banners);
       
       const now = new Date();
-      console.log('🕐 Current time:', now.toISOString());
       
       // Filter active banners within time range (if time fields exist)
       const activeBanners = banners.filter(banner => {
         if (!banner.isActive) {
-          console.log(`⏭️ Skipping inactive banner: ${banner.id}`);
           return false;
         }
         
         // If no time range specified, banner is always active
         if (!banner.startTime || !banner.endTime) {
-          console.log(`✅ Banner ${banner.id} is active (no time restrictions)`);
           return true;
         }
         
@@ -34,21 +29,9 @@ class BannerService {
         const endTime = new Date(banner.endTime);
         
         const isInTimeRange = now >= startTime && now <= endTime;
-        
-        if (!isInTimeRange) {
-          console.log(`⏰ Banner ${banner.id} outside time range:`, {
-            start: startTime.toISOString(),
-            end: endTime.toISOString(),
-            now: now.toISOString(),
-          });
-        } else {
-          console.log(`✅ Banner ${banner.id} is in time range`);
-        }
-        
         return isInTimeRange;
       });
       
-      console.log('✅ Active banners after filtering:', activeBanners.length);
       
       // Sort by priority (lower number = higher priority)
       return activeBanners.sort((a, b) => a.priority - b.priority);
@@ -91,7 +74,6 @@ class BannerService {
    */
   async getPersonalizedBanner(userId: string): Promise<Banner | null> {
     try {
-      console.log('🎯 Getting personalized banner for user:', userId);
       
       // Get active banners
       const activeBanners = await this.getActiveBanners();
@@ -100,7 +82,6 @@ class BannerService {
         return null;
       }
 
-      // Get user's orders
       const { orderService } = await import('./order.service');
       const userOrders = await orderService.getUserOrders(userId);
       
@@ -114,28 +95,23 @@ class BannerService {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
 
-      console.log('📦 Latest order:', latestOrder.id);
 
-      // Extract categories from order items
-      const orderCategories = latestOrder.items.map(item => 
-        item.category?.toLowerCase()
+      const orderItemNames = latestOrder.items.map(item => 
+        item.name?.toLowerCase()
       ).filter(Boolean);
 
-      console.log('🏷️ Order categories:', orderCategories);
 
-      // Find banner matching any of the order categories
       const matchingBanner = activeBanners.find(banner => 
-        orderCategories.includes(banner.category.toLowerCase())
+        orderItemNames.some(itemName => itemName.includes(banner.category.toLowerCase()))
       );
 
       if (matchingBanner) {
-        console.log('✅ Found matching banner:', matchingBanner.id, matchingBanner.category);
         return matchingBanner;
       }
 
-      // If no match, return highest priority banner
-      console.log('📌 No category match, showing highest priority banner');
-      return activeBanners[0];
+      // Fallback: return Pizza banner (priority 2) or first active banner
+      const pizzaBanner = activeBanners.find(banner => banner.category.toLowerCase() === 'pizza');
+      return pizzaBanner || activeBanners[0];
     } catch (error) {
       console.error('❌ Failed to get personalized banner:', error);
       

@@ -19,12 +19,10 @@ class OrderService {
         const newOrder: Order = { ...orderData, id: orderId, createdAt: new Date().toISOString() };
         orders.push(newOrder);
         await githubService.updateFile(this.ORDERS_FILE, orders, `Create order ${orderId}`);
-        console.log('✅ Order created successfully:', orderId);
         return newOrder;
       } catch (error: any) {
         lastError = error;
         if (error.status === 409 && attempt < MAX_RETRIES - 1) {
-          console.log(`⚠️ Order create conflict, retrying (${attempt + 1}/${MAX_RETRIES})...`);
           await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
           continue;
         }
@@ -76,7 +74,6 @@ class OrderService {
 
         orders[orderIndex] = { ...orders[orderIndex], status };
         await githubService.updateFile(this.ORDERS_FILE, orders, `Update order ${orderId} status to ${status}`);
-        console.log(`✅ Order ${orderId} status updated to ${status}`);
         return orders[orderIndex];
       } catch (error: any) {
         lastError = error;
@@ -132,7 +129,6 @@ class OrderService {
         `Delete order ${orderId}`
       );
 
-      console.log(`✅ Order ${orderId} deleted`);
     } catch (error) {
       console.error('Failed to delete order:', error);
       throw error;

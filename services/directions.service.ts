@@ -80,9 +80,6 @@ export const getDirections = async (
       ],
     };
 
-    console.log('🗺️ Fetching directions from OpenRouteService...');
-    console.log('📍 Origin:', origin);
-    console.log('📍 Destination:', destination);
     
     const response = await fetch(url, {
       method: 'POST',
@@ -110,8 +107,6 @@ export const getDirections = async (
 
     const data: OpenRouteResponse = await response.json();
 
-    console.log('📦 OpenRouteService Response:', JSON.stringify(data, null, 2));
-
     if (data.error) {
       console.error('❌ OpenRouteService error:', data.error.message);
       return null;
@@ -124,7 +119,6 @@ export const getDirections = async (
       // Decode the polyline
       const path = decodePolyline(encodedGeometry);
 
-      console.log('✅ Got directions path with', path.length, 'points');
 
       return {
         path,

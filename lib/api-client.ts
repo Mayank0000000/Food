@@ -55,10 +55,6 @@ class ApiClient {
           config.headers.Authorization = `Bearer ${ENV.GITHUB_TOKEN}`;
         }
 
-        // Log request in development
-        if (__DEV__) {
-          console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-        }
 
         return config;
       },
@@ -72,9 +68,6 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
         // Log response in development
-        if (__DEV__) {
-          console.log(`✅ API Response: ${response.status} ${response.config.url}`);
-        }
 
         return response;
       },
@@ -203,7 +196,6 @@ class ApiClient {
     } catch (error: any) {
       // Handle 409 conflict - file was updated by another process
       if (error.status === 409 && retryCount < MAX_RETRIES) {
-        console.log(`⚠️ File conflict detected, retrying... (attempt ${retryCount + 1}/${MAX_RETRIES})`);
         // Wait a bit before retrying to avoid race conditions
         await new Promise(resolve => setTimeout(resolve, 500 * (retryCount + 1)));
         return this.updateGitHubFile(filePath, content, message, retryCount + 1);

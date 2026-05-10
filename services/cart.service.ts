@@ -29,7 +29,6 @@ class CartService {
         carts[existingCartIndex] = cart;
       } else {
         carts.push(cart);
-        console.log('Added new cart');
       }
 
       await githubService.updateFile(this.CART_FILE, carts, `Update cart for user ${cart.userId}`);

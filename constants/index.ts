@@ -17,3 +17,14 @@ export const CAROUSEL_IMAGES = [
   'https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg',
   'https://images.pexels.com/photos/1199957/pexels-photo-1199957.jpeg',
 ];
+
+export const SEARCH_SUGGESTIONS = [
+  'Search "Biryani"...',
+  'Search "Pizza"...',
+  'Search "Burger"...',
+  'Search "Pasta"...',
+  'Search "Desserts"...',
+];
+
+export const SEARCH_PLACEHOLDER_INTERVAL = 3000;
+

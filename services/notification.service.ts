@@ -122,7 +122,6 @@ class NotificationService {
     // Listener for notifications received while app is foregrounded
     this.notificationListener = Notifications.addNotificationReceivedListener(
       (notification) => {
-        console.log('Notification received:', notification);
         // Handle foreground notification
       }
     );
@@ -130,7 +129,6 @@ class NotificationService {
     // Listener for when user taps on notification
     this.responseListener = Notifications.addNotificationResponseReceivedListener(
       (response) => {
-        console.log('Notification tapped:', response);
         this.handleNotificationResponse(response);
       }
     );
@@ -144,7 +142,6 @@ class NotificationService {
       const response = await Notifications.getLastNotificationResponseAsync();
       
       if (response) {
-        console.log('📱 App opened from notification, storing for later:', response.notification.request.content.data);
         
         // Store the notification response to handle after app is ready
         this.pendingNotificationResponse = response;
@@ -159,12 +156,10 @@ class NotificationService {
    * Call this after the app has completed initialization (after splash screen)
    */
   async setAppReady() {
-    console.log('📱 App is ready for navigation');
     this.isAppReady = true;
     
     // Handle any pending notification
     if (this.pendingNotificationResponse) {
-      console.log('📱 Processing pending notification');
       await this.handleNotificationResponse(this.pendingNotificationResponse);
       this.pendingNotificationResponse = null;
     }
@@ -178,7 +173,6 @@ class NotificationService {
     
     // If app is not ready yet, store for later
     if (!this.isAppReady) {
-      console.log('📱 App not ready, storing notification for later');
       this.pendingNotificationResponse = response;
       return;
     }
@@ -197,7 +191,6 @@ class NotificationService {
         case NotificationType.ORDER_CANCELLED:
           // Navigate to order tracking with orderId
           if (data.orderId) {
-            console.log('📱 Navigating to order tracking:', data.orderId);
             router.push(`/order-tracking?orderId=${data.orderId}`);
           }
           break;
@@ -206,19 +199,16 @@ class NotificationService {
         case NotificationType.BOOKING_REMINDER:
         case NotificationType.BOOKING_CANCELLED:
           // Navigate to bookings
-          console.log('📱 Navigating to bookings');
           router.push('/my-bookings');
           break;
         
         case NotificationType.CART_REMINDER:
           // Navigate to cart (use replace to override splash screen navigation)
-          console.log('📱 Navigating to cart');
           router.replace('/(tabs)/cart');
           break;
         
         case NotificationType.PROMOTION:
           // Navigate to home or promotions section
-          console.log('📱 Navigating to home');
           router.push('/(tabs)/home');
           break;
       }
@@ -399,7 +389,6 @@ class NotificationService {
    */
   private async saveToHistory(notificationData: NotificationData) {
     if (!this.currentUserId) {
-      console.log('⚠️ No user ID set, skipping notification history save');
       return;
     }
 
@@ -424,7 +413,6 @@ class NotificationService {
         data: notificationData.data,
       });
       
-      console.log('✅ Notification saved to history');
     } catch (error) {
       // Non-critical error - just log as warning
       console.warn('⚠️ Could not save notification to history (non-critical):', error instanceof Error ? error.message : error);
@@ -439,7 +427,6 @@ class NotificationService {
    * Send order placed notification
    */
   async notifyOrderPlaced(orderId: string, restaurantName: string) {
-    console.log('🔔 Sending order placed notification for:', orderId);
     try {
       const result = await this.sendNotification({
         type: NotificationType.ORDER_PLACED,
@@ -447,7 +434,6 @@ class NotificationService {
         body: `Your order from ${restaurantName} has been placed successfully.`,
         data: { orderId, restaurantName },
       });
-      console.log('✅ Order placed notification sent, ID:', result);
       
       // Save to notification history (fire and forget - don't block on errors)
       this.saveToHistory({
@@ -468,7 +454,6 @@ class NotificationService {
    * Send order delivered notification
    */
   async notifyOrderDelivered(orderId: string) {
-    console.log('🔔 Sending order delivered notification for:', orderId);
     try {
       const result = await this.sendNotification({
         type: NotificationType.ORDER_DELIVERED,
@@ -476,7 +461,6 @@ class NotificationService {
         body: 'Your order has been delivered. Enjoy your meal!',
         data: { orderId },
       });
-      console.log('✅ Order delivered notification sent, ID:', result);
       
       // Save to notification history (fire and forget - don't block on errors)
       this.saveToHistory({
@@ -497,7 +481,6 @@ class NotificationService {
    * Send order cancelled notification
    */
   async notifyOrderCancelled(orderId: string, reason?: string) {
-    console.log('🔔 Sending order cancelled notification for:', orderId);
     try {
       const result = await this.sendNotification({
         type: NotificationType.ORDER_CANCELLED,
@@ -505,7 +488,6 @@ class NotificationService {
         body: reason || 'Your order has been cancelled.',
         data: { orderId, reason },
       });
-      console.log('✅ Order cancelled notification sent, ID:', result);
       
       // Save to notification history (fire and forget - don't block on errors)
       this.saveToHistory({
@@ -522,51 +504,13 @@ class NotificationService {
     }
   }
 
-  /**
-   * Send booking confirmed notification
-   */
-  async notifyBookingConfirmed(bookingId: string, seatNumber: number, date: string) {
-    return this.sendNotification({
-      type: NotificationType.BOOKING_CONFIRMED,
-      title: '🎊 Booking Confirmed!',
-      body: `Your table (Seat ${seatNumber}) is booked for ${date}.`,
-      data: { bookingId },
-    });
-  }
 
-  /**
-   * Send booking reminder notification
-   */
-  async notifyBookingReminder(bookingId: string, seatNumber: number, minutesBefore: number) {
-    return this.scheduleNotification(
-      {
-        type: NotificationType.BOOKING_REMINDER,
-        title: '⏰ Booking Reminder',
-        body: `Your table booking (Seat ${seatNumber}) is in ${minutesBefore} minutes!`,
-        data: { bookingId },
-      },
-      minutesBefore * 60
-    );
-  }
-
-  /**
-   * Send booking cancelled notification
-   */
-  async notifyBookingCancelled(bookingId: string, seatNumber: number) {
-    return this.sendNotification({
-      type: NotificationType.BOOKING_CANCELLED,
-      title: '❌ Booking Cancelled',
-      body: `Your booking for Seat ${seatNumber} has been cancelled.`,
-      data: { bookingId },
-    });
-  }
 
   /**
    * Schedule cart reminder notification
    * Sends a notification after specified seconds if user has items in cart
    */
   async scheduleCartReminder(itemCount: number, itemNames: string[], delaySeconds: number = 5) {
-    console.log(`🛒 Scheduling cart reminder for ${itemCount} items in ${delaySeconds} seconds`);
     
     try {
       // Cancel any existing cart reminders first
@@ -592,7 +536,6 @@ class NotificationService {
         delaySeconds
       );
       
-      console.log('✅ Cart reminder scheduled, ID:', notificationId);
       return notificationId;
     } catch (error) {
       console.error('❌ Error scheduling cart reminder:', error);
@@ -611,7 +554,6 @@ class NotificationService {
         const data = notification.content.data as any;
         if (data?.type === NotificationType.CART_REMINDER) {
           await this.cancelNotification(notification.identifier);
-          console.log('🗑️ Cancelled cart reminder:', notification.identifier);
         }
       }
     } catch (error) {

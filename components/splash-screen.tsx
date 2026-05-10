@@ -1,7 +1,7 @@
 import { biometricService } from '@/services/biometric.service';
 import { cmsService } from '@/services/cms.service';
 import { notificationService } from '@/services/notification.service';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { checkAuth } from '@/store/slices/authSlice';
 import { getLanguage } from '@/utils/language-storage';
 import { Image } from 'expo-image';

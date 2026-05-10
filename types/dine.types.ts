@@ -35,3 +35,25 @@ export interface DineState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface DineInAlertsProps {
+  // Error alert
+  showErrorAlert: boolean;
+  errorTitle: string;
+  errorMessage: string;
+  onDismissError: () => void;
+
+  // Confirmation alert
+  showConfirmAlert: boolean;
+  selectedSeatNumber: number | null;
+  selectedDateTime: Date;
+  duration: number;
+  onConfirmBooking: () => void;
+  onDismissConfirm: () => void;
+
+  // Success alert
+  showSuccessAlert: boolean;
+  successMessage: string;
+  onSuccessConfirm: () => void;
+  onDismissSuccess: () => void;
+}

@@ -61,30 +61,6 @@ export const useNotifications = () => {
     return notificationService.notifyOrderCancelled(orderId, reason);
   };
 
-  const notifyBookingConfirmed = async (
-    bookingId: string,
-    seatNumber: number,
-    date: string
-  ) => {
-    return notificationService.notifyBookingConfirmed(bookingId, seatNumber, date);
-  };
-
-  const notifyBookingReminder = async (
-    bookingId: string,
-    seatNumber: number,
-    minutesBefore: number
-  ) => {
-    return notificationService.notifyBookingReminder(
-      bookingId,
-      seatNumber,
-      minutesBefore
-    );
-  };
-
-  const notifyBookingCancelled = async (bookingId: string, seatNumber: number) => {
-    return notificationService.notifyBookingCancelled(bookingId, seatNumber);
-  };
-
   return {
     sendNotification,
     scheduleNotification,
@@ -96,8 +72,5 @@ export const useNotifications = () => {
     notifyOrderPlaced,
     notifyOrderDelivered,
     notifyOrderCancelled,
-    notifyBookingConfirmed,
-    notifyBookingReminder,
-    notifyBookingCancelled,
   };
 };

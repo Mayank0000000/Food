@@ -28,7 +28,6 @@ export const toggleBookmark = async (
   menuItem: MenuItem
 ): Promise<boolean> => {
   if (!userId) {
-    console.log('Please login to bookmark items');
     return false;
   }
 

@@ -41,7 +41,6 @@ function AppContent() {
 
     // Initialize deep linking
     const deepLinkSubscription = initializeDeepLinking();
-    console.log('🔗 Deep linking initialized');
 
     // Update user ID when user changes
     if (user?.id) {
@@ -55,7 +54,6 @@ function AppContent() {
 
       // App is going to background (minimized, not closed)
       if (previousState === 'active' && nextAppState === 'background') {
-        console.log('📱 App minimized to background');
         
         // Use cartRef to get current cart state
         const currentCart = cartRef.current;
@@ -63,7 +61,6 @@ function AppContent() {
         // Schedule cart reminder ONLY when app is minimized
         if (currentCart && currentCart.items && currentCart.items.length > 0) {
           const itemNames = currentCart.items.map((item) => item.menuItem.name);
-          console.log('🛒 Scheduling cart reminder (app minimized) for', currentCart.totalItems, 'items');
           notificationService.scheduleCartReminder(currentCart.totalItems, itemNames, 5);
         } else {
           console.log('🛒 Cart is empty, not scheduling reminder');
@@ -72,14 +69,12 @@ function AppContent() {
 
       // App is coming to foreground
       if (previousState.match(/inactive|background/) && nextAppState === 'active') {
-        console.log('📱 App coming to foreground');
         
         // Cancel cart reminders when app comes back to foreground
         notificationService.cancelCartReminders();
         
         // Reload cart when coming back to foreground
         if (user?.id) {
-          console.log('🛒 Reloading cart on foreground');
           dispatch(fetchCart(user.id.toString()) as any);
         }
       }

@@ -204,7 +204,6 @@ export default function OrderTracking() {
 
     try {
       await cancelOrder(orderId);
-      console.log('✅ Order cancelled');
 
       // Send order cancelled notification
       const { notificationService } = await import('@/services/notification.service');

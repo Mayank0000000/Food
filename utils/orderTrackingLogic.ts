@@ -76,15 +76,10 @@ export const calculateTrackingData = (
   const elapsed = now - createdTime;
   const elapsedSeconds = elapsed / 1000;
 
-  console.log('⏱️ Time calculation:', {
-    createdTime: new Date(createdTime).toISOString(),
-    now: new Date(now).toISOString(),
-    elapsedSeconds: elapsedSeconds.toFixed(1),
-  });
+
 
   // If order is delivered (>120 seconds)
   if (elapsedSeconds >= 120) {
-    console.log('✅ Order delivered (elapsed >= 120s)');
     return {
       orderId,
       currentLocation: delivery,
@@ -101,11 +96,6 @@ export const calculateTrackingData = (
   const deliveryProgress = getDeliveryProgressFromTime(elapsedSeconds);
   const status = getTrackingStatusFromTime(elapsedSeconds);
 
-  console.log('📍 Position calculation:', {
-    progress: (progress * 100).toFixed(1) + '%',
-    deliveryProgress: (deliveryProgress * 100).toFixed(1) + '%',
-    status,
-  });
 
   const { location: currentLocation, pathIndex } = calculateLocationAlongPath(
     path,
@@ -113,11 +103,6 @@ export const calculateTrackingData = (
     restaurant
   );
 
-  if (deliveryProgress > 0) {
-    console.log('🚴 Delivery person at path index:', pathIndex, '/', path.length - 1);
-  } else {
-    console.log('🏠 Delivery person at restaurant (not started yet)');
-  }
 
   return {
     orderId,
