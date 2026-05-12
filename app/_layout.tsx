@@ -33,8 +33,6 @@ function AppContent() {
     }
 
     // Initialize notification service on app start
-    // Note: The warning about push notifications in Expo Go can be ignored
-    // We're using local notifications which work fine in Expo Go
     notificationService.initialize(user?.id.toString()).catch((error) => {
       console.log('Notification initialization warning (can be ignored):', error.message);
     });

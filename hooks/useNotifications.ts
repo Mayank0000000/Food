@@ -3,7 +3,6 @@
  */
 
 import { notificationService } from '@/services/notification.service';
-import { NotificationConfig, NotificationData } from '@/types/notification.types';
 import { useEffect } from 'react';
 
 export const useNotifications = () => {
@@ -17,38 +16,7 @@ export const useNotifications = () => {
     };
   }, []);
 
-  const sendNotification = async (
-    data: NotificationData,
-    config?: NotificationConfig
-  ) => {
-    return notificationService.sendNotification(data, config);
-  };
-
-  const scheduleNotification = async (
-    data: NotificationData,
-    triggerSeconds: number,
-    config?: NotificationConfig
-  ) => {
-    return notificationService.scheduleNotification(data, triggerSeconds, config);
-  };
-
-  const cancelNotification = async (notificationId: string) => {
-    return notificationService.cancelNotification(notificationId);
-  };
-
-  const cancelAllNotifications = async () => {
-    return notificationService.cancelAllNotifications();
-  };
-
-  const setBadgeCount = async (count: number) => {
-    return notificationService.setBadgeCount(count);
-  };
-
-  const clearBadge = async () => {
-    return notificationService.clearBadge();
-  };
-
-  // Convenience methods
+  // Convenience methods for order notifications
   const notifyOrderPlaced = async (orderId: string, restaurantName: string) => {
     return notificationService.notifyOrderPlaced(orderId, restaurantName);
   };
@@ -62,13 +30,6 @@ export const useNotifications = () => {
   };
 
   return {
-    sendNotification,
-    scheduleNotification,
-    cancelNotification,
-    cancelAllNotifications,
-    setBadgeCount,
-    clearBadge,
-    // Convenience methods
     notifyOrderPlaced,
     notifyOrderDelivered,
     notifyOrderCancelled,

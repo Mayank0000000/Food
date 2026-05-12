@@ -1,5 +1,4 @@
 import { ReviewSubmissionModal } from '@/components/reviews/review-submission-modal';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PressableView } from '@/components/ui/pressable-view';
 import { RView } from '@/components/ui/rview';
@@ -18,11 +17,10 @@ import { Alert } from 'react-native';
 
 interface OrderItemProps {
   order: Order;
-  onReorder: (order: Order) => void;
   onMenuPress?: (order: Order) => void;
 }
 
-export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPress }) => {
+export const OrderItem: React.FC<OrderItemProps> = ({ order, onMenuPress }) => {
   const { theme, colors } = useTheme();
   const myOrdersStyles = useMemo(() => createMyOrdersStyles(theme), [theme]);
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
@@ -168,12 +166,6 @@ export const OrderItem: React.FC<OrderItemProps> = ({ order, onReorder, onMenuPr
                 </RView>
               </PressableView>
             )}
-            <Button
-              title={t('orders.reorder')}
-              onPress={() => onReorder(order)}
-              style={myOrdersStyles.reorderButton}
-              size="small"
-            />
           </RView>
         )}
       </RView>

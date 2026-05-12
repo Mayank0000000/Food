@@ -16,8 +16,7 @@ Notifications.setNotificationHandler({
 });
 
 class NotificationService {
-  private notificationListener: Notifications.Subscription | null = null;
-  private responseListener: Notifications.Subscription | null = null;
+  private responseListener: Notifications.EventSubscription | null = null;
   private currentUserId: string | null = null;
   private pendingNotificationResponse: Notifications.NotificationResponse | null = null;
   private isAppReady: boolean = false;
@@ -119,13 +118,6 @@ class NotificationService {
    * Setup notification listeners
    */
   private setupListeners() {
-    // Listener for notifications received while app is foregrounded
-    this.notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        // Handle foreground notification
-      }
-    );
-
     // Listener for when user taps on notification
     this.responseListener = Notifications.addNotificationResponseReceivedListener(
       (response) => {
@@ -216,9 +208,9 @@ class NotificationService {
   }
 
   /**
-   * Send local notification immediately
+   * Send local notification immediately (internal use only)
    */
-  async sendNotification(
+  private async sendNotification(
     notificationData: NotificationData,
     config: NotificationConfig = {}
   ): Promise<string> {
@@ -251,9 +243,9 @@ class NotificationService {
   }
 
   /**
-   * Schedule notification for later
+   * Schedule notification for later (internal use only)
    */
-  async scheduleNotification(
+  private async scheduleNotification(
     notificationData: NotificationData,
     triggerSeconds: number,
     config: NotificationConfig = {}
@@ -287,55 +279,15 @@ class NotificationService {
   }
 
   /**
-   * Cancel scheduled notification
+   * Get all scheduled notifications (internal use only)
    */
-  async cancelNotification(notificationId: string): Promise<void> {
-    try {
-      await Notifications.cancelScheduledNotificationAsync(notificationId);
-    } catch (error) {
-      console.error('Error canceling notification:', error);
-    }
-  }
-
-  /**
-   * Cancel all scheduled notifications
-   */
-  async cancelAllNotifications(): Promise<void> {
-    try {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-    } catch (error) {
-      console.error('Error canceling all notifications:', error);
-    }
-  }
-
-  /**
-   * Get all scheduled notifications
-   */
-  async getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
+  private async getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
     try {
       return await Notifications.getAllScheduledNotificationsAsync();
     } catch (error) {
       console.error('Error getting scheduled notifications:', error);
       return [];
     }
-  }
-
-  /**
-   * Set badge count
-   */
-  async setBadgeCount(count: number): Promise<void> {
-    try {
-      await Notifications.setBadgeCountAsync(count);
-    } catch (error) {
-      console.error('Error setting badge count:', error);
-    }
-  }
-
-  /**
-   * Clear badge count
-   */
-  async clearBadge(): Promise<void> {
-    await this.setBadgeCount(0);
   }
 
   /**
@@ -372,9 +324,6 @@ class NotificationService {
    * Cleanup listeners
    */
   cleanup() {
-    if (this.notificationListener) {
-      this.notificationListener.remove();
-    }
     if (this.responseListener) {
       this.responseListener.remove();
     }
@@ -553,7 +502,7 @@ class NotificationService {
       for (const notification of scheduled) {
         const data = notification.content.data as any;
         if (data?.type === NotificationType.CART_REMINDER) {
-          await this.cancelNotification(notification.identifier);
+          await Notifications.cancelScheduledNotificationAsync(notification.identifier);
         }
       }
     } catch (error) {

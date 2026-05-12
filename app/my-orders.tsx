@@ -11,9 +11,9 @@ import { useAppSelector } from '@/store/hooks';
 import { createMyOrdersStyles } from '@/styles/screens/my-orders.styles';
 import { Order } from '@/types/order.types';
 import {
-  filterOrdersByQuery,
-  getCompletedOrders,
-  sortOrdersByDate,
+    filterOrdersByQuery,
+    getCompletedOrders,
+    sortOrdersByDate,
 } from '@/utils/orderUtils';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -66,16 +66,12 @@ export default function MyOrders() {
     setFilteredOrders(filterOrdersByQuery(orders, searchQuery));
   };
 
-  const handleReorder = () => {
-    Alert.alert(t('orders.reorder'), t('orders.reorderComingSoon'));
-  };
-
   const handleMenuPress = () => {
     // Menu options functionality
   };
 
   const renderOrderItem = ({ item }: { item: Order }) => {
-    return <OrderItem order={item} onReorder={handleReorder} onMenuPress={handleMenuPress} />;
+    return <OrderItem order={item} onMenuPress={handleMenuPress} />;
   };
 
   if (isLoading) {
